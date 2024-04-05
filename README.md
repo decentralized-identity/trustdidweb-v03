@@ -1,2 +1,3 @@
-# DID Web Next
-DID Web Next
+# Trust DID Web - A DID Method
+
+Trust DID Web (tdw).

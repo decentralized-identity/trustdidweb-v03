@@ -187,6 +187,10 @@ no longer publicly available due to any other means.
 
 ### DID Method Processes
 
+The [DID Method Operations](#did-method-operations) reference several processes
+that are executed during DIDDoc generation and DID resolution verification. Each
+of those processes is specified in the following sections.
+
 #### DID Generation and Validation Parameters
 
 Entries in the `did:tdw` [[ref: DID Log]] file contain as the 4th item in the
@@ -204,7 +208,7 @@ An example of the parameters item in the first DID Log entry for a DID:
 :::
 
 The permitted parameter items and (where applicable) enumerated values for those
-items are defined here:
+items are defined below.
 
 - `method`: Defines the version of the [[ref: DID Log]] processing specification
   to use when processing a given DID's log file. As new versions of the
@@ -323,17 +327,71 @@ Note that the [[ref: SCID]] remains in the `did:web` DID string.
 The benefit of doing this is that resolvers that have not be updated to support `did:tdw` can continue to resolve the [[ref: DID Controller]]'s DIDs. `did:web` resolvers that are aware of `did:tdw` features can use
 that knowledge, and the existence of the `alsoKnownAs` `did:tdw` data in the DIDDoc to get the verifiable history of the DID.
 
-The risk of publishing the `did:web` in parallel with the `did:tdw` is that security and convenience of `did:tdw` are lost.
+The risk of publishing the `did:web` in parallel with the `did:tdw` is that the added security and convenience of using `did:tdw` are lost.
 
 #### Generating and Applying a JSON Patch
 
-:::todo
+Each time a new `did:tdw` version is created, the [[ref: DID Controller]]
+**MAY** generate a [[ref: JSON Patch]] to concisely define the changes in the
+DIDDoc from the previous version. A [[ref: DID log entry]] that uses [[ref: JSON Patch]] has as its fourth item a JSON item `patch`, with its value the [[ref:
+JSON Patch]]. A [[ref: DID Controller]] **MAY** set the fourth item of a [[ref: DID log entry]] to be the JSON item `value`, with its value the complete DIDDoc.
+Typically (but not required), a [[ref: DID Controller]] will use `value` for the first [[ref: DID log entry]]
+and `patch` for all subsequent entries.
 
-Update this section.
+To create the value for a `patch` item for a [[ref: DID log entry]], the [[ref: DID Controller]] **MUST**:
 
-:::
+1. Have the fully resolved previous version of the DIDDoc.
+2. The updated new version of the DIDDoc to be added.
+3. Execute an implementation of [[ref: JSON Patch]] that takes the two DIDDocs as inputs (previous before, new after) and outputs the resulting [[ref: JSON Patch]] from before to after.
+4. Set the fourth item of the [[ref: DID log entry]] to `{"patch": "<patch>"}`, removing all extraneous whitespace from the `<patch>`.
+
+When processing a [[ref: DID log entry]] with a `patch` , a resolver **MUST**:
+
+1. Have the fully resolved previous version of the DIDDoc.
+2. Execute an implementation of [[ref: JSON Patch]] that takes the previous DIDDoc and the patch as inputs, and outputs the resulting new version of the DIDDoc.
 
 #### Pre-Rotation Key Hash Generation and Validation
+
+Pre-rotation is a term defining how a [[ref: DID Controller]] can commit to the
+keys that will be added ("rotated to") in future versions of the DIDDoc. The
+purpose of committing to future keys is that if the currently active keys are
+compromised by an attacker, the attacker should not be able to rotate the
+compromised keys to new ones only the attacker controls to take over the control
+of the DID. The effectiveness of pre-rotation is based on the idea that an
+attacker cannot compromised the future keys. See the non-normative section about
+[Using Pre-Rotation Keys](#using-pre-rotation-keys) in the implementors guide
+section of this specification.
+
+As described in the [parameters](#did-generation-and-validation-parameters)
+section of this specification, a [[ref: DID Controller]] **MAY** define that
+`pre-rotation` is active for the DID. When that is the case, all additions of
+new keys in future versions of the DIDDoc **MUST** have their hash in one or
+more of the `nextKeys` arrays of previous [[ref: DID log entry]] parameters.
+
+To create a hash to be included in the nextKeys array, the [[ref: DID Controller]] **MUST** execute out the following process:
+
+1. Generate a new key pair.
+2. Create the JSON dict [Verification Material](https://www.w3.org/TR/did-core/#verification-material), defined in the [[spec:DID-CORE]], for the new key. An example of such an entry is defined below.
+3. Calculate the hash string as `base32_lower(hash(JCS(verificationMaterial)))`, where:
+   1. `JCS` is an implementation of the [[ref: JSON Canonicalization Scheme]] ([[spec:rfc8785]]). Its output is a canonicalized representation of its input.
+   2. `hash` is either [sha256] or an alternative hash algorithm defined in the `hash` item in the [[ref: parameters]]. Its output is the hash of its input JCS content.
+   3. `base32_lower` as defined by the [[ref: base32_lower]] function. Its output is the lower case of the Base32 encoded string of the input hash.
+4. Add the hash calculated in Step 3 to a [[ref: DID log entry]] `nextKeys` item in the parameters (4th item of the entry array).
+5. The JSON dict from Step 2 can be inserted into a future version of the DIDDoc.
+
+When processing a [[ref: DID log entry]] where the `pre-rotation` parameter is active , a resolver **MUST**:
+
+1. When processing each [[ref: DID log entry]], after verifying a DIDDoc, add an optional array of `nextKeys` from the parameters into an array of hash strings.
+   1. The collection of the `nextKeys` from the current entry must occur after the processing and verification of that entries` DIDDoc version so that a new key and its pre-rotation hash cannot be added in the same entry.
+2. For all DIDDoc versions after versionId 1, detect when a new key [Verification Material](https://www.w3.org/TR/did-core/#verification-material) is added to a version of a DIDDoc. If so, for each new key:
+   1. Extract the Verification Material JSON dict for the new key from the new DIDDoc.
+   2. Calculate the hash string as `base32_lower(hash(JCS(verificationMaterial)))`, where:
+      1. `JCS` is an implementation of the [[ref: JSON Canonicalization Scheme]] ([[spec:rfc8785]]). Its output is a canonicalized representation of its input.
+      2. `hash` is either [sha256] or an alternative hash algorithm defined in the `hash` item in the [[ref: parameters]]. Its output is the hash of its input JCS content.
+      3. `base32_lower` as defined by the [[ref: base32_lower]] function. Its output is the lower case of the Base32 encoded string of the input hash.
+   3. Check to see if the hash string is listed in te collected array of `nextKeys`.
+      1. If so, the new key is verified.
+      2. If not, the verification process failed.
 
 ### DID URL Resolution
 

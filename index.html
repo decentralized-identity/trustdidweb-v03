@@ -189,7 +189,7 @@ inevitably be wrong.</p>
 <span class="token definition keyword">scid</span> <span class="token operator">=</span> <span class="token repetition operator">24</span><span class="token punctuation">(</span> <span class="token rule">lower-base32</span> <span class="token punctuation">)</span>
 <span class="token definition keyword">lower-base32</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token repetition operator">2</span>-7a-z<span class="token punctuation">]</span>
 </code></pre>
-<div id="example-1575" class="notice example"><a class="notice-link" href="#example-1575">EXAMPLE</a><p><code>did:tdw</code> DIDs and the corresponding web locations for their <code>did:tdw</code> log file.
+<div id="example-5814" class="notice example"><a class="notice-link" href="#example-5814">EXAMPLE</a><p><code>did:tdw</code> DIDs and the corresponding web locations for their <code>did:tdw</code> log file.
 <code>{SCID}</code> is a placeholder for where the generated SCID will be placed in the examples.</p>
 <p><code>did:tdw:{SCID}.example.com</code> --&gt; <code>https://{SCID}.example.com/.well-known/didlog.txt</code></p>
 <p><code>did:web:w3c-ccg.github.io:dids:{SCID}</code> --&gt; <code>https://example.com/dids/{SCID}/didlog.txt</code></p>
@@ -270,7 +270,7 @@ as a transition is made from <code>did:web</code> to <code>did:tdw</code>. Verif
 </ol>
 <p>On completing the processing of all entries in the <a class="term-reference" href="#term:did-log">DID Log</a>, respond to the DID resolution request, including the application of query parameters such as <code>?versionId=</code> and <code>?versionTime=</code> with the appropriate DIDDoc version.</p>
 <p>The following error codes and descriptions may be returned when resolving a DID.</p>
-<div id="todo-2540" class="notice todo"><a class="notice-link" href="#todo-2540">TODO</a><p>Document the full list of error codes that can be generated in resolving a DID.</p>
+<div id="todo-6793" class="notice todo"><a class="notice-link" href="#todo-6793">TODO</a><p>Document the full list of error codes that can be generated in resolving a DID.</p>
 </div>
 <ul>
 <li>Code 400: The <code>did:tdw</code> DID Log file <code>didlog.txt</code> was not found.</li>
@@ -337,17 +337,20 @@ item to <code>&quot;&quot;</code> to prevent further updates to the DID.</p>
 <p>Alternatively, the file <code>didlog.txt</code> <strong>MAY</strong>  be removed or made
 no longer publicly available due to any other means.</p>
 <h3 id="did-method-processes"><a class="toc-anchor" href="#did-method-processes" >§</a> DID Method Processes</h3>
+<p>The <a href="#did-method-operations" >DID Method Operations</a> reference several processes
+that are executed during DIDDoc generation and DID resolution verification. Each
+of those processes is specified in the following sections.</p>
 <h4 id="did-generation-and-validation-parameters"><a class="toc-anchor" href="#did-generation-and-validation-parameters" >§</a> DID Generation and Validation Parameters</h4>
 <p>Entries in the <code>did:tdw</code> <a class="term-reference" href="#term:did-log">DID Log</a> file contain as the 4th item in the
 array a JSON dictionary that define the DID processing parameters being used by the <a class="term-reference" href="#term:did-controller">DID Controller</a> when
 publishing that and subsequent DID Entries. Correspondingly, a DID Resolver must
 use the same parameters when processing the <a class="term-reference" href="#term:did-log">DID Log</a> to resolve the DID.
 The parameters dictionary <strong>MUST</strong> only include items defined in this specification.</p>
-<div id="example-1576" class="notice example"><a class="notice-link" href="#example-1576">EXAMPLE</a><p>An example of the parameters item in the first DID Log entry for a DID:</p>
+<div id="example-5815" class="notice example"><a class="notice-link" href="#example-5815">EXAMPLE</a><p>An example of the parameters item in the first DID Log entry for a DID:</p>
 <p><code>{&quot;method&quot;:&quot;did:tdw:1&quot;,&quot;scid&quot;:&quot;ke465curdwjzrrp5x5ut92te&quot;}</code></p>
 </div>
 <p>The permitted parameter items and (where applicable) enumerated values for those
-items are defined here:</p>
+items are defined below.</p>
 <ul>
 <li><code>method</code>: Defines the version of the <a class="term-reference" href="#term:did-log">DID Log</a> processing specification
 to use when processing a given DID’s log file. As new versions of the
@@ -484,17 +487,88 @@ in processing the log.</li>
 <p>Note that the <a class="term-reference" href="#term:scid">SCID</a> remains in the <code>did:web</code> DID string.</p>
 <p>The benefit of doing this is that resolvers that have not be updated to support <code>did:tdw</code> can continue to resolve the <a class="term-reference" href="#term:did-controller">DID Controller</a>'s DIDs. <code>did:web</code> resolvers that are aware of <code>did:tdw</code> features can use
 that knowledge, and the existence of the <code>alsoKnownAs</code> <code>did:tdw</code> data in the DIDDoc to get the verifiable history of the DID.</p>
-<p>The risk of publishing the <code>did:web</code> in parallel with the <code>did:tdw</code> is that security and convenience of <code>did:tdw</code> are lost.</p>
+<p>The risk of publishing the <code>did:web</code> in parallel with the <code>did:tdw</code> is that the added security and convenience of using <code>did:tdw</code> are lost.</p>
 <h4 id="generating-and-applying-a-json-patch"><a class="toc-anchor" href="#generating-and-applying-a-json-patch" >§</a> Generating and Applying a JSON Patch</h4>
-<div id="todo-2541" class="notice todo"><a class="notice-link" href="#todo-2541">TODO</a><p>Update this section.</p>
-</div>
+<p>Each time a new <code>did:tdw</code> version is created, the <a class="term-reference" href="#term:did-controller">DID Controller</a>
+<strong>MAY</strong> generate a <a class="term-reference" href="#term:json-patch">JSON Patch</a> to concisely define the changes in the
+DIDDoc from the previous version. A <a class="term-reference" href="#term:did-log-entry">DID log entry</a> that uses <a class="term-reference" href="#term:json-patch">JSON Patch</a> has as its fourth item a JSON item <code>patch</code>, with its value the <a class="term-reference" href="#term:json-patch">JSON Patch</a>. A <a class="term-reference" href="#term:did-controller">DID Controller</a> <strong>MAY</strong> set the fourth item of a <a class="term-reference" href="#term:did-log-entry">DID log entry</a> to be the JSON item <code>value</code>, with its value the complete DIDDoc.
+Typically (but not required), a <a class="term-reference" href="#term:did-controller">DID Controller</a> will use <code>value</code> for the first <a class="term-reference" href="#term:did-log-entry">DID log entry</a>
+and <code>patch</code> for all subsequent entries.</p>
+<p>To create the value for a <code>patch</code> item for a <a class="term-reference" href="#term:did-log-entry">DID log entry</a>, the <a class="term-reference" href="#term:did-controller">DID Controller</a> <strong>MUST</strong>:</p>
+<ol>
+<li>Have the fully resolved previous version of the DIDDoc.</li>
+<li>The updated new version of the DIDDoc to be added.</li>
+<li>Execute an implementation of <a class="term-reference" href="#term:json-patch">JSON Patch</a> that takes the two DIDDocs as inputs (previous before, new after) and outputs the resulting <a class="term-reference" href="#term:json-patch">JSON Patch</a> from before to after.</li>
+<li>Set the fourth item of the <a class="term-reference" href="#term:did-log-entry">DID log entry</a> to <code>{&quot;patch&quot;: &quot;&lt;patch&gt;&quot;}</code>, removing all extraneous whitespace from the <code>&lt;patch&gt;</code>.</li>
+</ol>
+<p>When processing a <a class="term-reference" href="#term:did-log-entry">DID log entry</a> with a <code>patch</code> , a resolver <strong>MUST</strong>:</p>
+<ol>
+<li>Have the fully resolved previous version of the DIDDoc.</li>
+<li>Execute an implementation of <a class="term-reference" href="#term:json-patch">JSON Patch</a> that takes the previous DIDDoc and the patch as inputs, and outputs the resulting new version of the DIDDoc.</li>
+</ol>
 <h4 id="pre-rotation-key-hash-generation-and-validation"><a class="toc-anchor" href="#pre-rotation-key-hash-generation-and-validation" >§</a> Pre-Rotation Key Hash Generation and Validation</h4>
+<p>Pre-rotation is a term defining how a <a class="term-reference" href="#term:did-controller">DID Controller</a> can commit to the
+keys that will be added (“rotated to”) in future versions of the DIDDoc. The
+purpose of committing to future keys is that if the currently active keys are
+compromised by an attacker, the attacker should not be able to rotate the
+compromised keys to new ones only the attacker controls to take over the control
+of the DID. The effectiveness of pre-rotation is based on the idea that an
+attacker cannot compromised the future keys. See the non-normative section about
+<a href="#using-pre-rotation-keys" >Using Pre-Rotation Keys</a> in the implementors guide
+section of this specification.</p>
+<p>As described in the <a href="#did-generation-and-validation-parameters" >parameters</a>
+section of this specification, a <a class="term-reference" href="#term:did-controller">DID Controller</a> <strong>MAY</strong> define that
+<code>pre-rotation</code> is active for the DID. When that is the case, all additions of
+new keys in future versions of the DIDDoc <strong>MUST</strong> have their hash in one or
+more of the <code>nextKeys</code> arrays of previous <a class="term-reference" href="#term:did-log-entry">DID log entry</a> parameters.</p>
+<p>To create a hash to be included in the nextKeys array, the <a class="term-reference" href="#term:did-controller">DID Controller</a> <strong>MUST</strong> execute out the following process:</p>
+<ol>
+<li>Generate a new key pair.</li>
+<li>Create the JSON dict <a path-0="www.w3.org"path-1="TR"path-2="did-core"path-3="#verification-material"href="https://www.w3.org/TR/did-core/#verification-material" >Verification Material</a>, defined in the [<a class="spec-reference" href="#ref:DID-CORE">DID-CORE</a>], for the new key. An example of such an entry is defined below.</li>
+<li>Calculate the hash string as <code>base32_lower(hash(JCS(verificationMaterial)))</code>, where:
+<ol>
+<li><code>JCS</code> is an implementation of the <a class="term-reference" href="#term:json-canonicalization-scheme">JSON Canonicalization Scheme</a> ([<a class="spec-reference" href="#ref:RFC8785">RFC8785</a>]). Its output is a canonicalized representation of its input.</li>
+<li><code>hash</code> is either [sha256] or an alternative hash algorithm defined in the <code>hash</code> item in the <a class="term-reference" href="#term:parameters">parameters</a>. Its output is the hash of its input JCS content.</li>
+<li><code>base32_lower</code> as defined by the <a class="term-reference" href="#term:base32_lower">base32_lower</a> function. Its output is the lower case of the Base32 encoded string of the input hash.</li>
+</ol>
+</li>
+<li>Add the hash calculated in Step 3 to a <a class="term-reference" href="#term:did-log-entry">DID log entry</a> <code>nextKeys</code> item in the parameters (4th item of the entry array).</li>
+<li>The JSON dict from Step 2 can be inserted into a future version of the DIDDoc.</li>
+</ol>
+<p>When processing a <a class="term-reference" href="#term:did-log-entry">DID log entry</a> where the <code>pre-rotation</code> parameter is active , a resolver <strong>MUST</strong>:</p>
+<ol>
+<li>When processing each <a class="term-reference" href="#term:did-log-entry">DID log entry</a>, after verifying a DIDDoc, add an optional array of <code>nextKeys</code> from the parameters into an array of hash strings.
+<ol>
+<li>The collection of the <code>nextKeys</code> from the current entry must occur after the processing and verification of that entries` DIDDoc version so that a new key and its pre-rotation hash cannot be added in the same entry.</li>
+</ol>
+</li>
+<li>For all DIDDoc versions after versionId 1, detect when a new key <a path-0="www.w3.org"path-1="TR"path-2="did-core"path-3="#verification-material"href="https://www.w3.org/TR/did-core/#verification-material" >Verification Material</a> is added to a version of a DIDDoc. If so, for each new key:
+<ol>
+<li>Extract the Verification Material JSON dict for the new key from the new DIDDoc.</li>
+<li>Calculate the hash string as <code>base32_lower(hash(JCS(verificationMaterial)))</code>, where:
+<ol>
+<li><code>JCS</code> is an implementation of the <a class="term-reference" href="#term:json-canonicalization-scheme">JSON Canonicalization Scheme</a> ([<a class="spec-reference" href="#ref:RFC8785">RFC8785</a>]). Its output is a canonicalized representation of its input.</li>
+<li><code>hash</code> is either [sha256] or an alternative hash algorithm defined in the <code>hash</code> item in the <a class="term-reference" href="#term:parameters">parameters</a>. Its output is the hash of its input JCS content.</li>
+<li><code>base32_lower</code> as defined by the <a class="term-reference" href="#term:base32_lower">base32_lower</a> function. Its output is the lower case of the Base32 encoded string of the input hash.</li>
+</ol>
+</li>
+<li>Check to see if the hash string is listed in te collected array of <code>nextKeys</code>.
+<ol>
+<li>If so, the new key is verified.</li>
+<li>If not, the verification process failed.</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
 <h3 id="did-url-resolution"><a class="toc-anchor" href="#did-url-resolution" >§</a> DID URL Resolution</h3>
 <h4 id="whois-linkedvp-service"><a class="toc-anchor" href="#whois-linkedvp-service" >§</a> whois LinkedVP Service</h4>
 <h4 id="did-url-path-resolution-service"><a class="toc-anchor" href="#did-url-path-resolution-service" >§</a> DID URL Path Resolution Service</h4>
 <h2 id="implementors-guide"><a class="toc-anchor" href="#implementors-guide" >§</a> Implementors Guide</h2>
 <h3 id="using-pre-rotation-keys"><a class="toc-anchor" href="#using-pre-rotation-keys" >§</a> Using Pre-Rotation Keys</h3>
-<div id="todo-2542" class="notice todo"><a class="notice-link" href="#todo-2542">TODO</a><p>Complete this section, covering guidance on where to hold pre-rotation keys and post-quantum key rotations.</p>
+<p><a href="#using-pre-rotation-keys" >Using Pre-Rotation Keys</a></p>
+<p>Best practices are that the <a class="term-reference" href="#term:did-controller">DID Controller</a> generates the active key for the DIDDoc where it can be used for “production” purposes, and generates the “next key” in an isolated location from production</p>
+<div id="todo-6794" class="notice todo"><a class="notice-link" href="#todo-6794">TODO</a><p>Complete this section, covering guidance on where to hold pre-rotation keys and post-quantum key rotations.</p>
 </div>
 <h2 id="definitions"><a class="toc-anchor" href="#definitions" >§</a> Definitions</h2>
 <dl>

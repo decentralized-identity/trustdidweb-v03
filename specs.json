@@ -8,7 +8,8 @@
         "abstract.md",
         "specification.md",
         "implementors_guide.md",
-        "definitions.md"
+        "definitions.md",
+        "example.md"
       ],
       "source": {
         "host": "github",
@@ -16,7 +17,7 @@
         "repo": "trustdidweb"
       },
       "output_path": "./",
-      "logo": "logo.svg",
+      "logo": "didtdw_dark.jpg",
       "logo_link": "https://github.com/decentralized-identity/spec-up",
       "assets": [
         {

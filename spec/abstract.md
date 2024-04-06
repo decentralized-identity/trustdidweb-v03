@@ -35,31 +35,32 @@ these features:
 
 The following is a `tl;dr` summary of the specification summarizing how `did:tdw` works.
 
-- Beside where `did:web`'s `did.json` file might be found, `did:tdw`'s `didlog.txt`
-  file is found--the same `did:web` DID-to-HTTPS transformation is used.
-- The `didlog.txt` is a list of JSON [[ref: DID log entries]], each of which contains the
-  information needed to derive a version of the DIDDoc from its preceding version.
-- Each entry includes:
+- Beside where DID resolvers find `did:web`'s `did.json`, `did:tdw`'s `didlog.txt`
+  file is found. The same `did:web` DID-to-HTTPS transformation is used.
+- The `didlog.txt` is a list of JSON [[ref: DID log entries]], one per line,
+  whitespace removed, each of which contains the information needed to derive a
+  version of the DIDDoc from its preceding version.
+- Each entry includes JSON entries containing:
   - A hash of the entry.
-  - The versionId of the DIDDoc, starting from 1 and incrementing.
-  - The versionTime (as stated by the DID Controller) of the entry.
-  - A set of parameters that impact the processing of the current, and possibly
-    future, entries.
+  - The `versionId` of the DIDDoc, starting from 1 and incrementing.
+  - The `versionTime` (as stated by the DID Controller) of the entry.
+  - A set of `parameters` that impact the processing of the current and
+    future log entries.
     - Examples parameters are the version of the `did:tdw` specification
       and the hash algorithm being used by the controller. All available parameters are
-      defined in the specification.
+      defined in this specification.
   - The new version of the DIDDoc as either a `value` (the full document) or a
     `patch` derived using [[ref: JSON Patch]] to update the new version from the
     previous entry.
-  - A [[ref: Data Integrity]] (DI) proof across the entry (using the hash as the
-    challenge), signed by a DID Controller authorized to update the DIDDoc.
+  - A [[ref: Data Integrity]] (DI) proof across the entry, signed by a DID
+    Controller authorized to update the DIDDoc.
 - In generating the first version of the DIDDoc, the DID Controller calculates
-  the [[ref: SCID]] for the DID, including it as a `parameter` in the first log entry, and
+  the [[ref: SCID]] for the DID, includes it as a `parameter` in the first log entry, and
   inserts it where needed in the initial (and all subsequent) DIDDocs.
 - A DID Controller generates and publishes the updated log file by making it available at the appropriate
-  location on the web based on the value of the DID.
+  location on the web, based on the value of the DID.
 - Given a `did:tdw` DID, a resolver converts the DID to an HTTPS URL, retrieves, and processes the
-  log fiel `didlog.txt`, generating and verifying each log entry as per the requirements outlined
+  log file `didlog.txt`, generating and verifying each log entry as per the requirements outlined
   in this specification.
   - In the process, the resolvers may collect all the DIDDoc versions and public
     keys (by reference) used by the DID currently, or in the past. This enables resolving both current and past DID URLs.
@@ -71,3 +72,6 @@ The following is a `tl;dr` summary of the specification summarizing how `did:tdw
     does not get the verifiability of the `did:tdw` log.
 - `did:tdw` DID URLs with paths can be resolved to documents published by the
   DID Controller.
+
+An example of a `did:tdw` evolving through a series of versions can be seen in
+the [did:tdw Examples](#didtdw-example) of this specification.

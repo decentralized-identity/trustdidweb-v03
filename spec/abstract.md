@@ -17,7 +17,7 @@ resolvers that want more assurance, `did:tdw` (Trust DID Web) provides a way to
 "trust did:web" (or to enable a "trusted web" if you say it fast), by supporting
 these features:
 
-- Publishing of all DIDDoc versions for a DID instead of, or beside, a `did:web` DID.
+- Publishing of all DID Document (DIDDoc) versions for a DID instead of, or beside, a `did:web` DID.
 - Uses the same DID-to-HTTPS transformations as `did:web`.
 - Provides resolvers with the full history of the DID via a verifiable chain of
   updates to the DIDDoc from creation to the latest update.

@@ -32,38 +32,38 @@ included, delimited by colons rather than slashes.
 The [[ref: SCID]], a globally unique identifier, is generated as part of the
 creation of the DID and placed into the DID identifier.
 
-As specified in the Augmented Backus-Naur Form (ABNF) notation of
-[RFC2234](https://datatracker.ietf.org/doc/html/rfc2234) below, the [[ref:
-SCID]] **MUST** be present, but may be placed in the (optional) subdomain
-component of the domain, or as a segment in the (optional) URL path. Examples
-follow. The `domain-segment` and `path-segment` elements refer to the [ABNF
-found in RFC3986 Generic URL
-Syntax](https://datatracker.ietf.org/doc/html/rfc3986#page-49) as attempting to
-replicate the full ABNF of those elements here would inevitably be done
-incorrectly.
+As specified in the following Augmented Backus-Naur Form (ABNF) notation
+([[spec:rfc2234]]) the [[ref: SCID]] **MUST** be present in the DID string, but
+may be placed in the (optional) subdomain component of the domain, or as a
+segment in the (optional) URL path. See examples below. The `domain-segment` and
+`path-segment` elements refer to [[spec:rfc3986]]'s ABNF for a Generic URL (page 49).
+Attempting to replicate here the full ABNF of those elements from that RFC would
+inevitably be wrong.
 
-```text
+```abnf
 tdw-did = "did:tdw:" *( domain-segment “.” ) scid 1*( “.” domain-segment ) ( “.” domain-segment ) *( ":" path-segment )
 tdw-did = "did:tdw:" 2*( domain-segment “.” ) *( ":" path-segment ) (":" scid ) *( ":" path-segment )
-domain-segment = ; A part of a domain name as defined in RFC3986, such as "example" and "com" for "example.com"
-path-segment= ; A part of a URL path as defined in RFC3986, such as "path", "to", "folder" for "path/to/folder"
+domain-segment = ; A part of a domain name as defined in RFC3986, such as "example" and "com" in "example.com"
+path-segment= ; A part of a URL path as defined in RFC3986, such as "path", "to", "folder" in "path/to/folder"
 scid = 24( lower-base32 )
 lower-base32 = [2-7a-z]
 ```
 
-```example
-EXAMPLE 1: Example TDW Method DIDs, and corresponding web location for the did:tdw log file
+::: example
 
-did:tdw:<SCID>.example.com
---> https://<SCID>.example.com/.well-known/didlog.txt
-did:web:w3c-ccg.github.io:dids:<SCID>
---> https://example.com/dids/<SCID>/didlog.txt
-did:web:<SCID>.example.com%3A3000
---> https://example.com:3000/dids/<SCID>/didlog.txt
-```
+`did:tdw` DIDs and the corresponding web locations for their `did:tdw` log file.
+`{SCID}` is a placeholder for where the generated SCID will be placed in the examples.
+
+`did:tdw:{SCID}.example.com` --> `https://{SCID}.example.com/.well-known/didlog.txt`
+
+`did:web:w3c-ccg.github.io:dids:{SCID}` --> `https://example.com/dids/{SCID}/didlog.txt`
+
+`did:web:{SCID}.example.com%3A3000` --> `https://example.com:3000/dids/{SCID}/didlog.txt`
+
+:::
 
 The location of the `did:tdw` `didlog.txt` file is logically beside where the comparable `did:web`
-`did.json` file is published. A controller **MAY** choose to publish both DIDs and so both files.
+`did.json` file is published. A [[ref: DID Controller]] **MAY** choose to publish both DIDs and so both files.
 
 ### DID Method Operations
 
@@ -96,25 +96,25 @@ as a transition is made from `did:web` to `did:tdw`. Verifiers using the `did:we
 
 ### Read (Resolve)
 
-The following steps MUST be executed to resolve the DID document for a `did:tdw` DID:
+The following steps MUST be executed to resolve the DIDDoc for a `did:tdw` DID:
 
 1. Replace ":" with "/" in the method specific identifier to obtain the fully qualified domain name and optional path.
 2. If the domain contains a port percent decode the colon.
-3. Generate an HTTPS URL to the expected location of the DID document by prepending https://.
-4. If no path has been specified in the URL, append /.well-known.
-5. Append /didlog.txt to complete the URL.
+3. Generate an HTTPS URL to the expected location of the DIDDoc by prepending `https://`.
+4. If no path has been specified in the URL, append `/.well-known`.
+5. Append `/didlog.txt` to complete the URL.
 6. Perform an HTTP GET request to the URL using an agent that can successfully negotiate a secure HTTPS connection, which enforces the security requirements as described in 2.6 Security and privacy considerations.
-7. When performing the DNS resolution during the HTTP GET request, the client SHOULD utilize [RFC8484] in order to prevent tracking of the identity being resolved.
+7. When performing the DNS resolution during the HTTP GET request, the client SHOULD utilize [[spec:rfc8484]] in order to prevent tracking of the identity being resolved.
 8. Process the [[ref: DID Log]] file as described below.
 
-To process the retrieved [[ref: DID Log]] file, carry out the following steps:
+To process the retrieved [[ref: DID Log]] file, the resolver **MUST** carry out the following steps:
 
 1. Process the Log entries in the order they appear in the file, applying the [[ref: parameters]] set on current and previous entries.
 2. For each entry:
-   1. Update the currently active [[ref: parameters]] with the parameters from the entry. and continue processing using the active set of [[ref: parameters]].
+   1. Update the currently active [[ref: parameters]] with the parameters from the entry (if any). and continue processing using the active set of [[ref: parameters]].
    2. Verify that the Data Integrity proof in the entry is valid, and is signed by an authorized key as defined in the [Authorization Keys](#authorization-keys) section of this specification.
    3. Verify that the `entryHash` for the entry according to the process defined in the [Entry Hash Generation and Verification] section of this specification.
-   4. For the initial version of the DIDDoc (`1`) verify that the appropriate [[ref: SCID]] is being used for the DID as defined in the [SCID Generation and Verification] section of this specification.
+   4. For the initial version of the DIDDoc (`1`) verify that the [[ref: SCID]] (defined in the [[ref: parameters]]) is being used for the DID as defined in the [SCID Generation and Verification] section of this specification.
    5. Generate the version of the DIDDoc for the entry by using the JSON value of the `value` item, or by using [[ref: JSON Patch]] to apply the JSON value of the `patch` entry item to the previous version of the DIDDoc.
    6. If [[ref: Key Pre-Rotation]] is being used, verify that any added keys in the DIDDoc have a valid pre-rotation entry as defined in the [Key Pre-Rotation Hash Generation and Verification] section of this specification.
    7. Once each version entry has been processed, collect about each version (at least) the following information:
@@ -122,7 +122,7 @@ To process the retrieved [[ref: DID Log]] file, carry out the following steps:
       2. `versionTime`
       3. The DIDDoc
 
-On completing the processing of the [[ref: DID Log]], respond to the DID resolution request, including the application of query parameters such as `?versionId=` and `?versionTime=` with the appropriate DIDDoc version.
+On completing the processing of all entries in the [[ref: DID Log]], respond to the DID resolution request, including the application of query parameters such as `?versionId=` and `?versionTime=` with the appropriate DIDDoc version.
 
 The following error codes and descriptions may be returned when resolving a DID.
 
@@ -137,12 +137,12 @@ Document the full list of error codes that can be generated in resolving a DID.
 #### Reading did:tdw DID URLs
 
 A `did:tdw` resolver **MAY** implement the resolution of the `#whois` and a DID
-URL Path using the [whois LinkedVP Service] and [DIR URL Path Resolution
-Service] as defined in this specification by processing the [[ref: DID Log]] and
-then [dereferencing the DID URL] using the contents of the DIDDoc. The client of
-a resolver that does not implement those capabilities must use the resolver to
-resolve the appropriate DIDDoc, and then process the resulting DID URLs
-themselves.
+URL Path using the [whois LinkedVP Service](#whois-linkedvp-service) and [DID
+URL Path Resolution Service](#did-url-path-resolution-service) as defined in
+this specification by processing the [[ref: DID Log]] and then [dereferencing
+the DID URL] based on the contents of the DIDDoc. The client of a resolver that
+does not implement those capabilities must use the resolver to resolve the
+appropriate DIDDoc, and then process the resulting DID URLs themselves.
 
 ### Update
 
@@ -176,41 +176,117 @@ A controller **MAY** generate an equivalent, updated `did:web` DIDDoc and publis
 
 #### Deactivate (Revoke)
 
-To delete the DID document, the the file `didlog.txt` has to be removed or has to be no longer publicly available due to any other means.
+To deactivate the DID, the [[ref: DID Controller]] **SHOULD** update the DIDDoc
+to include the item `"deactivated": true`, as defined in the
+[[spec:DID-CORE]] specification. WHen doing that, the [[ref: DID Controller]]
+might also remove an keys from the DIDDoc, and set the top level `controller`
+item to `""` to prevent further updates to the DID.
 
-:::todo
-
-Add in methods to deactive the DID while still making it resolvable.
-
-:::
+Alternatively, the file `didlog.txt` **MAY**  be removed or made
+no longer publicly available due to any other means.
 
 ### DID Method Processes
 
 #### DID Generation and Validation Parameters
 
-:::todo
+Entries in the `did:tdw` [[ref: DID Log]] file contain as the 4th item in the
+array a JSON dictionary that define the DID processing parameters being used by the [[ref: DID Controller]] when
+publishing that and subsequent DID Entries. Correspondingly, a DID Resolver must
+use the same parameters when processing the [[ref: DID Log]] to resolve the DID.
+The parameters dictionary **MUST** only include items defined in this specification.
 
-Complete this section.
+::: example
+
+An example of the parameters item in the first DID Log entry for a DID:
+
+`{"method":"did:tdw:1","scid":"ke465curdwjzrrp5x5ut92te"}`
 
 :::
+
+The permitted parameter items and (where applicable) enumerated values for those
+items are defined here:
+
+- `method`: Defines the version of the [[ref: DID Log]] processing specification
+  to use when processing a given DID's log file. As new versions of the
+  processing specifications are defined, additional values will be added to the
+  list of acceptable values.
+  - This item **MUST** appear in the first [[ref: DID Log]] entry.
+  - This item **MAY** appear in later [[ref: DID Log]] entries to indicate that
+    the processing rules for that and later entries have been changed to a
+    different version.
+  - Acceptable values for this specification are:
+    - `did:tdw:1`: Requires that the rules defined in this specification be used
+      in processing the log.
+- `scid`: The value of the [[ref: SCID]] for this DID.
+  - This item **MUST** appear in the first [[ref: DID log entry]].
+- `hash`: The hashing algorithm to use when executing hashes.
+  - By default, the value is initialized to `sha256`.
+  - Acceptable values:
+    - `sha256`: Use the `SHA-256` algorithm from [[spec:rfc4634]].
+- `pre-rotation`: A boolean value indicating that subsequent keys added to the DIDDoc (after this version) **MUST** have their hash included in a `nextKeys` parameters item.
+  - The value is initialized to `false` until the item is included in an [[ref: DID log entry]].
+  - Once the value is set to `true` in a [[ref: DID log entry]] it **MUST NOT** be set to `false` in a subsequent entry.
+- `nextKeys`: An array of strings that are hashes of future keys to be added to the DIDDoc.
+  - The process for generating the hashes is defined in the [Pre-Rotation Key Hash Generation and Validation](#pre-rotation-key-hash-generation-and-validation) section of this specification.
+  - If the parameter `pre-rotation` has been set to `true`, all keys added to a version of the DIDDoc after version 1 **MUST** have a corresponding hash listed in the `nextKeys` items from a previous [[ref: DID log entries]].
+  - See the section of this specification [Using Pre-Rotation Keys](#using-pre-rotation-keys) for non-normative guidance in using pre-rotation keys.
 
 #### SCID Generation and Validation
 
-:::todo
+To generate the required [[ref: SCID]] for a `did:tdw` DID, the DID Controller **MUST** execute the following function:
 
-Complete this section.
+ `left(base32_lower(hash(JCS(initial DIDDoc with placeholders))), 24)`
 
-:::
+Where:
 
- `left(base32_lower(hash(JCS(initial DIDDoc))), 24)`
-      1. `left` extracts the defined number of characters (24) from the string.
-      2. `base32_lower` as defined by [[ref: base32_lower]].
-      3. `hash` is either [sha256] or an alternative hash algorithm defined in the `hash` item in the [[ref: parameters]].
-      4. `JCS` is an implementation of the [[ref: JSON Canonicalization Scheme]].
+1. The `initial DIDDoc with placeholders` is the initial DID Doc defined by the [[ref: DID Controller]] with the placeholder `{SCID}` put everywhere the [[ref: SCID]] will be used in the resolved version 1 DIDDoc. At minimum, the `{SCID}` **MUST** appear in the top level `id` item of the DIDDoc. It **MAY** occur elsewhere in the DIDDoc.
+2. `JCS` is an implementation of the [[ref: JSON Canonicalization Scheme]] ([[spec:rfc8785]]). Its output is a canonicalized representation of its input.
+3. `hash` is either [sha256] or an alternative hash algorithm defined in the `hash` item in the [[ref: parameters]]. Its output is the hash of its input.
+4. `base32_lower` as defined by the [[ref: base32_lower]] function. Its output is the lower case of the Base32 encoded string of its input.
+5. `left` extracts the defined number of characters (in this case, `24`) from the string input.
+
+To validate the [[ref: SCID]] of a `did:tdw` DID being resolved, the resolver **MUST** execute the following process:
+
+1. Extract from the [[ref: parameters]] in the first [[ref: DID log entry]] for the DID the `scid` item's value.
+2. Extract from the first [[ref: DID log entry]] the `value` item's value, which is the initial DIDDoc.
+3. Treat the `value`s value as a string and do a text replacement of the `scid` from the first step with `{SCID}`. This results in the `initial DIDDoc with placeholders` data needed for the next step.
+4. Execute the function defined above to generate the `calulatedSCID`.
+5. Verify that the `scid` value extracted from the [[ref: DID log entry]] from step 1 matches the `calulatedSCID` in step 5.
 
 #### Entry Hash Generation and Validation
 
-Calculate the entryHash of the DID Entry as base32_lower(hash(JCS(entry))), where base32_lower, hash and JCS are the same functions used for generating the SCID (above).
+The `entryHash` is the first item in each [[ref: DID log entry]] and is a hash calculate across the entry, excluding the [[ref: Data Integrity]] proof.
+
+To generate the required hash for a `did:tdw` DID entry, the DID Controller **MUST** execute the following process:
+
+1. Make the value of the `entryHash` for this entry to the `entryHash` of the previous entry. For the first entry in the log, set the value of `entryHash` to the [[ref: SCID]] for the DID.
+2. Create the full entry JSON array with elements `entryHash`, `versionId`, `versionTime`, and `didDocVersion` (which is either a `value` or `patch`). See an example below.
+3. Calculate the hash string as `base32_lower(hash(JCS(entry)))`, where:
+   1. `JCS` is an implementation of the [[ref: JSON Canonicalization Scheme]] ([[spec:rfc8785]]). Its output is a canonicalized representation of its input.
+   2. `hash` is either [sha256] or an alternative hash algorithm defined in the `hash` item in the [[ref: parameters]]. Its output is the hash of its input JCS content.
+   3. `base32_lower` as defined by the [[ref: base32_lower]] function. Its output is the lower case of the Base32 encoded string of the input hash.
+4. Replace the `entryHash` value in the entry with the calculated value from step 3.
+
+Example of a [[DID log entry]] that is processed in step 3 to produce a hash. As this is a first entry in a DID Log, the `entryHash` is the SCID of the DID.
+
+```json
+
+["ke465curdwjzrrp5x5ut92te",1,"2024-04-03T03:47:51Z",{"method":"did:tdw:1","scid":"ke465curdwjzrrp5x5ut92te"},{"value":{"@context":["https://www.w3.org/ns/did/v1","https://w3id.org/security/multikey/v1"],"id":"did:tdw:example.com:ke465curdwjzrrp5x5ut92te","controller":"did:tdw:example.com:ke465curdwjzrrp5x5ut92te","authentication":["did:tdw:example.com:ke465curdwjzrrp5x5ut92te#FFhXVfsx"],"assertionMethod":["did:tdw:example.com:ke465curdwjzrrp5x5ut92te#CPixwJ8x"],"verificationMethod":[{"id":"did:tdw:example.com:ke465curdwjzrrp5x5ut92te#FFhXVfsx","controller":"did:tdw:example.com:ke465curdwjzrrp5x5ut92te","type":"Multikey","publicKeyMultibase":"z6MkkXKMSiE7mXvGcR2KUpeJXwT7MPXZSBC6HZw9FFhXVfsx"},{"id":"did:tdw:example.com:ke465curdwjzrrp5x5ut92te#CPixwJ8x","controller":"did:tdw:example.com:ke465curdwjzrrp5x5ut92te","type":"Multikey","publicKeyMultibase":"z6Mkg8FdKNRt4NLXm5YSUZVGWzK8vvS3DJByxAqHCPixwJ8x"}]}}]
+
+```
+
+Resulting entry hash: `xkuu1nwynw5ymfv4f1np2xbmg21k4vn1rrvg3ngpdmx482c2ce20`
+
+To verify the `entryHash` for a `did:tdw` DID entry, a DID Resolver **MUST** execute the following process:
+
+1. Extract the first item in the [[ref: DID log entry]] as the `entryHash`
+2. Remove the [[ref: Data Integrity]] proof (5th item) from the entry array.
+3. Set the first value of the entry to the `entryHash` of the previous entry. If this is the first entry in the log, set the value to the [[ref: SCID]] for the DID.
+4. Calculate the hash string as `base32_lower(hash(JCS(entry)))`, where:
+   1. `JCS` is an implementation of the [[ref: JSON Canonicalization Scheme]] ([[spec:rfc8785]]). Its output is a canonicalized representation of its input.
+   2. `hash` is either [sha256] or an alternative hash algorithm defined in the `hash` item in the [[ref: parameters]]. Its output is the hash of its input JCS content.
+   3. `base32_lower` as defined by the [[ref: base32_lower]] function. Its output is the lower case of the Base32 encoded string of the input hash.
+5. Verify that the calculated value from Step 4 matches the extracted value from Step 1.
 
 #### Authorization Keys
 
@@ -235,12 +311,19 @@ The following is some non-normative background on the process listed above:
 
 #### Publishing a Parallel `did:web` DID
 
-:::todo
+Each time a `did:tdw` version is created, the [[ref: DID Controller]] **MAY** generate a corresponding `did:web` to publish along with the `did:tdw`. To do so, the [[ref: DID Controller]] **MUST**:
 
-Update this section.
+1. Start with the resolved DIDDoc from `did:tdw`.
+2. Execute a text replacement across the DIDDoc of `did:tdw` to `did:web`.
+3. Add to the DIDDoc `alsoKnownAs` array, the full `did:tdw` DID. If the `alsoKnownAs` array does not exist in the DIDDoc, it **MUST** be added.
+4. Publish the resulting DIDDoc as the file `did.json` at the web location determined by the specified `did:web` DID to HTTP transformation.
 
-:::
+Note that the [[ref: SCID]] remains in the `did:web` DID string.
 
+The benefit of doing this is that resolvers that have not be updated to support `did:tdw` can continue to resolve the [[ref: DID Controller]]'s DIDs. `did:web` resolvers that are aware of `did:tdw` features can use
+that knowledge, and the existence of the `alsoKnownAs` `did:tdw` data in the DIDDoc to get the verifiable history of the DID.
+
+The risk of publishing the `did:web` in parallel with the `did:tdw` is that security and convenience of `did:tdw` are lost.
 
 #### Generating and Applying a JSON Patch
 
@@ -249,3 +332,11 @@ Update this section.
 Update this section.
 
 :::
+
+#### Pre-Rotation Key Hash Generation and Validation
+
+### DID URL Resolution
+
+#### whois LinkedVP Service
+
+#### DID URL Path Resolution Service

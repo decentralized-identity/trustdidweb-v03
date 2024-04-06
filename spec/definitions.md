@@ -24,6 +24,11 @@ log handling, such as evolving the permitted hash algorithms.
 ~ A date/time expressed using the [ISO8601
 Standard](https://en.wikipedia.org/wiki/ISO_8601).
 
+[[def: DID Controller]]
+
+~ Per the [[spec:DID-CORE]], a DID controller is an entity that is authorized to
+make changes to a DID document.
+
 [[def: Entry Hash]]
 
 ~ A `did:tdw` entry hash is a hash generated using a formally defined process over

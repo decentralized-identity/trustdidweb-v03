@@ -1,0 +1,39 @@
+{
+  "specs": [
+    {
+      "title": "Trust DID Web - The did-tdw DID Method",
+      "spec_directory": "./spec",
+      "markdown_paths": [
+        "header.md",
+        "abstract.md",
+        "specification.md",
+        "implementors_guide.md",
+        "definitions.md",
+        "example.md"
+      ],
+      "source": {
+        "host": "github",
+        "account": "bcgov",
+        "repo": "trustdidweb"
+      },
+      "output_path": "./",
+      "logo": "didtdw_dark.jpg",
+      "logo_link": "https://github.com/bcgov/trustdidweb",
+      "assets": [
+        {
+          "path": "/custom-assets/custom.css"
+        },
+        {
+          "path": "/custom-assets/custom-head.js",
+          "inject": "head"
+        },
+        {
+          "path": "/custom-assets/custom-body.js",
+          "inject": "body",
+          "module": true
+        }
+      ],
+      "katex": true
+    }
+  ]
+}

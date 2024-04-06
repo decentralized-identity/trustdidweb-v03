@@ -189,7 +189,7 @@ inevitably be wrong.</p>
 <span class="token definition keyword">scid</span> <span class="token operator">=</span> <span class="token repetition operator">24</span><span class="token punctuation">(</span> <span class="token rule">lower-base32</span> <span class="token punctuation">)</span>
 <span class="token definition keyword">lower-base32</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token repetition operator">2</span>-7a-z<span class="token punctuation">]</span>
 </code></pre>
-<div id="example-5814" class="notice example"><a class="notice-link" href="#example-5814">EXAMPLE</a><p><code>did:tdw</code> DIDs and the corresponding web locations for their <code>did:tdw</code> log file.
+<div id="example-109" class="notice example"><a class="notice-link" href="#example-109">EXAMPLE</a><p><code>did:tdw</code> DIDs and the corresponding web locations for their <code>did:tdw</code> log file.
 <code>{SCID}</code> is a placeholder for where the generated SCID will be placed in the examples.</p>
 <p><code>did:tdw:{SCID}.example.com</code> --&gt; <code>https://{SCID}.example.com/.well-known/didlog.txt</code></p>
 <p><code>did:web:w3c-ccg.github.io:dids:{SCID}</code> --&gt; <code>https://example.com/dids/{SCID}/didlog.txt</code></p>
@@ -270,7 +270,7 @@ as a transition is made from <code>did:web</code> to <code>did:tdw</code>. Verif
 </ol>
 <p>On completing the processing of all entries in the <a class="term-reference" href="#term:did-log">DID Log</a>, respond to the DID resolution request, including the application of query parameters such as <code>?versionId=</code> and <code>?versionTime=</code> with the appropriate DIDDoc version.</p>
 <p>The following error codes and descriptions may be returned when resolving a DID.</p>
-<div id="todo-6793" class="notice todo"><a class="notice-link" href="#todo-6793">TODO</a><p>Document the full list of error codes that can be generated in resolving a DID.</p>
+<div id="todo-109" class="notice todo"><a class="notice-link" href="#todo-109">TODO</a><p>Document the full list of error codes that can be generated in resolving a DID.</p>
 </div>
 <ul>
 <li>Code 400: The <code>did:tdw</code> DID Log file <code>didlog.txt</code> was not found.</li>
@@ -346,7 +346,7 @@ array a JSON dictionary that define the DID processing parameters being used by 
 publishing that and subsequent DID Entries. Correspondingly, a DID Resolver must
 use the same parameters when processing the <a class="term-reference" href="#term:did-log">DID Log</a> to resolve the DID.
 The parameters dictionary <strong>MUST</strong> only include items defined in this specification.</p>
-<div id="example-5815" class="notice example"><a class="notice-link" href="#example-5815">EXAMPLE</a><p>An example of the parameters item in the first DID Log entry for a DID:</p>
+<div id="example-110" class="notice example"><a class="notice-link" href="#example-110">EXAMPLE</a><p>An example of the parameters item in the first DID Log entry for a DID:</p>
 <p><code>{&quot;method&quot;:&quot;did:tdw:1&quot;,&quot;scid&quot;:&quot;ke465curdwjzrrp5x5ut92te&quot;}</code></p>
 </div>
 <p>The permitted parameter items and (where applicable) enumerated values for those
@@ -562,13 +562,90 @@ more of the <code>nextKeys</code> arrays of previous <a class="term-reference" h
 </li>
 </ol>
 <h3 id="did-url-resolution"><a class="toc-anchor" href="#did-url-resolution" >§</a> DID URL Resolution</h3>
+<p>A <code>did:tdw</code> resolver <strong>SHOULD</strong> resolve DID URLs in addition to resolve simple
+DIDs, since failure to do so requires the resolver clients to implement their
+own DID URL resolution. The DID URL resolution process <strong>MUST</strong> support the
+resolution of DID URL fragments, DID URL query parameters, DID URL paths. The
+following sections document the specific DID URL patterns that all
+<code>did:tdw</code> implementations <strong>MUST</strong> implement.</p>
 <h4 id="whois-linkedvp-service"><a class="toc-anchor" href="#whois-linkedvp-service" >§</a> whois LinkedVP Service</h4>
+<p>This service enables those that receive a <code>did:tdw</code> DID to retrieve and verify a
+verifiable presentation (and embedded Verifiable Credentials) the DID controller
+has decided to publish about itself. The intention is that anyone interested in
+a particular <code>did:tdw</code> DID can see if there is a <code>#whois</code> Verifiable
+Presentation, and if so, if it contains any useful (to the resolver) Verifiable
+Credentials that might help in learning more about who is the controller of the
+DID and if they should be trusted. It is up to the DID Controller to decide to
+publish a <code>whois</code> verifiable presentation and if so, which Verifiable
+Credentials to put into the verifiable presentation.</p>
+<p>A <code>did:tdw</code> DIDDoc <strong>SHOULD</strong> include a <code>whois</code> service endpoint with the
+following definition based on the <a path-0="identity.foundation"path-1="linked-vp"path-2=""href="https://identity.foundation/linked-vp/" >Linked Verifiable
+Presentation</a></p>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+   <span class="token property">"id"</span><span class="token operator">:</span> `#whois`<span class="token punctuation">,</span>
+   <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"LinkedVerifiablePresentation"</span><span class="token punctuation">,</span>
+   <span class="token property">"serviceEndpoint"</span><span class="token operator">:</span> `https<span class="token operator">:</span><span class="token comment">//example.com/dids/&lt;scid>/whois.json`]</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>A <a class="term-reference" href="#term:did-controller">DID Controller</a> that adds to their DIDDoc a <code>did:tdw</code> service with the
+<code>&quot;id&quot;: &quot;#whois&quot;</code> <strong>MUST</strong> have a <code>serviceEndpoint</code> that <strong>MUST</strong> be an HTTP URL
+that <strong>SHOULD</strong> be found in the same web location as the <code>did:tdw</code> <a class="term-reference" href="#term:did">DID</a>, and that <strong>MUST</strong> return a <a class="term-reference" href="#term:verifiable-presentation">Verifiable Presentation</a>.</p>
+<p>To resolve the DID URL <code>&lt;did:tdw DID&gt;#whois</code>, the resolver <strong>MUST</strong>:</p>
+<ol>
+<li>Resolve the given <code>did:tdw</code> DID by retrieving, processing, and verifying the <a class="term-reference" href="#term:did-log">DID log</a> for the <code>did:tdw</code> as defined in this specification.</li>
+<li>Find the DIDDoc <code>service</code> with the <code>id</code> <code>#whois</code>, if any.
+<ol>
+<li>If none, return an error <code>404 Not Found</code>.</li>
+</ol>
+</li>
+<li>Resolve the <code>serviceEndpoint</code> HTTP address, and return the document found.</li>
+</ol>
+<h5 id="the-whois-use-case"><a class="toc-anchor" href="#the-whois-use-case" >§</a> The <code>whois</code> Use Case</h5>
+<p>This section is informative.</p>
+<p>The following is a use case for the <code>whois</code> capability. Consider an example of the
+<code>did:tdw</code> controller being an educational institution that issues “degree”
+verifiable credentials to its graduate students. A graduate from the school
+submits as part of their job application to a company a <a class="term-reference" href="#term:verifiable">Verifiable</a> derived from the verifiable credential they received from the
+school. The company receiving the presentation can verify the cryptography of
+the presentation, but can they trust the the usefulness of a degree from the school that issued the verifiable
+credential? If the school issued the verifiable credential using its <code>did:tdw</code>
+DID, the company can resolve the DID. It can also resolve the DID’s <code>#whois</code> DID
+URL where it might find VCs from issuers it trusts with the <code>did:tdw</code> DID as
+the subject. For example:</p>
+<ul>
+<li>A verifiable credential issued by the Legal Entity Registrar for the
+jurisdiction in which the school is headquartered.
+<ul>
+<li>Since the company knows about the Legal Entity Registrar, they can automate
+this lookup to get more information about the school from the verifiable
+credential – its legal name, when it was registered, contact information,
+etc.</li>
+</ul>
+</li>
+<li>A verifiable credential issued by the “Association of Colleges and
+Universities” for the jurisdiction of the school.
+<ul>
+<li>Perhaps the company does not know about the Association for that
+jurisdiction. The company can repeat the <code>whois</code> resolution process for the
+issuer of <em>that</em> credential. The company might (for example), resolve and
+verify the <code>did:tdw</code> DID for the Association, and then resolve the <code>#whois</code>
+DID URL to find a verifiable credential issued by the government of the
+jurisdiction. The company recognizes and trusts that government’s authority,
+and so can decide to recognize and trust the Association.</li>
+</ul>
+</li>
+<li>A verifiable credential issued by US News magazine about the school’s
+placement on the <a path-0="www.usnews.com"path-1="education"path-2="best-global-universities"href="https://www.usnews.com/education/best-global-universities" >US News Rankings of Colleges and Universities</a>.</li>
+</ul>
+<p>Such checks can all be done with a handful of HTTPS requests and the processing
+of the DIDs and verifiable presentations. The result is an efficient,
+verifiable, credential-based, decentralized, multi-domain trust registry.</p>
 <h4 id="did-url-path-resolution-service"><a class="toc-anchor" href="#did-url-path-resolution-service" >§</a> DID URL Path Resolution Service</h4>
 <h2 id="implementors-guide"><a class="toc-anchor" href="#implementors-guide" >§</a> Implementors Guide</h2>
 <h3 id="using-pre-rotation-keys"><a class="toc-anchor" href="#using-pre-rotation-keys" >§</a> Using Pre-Rotation Keys</h3>
 <p><a href="#using-pre-rotation-keys" >Using Pre-Rotation Keys</a></p>
 <p>Best practices are that the <a class="term-reference" href="#term:did-controller">DID Controller</a> generates the active key for the DIDDoc where it can be used for “production” purposes, and generates the “next key” in an isolated location from production</p>
-<div id="todo-6794" class="notice todo"><a class="notice-link" href="#todo-6794">TODO</a><p>Complete this section, covering guidance on where to hold pre-rotation keys and post-quantum key rotations.</p>
+<div id="todo-110" class="notice todo"><a class="notice-link" href="#todo-110">TODO</a><p>Complete this section, covering guidance on where to hold pre-rotation keys and post-quantum key rotations.</p>
 </div>
 <h2 id="definitions"><a class="toc-anchor" href="#definitions" >§</a> Definitions</h2>
 <dl>

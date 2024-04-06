@@ -43,7 +43,7 @@ replicate the full ABNF of those elements here would inevitably be done
 incorrectly.
 
 ```text
-tdw-did = "did:tdw:" *( domain-segment “.” ) scid 2*( “.” domain-segment ) *( ":" path-segment )
+tdw-did = "did:tdw:" *( domain-segment “.” ) scid 1*( “.” domain-segment ) ( “.” domain-segment ) *( ":" path-segment )
 tdw-did = "did:tdw:" 2*( domain-segment “.” ) *( ":" path-segment ) (":" scid ) *( ":" path-segment )
 domain-segment = ; A part of a domain name as defined in RFC3986, such as "example" and "com" for "example.com"
 path-segment= ; A part of a URL path as defined in RFC3986, such as "path", "to", "folder" for "path/to/folder"
@@ -196,6 +196,12 @@ Complete this section.
 
 #### SCID Generation and Validation
 
+:::todo
+
+Complete this section.
+
+:::
+
  `left(base32_lower(hash(JCS(initial DIDDoc))), 24)`
       1. `left` extracts the defined number of characters (24) from the string.
       2. `base32_lower` as defined by [[ref: base32_lower]].
@@ -229,11 +235,12 @@ The following is some non-normative background on the process listed above:
 
 #### Publishing a Parallel `did:web` DID
 
- `left(base32_lower(hash(JCS(initial DIDDoc))), 24)`
-      1. `left` extracts the defined number of characters (24) from the string.
-      2. `base32_lower` as defined by [[ref: base32_lower]].
-      3. `hash` is either [sha256] or an alternative hash algorithm defined in the `hash` item in the [[ref: parameters]].
-      4. `JCS` is an implementation of the [[ref: JSON Canonicalization Scheme]].
+:::todo
+
+Update this section.
+
+:::
+
 
 #### Generating and Applying a JSON Patch
 

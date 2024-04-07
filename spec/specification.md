@@ -56,9 +56,9 @@ lower-base32 = [2-7a-z]
 
 `did:tdw:{SCID}.example.com` --> `https://{SCID}.example.com/.well-known/didlog.txt`
 
-`did:web:w3c-ccg.github.io:dids:{SCID}` --> `https://example.com/dids/{SCID}/didlog.txt`
+`did:tdw:example.com:dids:{SCID}` --> `https://example.com/dids/{SCID}/didlog.txt`
 
-`did:web:{SCID}.example.com%3A3000` --> `https://example.com:3000/dids/{SCID}/didlog.txt`
+`did:tdw:example.com%3A3000:dids:{SCID}` --> `https://example.com:3000/dids/{SCID}/didlog.txt`
 
 :::
 
@@ -78,7 +78,7 @@ Creating a `did:tdw` DID is done by carrying out the following steps.
 4. Pass the DID string, initial DIDDoc, and [[ref: parameters]] to a `did:tdw` "Create" implementation that **MUST**:
    1. Calculate the [[ref: SCID]] for the DID as defined in the [SCID Generation and Validation](#scid-generation-and-validation) section of this specification.
    2. Replace in the DIDDoc the placeholder for the [[ref: SCID]] `{SCID}` with the calculated `SCID`.
-   3. Generate a DID Entry as a JSON array (`[<data>]`) with the following JSON items:
+   3. Generate a DID Entry as a JSON array (`[<data>]`) with the following five JSON items:
       1. The [[ref: SCID]] as the `entryHash` value: `"ke465curdwjzrrp5x5ut92te"`
       2. An integer, `1`, that is the versionId for this first version of the DIDDoc: `1`
       3. A string that is the current time in [[ref: ISO8601]] format: `"2024-04-04T07:32:58Z"`
@@ -86,15 +86,19 @@ Creating a `did:tdw` DID is done by carrying out the following steps.
       5. The contents of the initial DIDDoc, in the form: `{"value": <DIDDoc>}`
    4. Calculate the [[ref: Entry Hash]] (`entryHash`) of the DID Entry as defined in the [Entry Hash Generation and Validation](#entry-hash-generation-and-validation) section of this specification.
    5. Update the `entryHash` with the value produced in the previous step.
-   6. Generate a [[ref: Data Integrity]] proof across the entry using an authorized key from the DID, and the `entryHash` as the proof `challenge`. The definition of "authorized" in this case is specified in the [Authorization Keys](#authorization-keys) section of this specification. The proof becomes the last JSON item in the entry.
+   6. Generate a [[ref: Data Integrity]] proof across the entry using an authorized key from the DID, and the `entryHash` as the proof `challenge`. The definition of "authorized" in this case is specified in the [Authorization Keys](#authorization-keys) section of this specification. The proof becomes the sixth and last JSON item in the DID log entry.
    7. Put the resulting entry, with extraneous white space removed as the contents of a file `didlog.txt` and publish the file at the appropriate location defined by the `did:tdw` value.
       1. This is a logical operation -- how a deployment serves the `didlog.txt` content is not constrained.
 
-A controller **MAY** generate an equivalent `did:web` DIDDoc and publish it as defined in the [Publishing a Parallel `did:web` DID](#publishing-a-parallel-didweb-did) section of this specification. The `did:web` DIDDoc could be used for backwards compatibility
-as a transition is made from `did:web` to `did:tdw`. Verifiers using the `did:web` lose the verifiable properties and history of the
-`did:tdw` for the convenience of the simple retrieval of the `did:web` DIDDoc.
+A controller **MAY** generate an equivalent `did:web` DIDDoc and publish it as
+defined in the [Publishing a Parallel `did:web`
+DID](#publishing-a-parallel-didweb-did) section of this specification. The
+`did:web` DIDDoc could be used for backwards compatibility as a transition is
+made from `did:web` to `did:tdw`. Verifiers using the `did:web` lose the
+verifiable properties and history of the `did:tdw` for the convenience of the
+simple retrieval of the `did:web` DIDDoc.
 
-### Read (Resolve)
+#### Read (Resolve)
 
 The following steps MUST be executed to resolve the DIDDoc for a `did:tdw` DID:
 
@@ -109,9 +113,15 @@ The following steps MUST be executed to resolve the DIDDoc for a `did:tdw` DID:
 
 To process the retrieved [[ref: DID Log]] file, the resolver **MUST** carry out the following steps:
 
-1. Process the Log entries in the order they appear in the file, applying the [[ref: parameters]] set on current and previous entries.
+1. Process the Log entries in the order they appear in the file, applying the [[ref: parameters]] set on current and previous entries. As noted in the [Create (Register)](#create-register), each log entry consists of a JSON array of 6 items:
+   1. `entryHash`
+   2. `versionId`
+   3. `versionTime`
+   4. `parameters`
+   5. DIDDoc content -- either the full `value` or a [[ref: JSON Patch]] `patch`
+   6. A Data Integrity proof over the entry.
 2. For each entry:
-   1. Update the currently active [[ref: parameters]] with the parameters from the entry (if any). and continue processing using the active set of [[ref: parameters]].
+   1. Update the currently active [[ref: parameters]] with the parameters from the entry (if any). Continue processing using the now active set of [[ref: parameters]].
    2. Verify that the Data Integrity proof in the entry is valid, and is signed by an authorized key as defined in the [Authorization Keys](#authorization-keys) section of this specification.
    3. Verify that the `entryHash` for the entry according to the process defined in the [Entry Hash Generation and Verification] section of this specification.
    4. For the initial version of the DIDDoc (`1`) verify that the [[ref: SCID]] (defined in the [[ref: parameters]]) is being used for the DID as defined in the [SCID Generation and Verification] section of this specification.
@@ -132,9 +142,9 @@ Document the full list of error codes that can be generated in resolving a DID.
 
 :::
 
-- Code 400: The `did:tdw` DID Log file `didlog.txt` was not found.
+- Code 404: The `did:tdw` DID Log file `didlog.txt` was not found.
 
-#### Reading did:tdw DID URLs
+##### Reading did:tdw DID URLs
 
 A `did:tdw` resolver **MAY** implement the resolution of the `#whois` and a DID
 URL Path using the [whois LinkedVP Service](#whois-linkedvp-service) and [DID
@@ -144,7 +154,7 @@ the DID URL] based on the contents of the DIDDoc. The client of a resolver that
 does not implement those capabilities must use the resolver to resolve the
 appropriate DIDDoc, and then process the resulting DID URLs themselves.
 
-### Update
+#### Update
 
 To update a DID to for example, rotate a key in the DIDDoc, a new, verifiable
 [[ref: DID Log Entry]] must be generated, appended to the existing [[ref: DID
@@ -155,7 +165,7 @@ process to the [Create](#create-register) process, as follows:
 1. Make the desired changes to the DIDDoc. While the contents of a new DIDDoc version are (mostly) up to the DID controller, there are some limitations:
    1. The `id` of the DIDDoc **MAY** be changed when the DID Controller wants to (or must) publish the DID at a different location and wants to retain the [[ref: SCID]] and history of the DID. For details, see the section [Moving a DID's Web Location].
    2. If [[ref: Key Pre-Rotation]] is being used in the DID, only keys with a valid pre-rotation entry in a previous DIDDoc can be added, as defined in the [Key Pre-Rotation Hash Generation and Verification] section of this specification.
-2. Define a JSON array of valid [[ref: parameters]] that affect the generation of the DID. The [DID Generation and Validation Parameters](#parameters) section of this specification defines the permitted [[ref: parameters]].
+2. Define a JSON array of valid [[ref: parameters]] that affect the generation of the DID. The [`did:tdw` DID Method Parameters](#didtdw-did-method-parameters) section of this specification defines the permitted [[ref: parameters]].
 3. Pass the existing [[ref: DID Log]], the updated DIDDoc, and the [[ref: parameters]] to a `did:tdw` update implementation which **MUST**:
    1. Generate a DID Entry as a JSON array (`[<data>]`) with the following JSON items:
       1. The `entryHash` from the previous [[ref: DID Log Entry]] as the `entryHash` value.
@@ -191,7 +201,7 @@ The [DID Method Operations](#did-method-operations) reference several processes
 that are executed during DIDDoc generation and DID resolution verification. Each
 of those processes is specified in the following sections.
 
-#### DID Generation and Validation Parameters
+#### did:tdw DID Method Parameters
 
 Entries in the `did:tdw` [[ref: DID Log]] file contain as the 4th item in the
 array a JSON dictionary that define the DID processing parameters being used by the [[ref: DID Controller]] when
@@ -274,9 +284,7 @@ To generate the required hash for a `did:tdw` DID entry, the DID Controller **MU
 Example of a [[DID log entry]] that is processed in step 3 to produce a hash. As this is a first entry in a DID Log, the `entryHash` is the SCID of the DID.
 
 ```json
-
 ["ke465curdwjzrrp5x5ut92te",1,"2024-04-03T03:47:51Z",{"method":"did:tdw:1","scid":"ke465curdwjzrrp5x5ut92te"},{"value":{"@context":["https://www.w3.org/ns/did/v1","https://w3id.org/security/multikey/v1"],"id":"did:tdw:example.com:ke465curdwjzrrp5x5ut92te","controller":"did:tdw:example.com:ke465curdwjzrrp5x5ut92te","authentication":["did:tdw:example.com:ke465curdwjzrrp5x5ut92te#FFhXVfsx"],"assertionMethod":["did:tdw:example.com:ke465curdwjzrrp5x5ut92te#CPixwJ8x"],"verificationMethod":[{"id":"did:tdw:example.com:ke465curdwjzrrp5x5ut92te#FFhXVfsx","controller":"did:tdw:example.com:ke465curdwjzrrp5x5ut92te","type":"Multikey","publicKeyMultibase":"z6MkkXKMSiE7mXvGcR2KUpeJXwT7MPXZSBC6HZw9FFhXVfsx"},{"id":"did:tdw:example.com:ke465curdwjzrrp5x5ut92te#CPixwJ8x","controller":"did:tdw:example.com:ke465curdwjzrrp5x5ut92te","type":"Multikey","publicKeyMultibase":"z6Mkg8FdKNRt4NLXm5YSUZVGWzK8vvS3DJByxAqHCPixwJ8x"}]}}]
-
 ```
 
 Resulting entry hash: `xkuu1nwynw5ymfv4f1np2xbmg21k4vn1rrvg3ngpdmx482c2ce20`
@@ -313,22 +321,6 @@ The following is some non-normative background on the process listed above:
 - The requirement to have the key reference for external DIDs (not the controlled DID) copied into the DIDDoc is to prevent an implementation from having to resolve external DIDs (that could use any [[ref: DID Method]]) during the resolution of a DID. This *might* be too restrictive and could be changed in an update to this specification. For example, it might be reasonable to require that external DIDs of certain [[ref: DID Methods]] (such as `did:tdw` or `did:web`) be resolved as part of resolving the controlled DID.
 - In a future version of the specification, the authors would like to require support for [[ref: verifiableConditions]] key types, to enable [[ref: multi-sig]] DID control support, such as requiring "N of M" signatures must be in a proof for it to be valid.
 
-#### Publishing a Parallel `did:web` DID
-
-Each time a `did:tdw` version is created, the [[ref: DID Controller]] **MAY** generate a corresponding `did:web` to publish along with the `did:tdw`. To do so, the [[ref: DID Controller]] **MUST**:
-
-1. Start with the resolved DIDDoc from `did:tdw`.
-2. Execute a text replacement across the DIDDoc of `did:tdw` to `did:web`.
-3. Add to the DIDDoc `alsoKnownAs` array, the full `did:tdw` DID. If the `alsoKnownAs` array does not exist in the DIDDoc, it **MUST** be added.
-4. Publish the resulting DIDDoc as the file `did.json` at the web location determined by the specified `did:web` DID to HTTP transformation.
-
-Note that the [[ref: SCID]] remains in the `did:web` DID string.
-
-The benefit of doing this is that resolvers that have not be updated to support `did:tdw` can continue to resolve the [[ref: DID Controller]]'s DIDs. `did:web` resolvers that are aware of `did:tdw` features can use
-that knowledge, and the existence of the `alsoKnownAs` `did:tdw` data in the DIDDoc to get the verifiable history of the DID.
-
-The risk of publishing the `did:web` in parallel with the `did:tdw` is that the added security and convenience of using `did:tdw` are lost.
-
 #### Generating and Applying a JSON Patch
 
 Each time a new `did:tdw` version is created, the [[ref: DID Controller]]
@@ -349,6 +341,22 @@ When processing a [[ref: DID log entry]] with a `patch` , a resolver **MUST**:
 
 1. Have the fully resolved previous version of the DIDDoc.
 2. Execute an implementation of [[ref: JSON Patch]] that takes the previous DIDDoc and the patch as inputs, and outputs the resulting new version of the DIDDoc.
+
+#### Publishing a Parallel `did:web` DID
+
+Each time a `did:tdw` version is created, the [[ref: DID Controller]] **MAY** generate a corresponding `did:web` to publish along with the `did:tdw`. To do so, the [[ref: DID Controller]] **MUST**:
+
+1. Start with the resolved DIDDoc from `did:tdw`.
+2. Execute a text replacement across the DIDDoc of `did:tdw` to `did:web`.
+3. Add to the DIDDoc `alsoKnownAs` array, the full `did:tdw` DID. If the `alsoKnownAs` array does not exist in the DIDDoc, it **MUST** be added.
+4. Publish the resulting DIDDoc as the file `did.json` at the web location determined by the specified `did:web` DID to HTTP transformation.
+
+Note that the [[ref: SCID]] remains in the `did:web` DID string.
+
+The benefit of doing this is that resolvers that have not be updated to support `did:tdw` can continue to resolve the [[ref: DID Controller]]'s DIDs. `did:web` resolvers that are aware of `did:tdw` features can use
+that knowledge, and the existence of the `alsoKnownAs` `did:tdw` data in the DIDDoc to get the verifiable history of the DID.
+
+The risk of publishing the `did:web` in parallel with the `did:tdw` is that the added security and convenience of using `did:tdw` are lost.
 
 #### Pre-Rotation Key Hash Generation and Validation
 

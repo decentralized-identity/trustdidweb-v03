@@ -189,11 +189,11 @@ inevitably be wrong.</p>
 <span class="token definition keyword">scid</span> <span class="token operator">=</span> <span class="token repetition operator">24</span><span class="token punctuation">(</span> <span class="token rule">lower-base32</span> <span class="token punctuation">)</span>
 <span class="token definition keyword">lower-base32</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token repetition operator">2</span>-7a-z<span class="token punctuation">]</span>
 </code></pre>
-<div id="example-109" class="notice example"><a class="notice-link" href="#example-109">EXAMPLE</a><p><code>did:tdw</code> DIDs and the corresponding web locations for their <code>did:tdw</code> log file.
+<div id="example-443" class="notice example"><a class="notice-link" href="#example-443">EXAMPLE</a><p><code>did:tdw</code> DIDs and the corresponding web locations for their <code>did:tdw</code> log file.
 <code>{SCID}</code> is a placeholder for where the generated SCID will be placed in the examples.</p>
 <p><code>did:tdw:{SCID}.example.com</code> --&gt; <code>https://{SCID}.example.com/.well-known/didlog.txt</code></p>
-<p><code>did:web:w3c-ccg.github.io:dids:{SCID}</code> --&gt; <code>https://example.com/dids/{SCID}/didlog.txt</code></p>
-<p><code>did:web:{SCID}.example.com%3A3000</code> --&gt; <code>https://example.com:3000/dids/{SCID}/didlog.txt</code></p>
+<p><code>did:tdw:example.com:dids:{SCID}</code> --&gt; <code>https://example.com/dids/{SCID}/didlog.txt</code></p>
+<p><code>did:tdw:example.com%3A3000:dids:{SCID}</code> --&gt; <code>https://example.com:3000/dids/{SCID}/didlog.txt</code></p>
 </div>
 <p>The location of the <code>did:tdw</code> <code>didlog.txt</code> file is logically beside where the comparable <code>did:web</code>
 <code>did.json</code> file is published. A <a class="term-reference" href="#term:did-controller">DID Controller</a> <strong>MAY</strong> choose to publish both DIDs and so both files.</p>
@@ -212,7 +212,7 @@ inevitably be wrong.</p>
 <ol>
 <li>Calculate the <a class="term-reference" href="#term:scid">SCID</a> for the DID as defined in the <a href="#scid-generation-and-validation" >SCID Generation and Validation</a> section of this specification.</li>
 <li>Replace in the DIDDoc the placeholder for the <a class="term-reference" href="#term:scid">SCID</a> <code>{SCID}</code> with the calculated <code>SCID</code>.</li>
-<li>Generate a DID Entry as a JSON array (<code>[&lt;data&gt;]</code>) with the following JSON items:
+<li>Generate a DID Entry as a JSON array (<code>[&lt;data&gt;]</code>) with the following five JSON items:
 <ol>
 <li>The <a class="term-reference" href="#term:scid">SCID</a> as the <code>entryHash</code> value: <code>&quot;ke465curdwjzrrp5x5ut92te&quot;</code></li>
 <li>An integer, <code>1</code>, that is the versionId for this first version of the DIDDoc: <code>1</code></li>
@@ -223,7 +223,7 @@ inevitably be wrong.</p>
 </li>
 <li>Calculate the <a class="term-reference" href="#term:entry-hash">Entry Hash</a> (<code>entryHash</code>) of the DID Entry as defined in the <a href="#entry-hash-generation-and-validation" >Entry Hash Generation and Validation</a> section of this specification.</li>
 <li>Update the <code>entryHash</code> with the value produced in the previous step.</li>
-<li>Generate a <a class="term-reference" href="#term:data-integrity">Data Integrity</a> proof across the entry using an authorized key from the DID, and the <code>entryHash</code> as the proof <code>challenge</code>. The definition of “authorized” in this case is specified in the <a href="#authorization-keys" >Authorization Keys</a> section of this specification. The proof becomes the last JSON item in the entry.</li>
+<li>Generate a <a class="term-reference" href="#term:data-integrity">Data Integrity</a> proof across the entry using an authorized key from the DID, and the <code>entryHash</code> as the proof <code>challenge</code>. The definition of “authorized” in this case is specified in the <a href="#authorization-keys" >Authorization Keys</a> section of this specification. The proof becomes the sixth and last JSON item in the DID log entry.</li>
 <li>Put the resulting entry, with extraneous white space removed as the contents of a file <code>didlog.txt</code> and publish the file at the appropriate location defined by the <code>did:tdw</code> value.
 <ol>
 <li>This is a logical operation – how a deployment serves the <code>didlog.txt</code> content is not constrained.</li>
@@ -232,10 +232,14 @@ inevitably be wrong.</p>
 </ol>
 </li>
 </ol>
-<p>A controller <strong>MAY</strong> generate an equivalent <code>did:web</code> DIDDoc and publish it as defined in the <a href="#publishing-a-parallel-didweb-did" >Publishing a Parallel <code>did:web</code> DID</a> section of this specification. The <code>did:web</code> DIDDoc could be used for backwards compatibility
-as a transition is made from <code>did:web</code> to <code>did:tdw</code>. Verifiers using the <code>did:web</code> lose the verifiable properties and history of the
-<code>did:tdw</code> for the convenience of the simple retrieval of the <code>did:web</code> DIDDoc.</p>
-<h3 id="read-resolve"><a class="toc-anchor" href="#read-resolve" >§</a> Read (Resolve)</h3>
+<p>A controller <strong>MAY</strong> generate an equivalent <code>did:web</code> DIDDoc and publish it as
+defined in the <a href="#publishing-a-parallel-didweb-did" >Publishing a Parallel <code>did:web</code>
+DID</a> section of this specification. The
+<code>did:web</code> DIDDoc could be used for backwards compatibility as a transition is
+made from <code>did:web</code> to <code>did:tdw</code>. Verifiers using the <code>did:web</code> lose the
+verifiable properties and history of the <code>did:tdw</code> for the convenience of the
+simple retrieval of the <code>did:web</code> DIDDoc.</p>
+<h4 id="read-resolve"><a class="toc-anchor" href="#read-resolve" >§</a> Read (Resolve)</h4>
 <p>The following steps MUST be executed to resolve the DIDDoc for a <code>did:tdw</code> DID:</p>
 <ol>
 <li>Replace “:” with “/” in the method specific identifier to obtain the fully qualified domain name and optional path.</li>
@@ -249,10 +253,19 @@ as a transition is made from <code>did:web</code> to <code>did:tdw</code>. Verif
 </ol>
 <p>To process the retrieved <a class="term-reference" href="#term:did-log">DID Log</a> file, the resolver <strong>MUST</strong> carry out the following steps:</p>
 <ol>
-<li>Process the Log entries in the order they appear in the file, applying the <a class="term-reference" href="#term:parameters">parameters</a> set on current and previous entries.</li>
+<li>Process the Log entries in the order they appear in the file, applying the <a class="term-reference" href="#term:parameters">parameters</a> set on current and previous entries. As noted in the <a href="#create-register" >Create (Register)</a>, each log entry consists of a JSON array of 6 items:
+<ol>
+<li><code>entryHash</code></li>
+<li><code>versionId</code></li>
+<li><code>versionTime</code></li>
+<li><code>parameters</code></li>
+<li>DIDDoc content – either the full <code>value</code> or a <a class="term-reference" href="#term:json-patch">JSON Patch</a> <code>patch</code></li>
+<li>A Data Integrity proof over the entry.</li>
+</ol>
+</li>
 <li>For each entry:
 <ol>
-<li>Update the currently active <a class="term-reference" href="#term:parameters">parameters</a> with the parameters from the entry (if any). and continue processing using the active set of <a class="term-reference" href="#term:parameters">parameters</a>.</li>
+<li>Update the currently active <a class="term-reference" href="#term:parameters">parameters</a> with the parameters from the entry (if any). Continue processing using the now active set of <a class="term-reference" href="#term:parameters">parameters</a>.</li>
 <li>Verify that the Data Integrity proof in the entry is valid, and is signed by an authorized key as defined in the <a href="#authorization-keys" >Authorization Keys</a> section of this specification.</li>
 <li>Verify that the <code>entryHash</code> for the entry according to the process defined in the [Entry Hash Generation and Verification] section of this specification.</li>
 <li>For the initial version of the DIDDoc (<code>1</code>) verify that the <a class="term-reference" href="#term:scid">SCID</a> (defined in the <a class="term-reference" href="#term:parameters">parameters</a>) is being used for the DID as defined in the [SCID Generation and Verification] section of this specification.</li>
@@ -270,12 +283,12 @@ as a transition is made from <code>did:web</code> to <code>did:tdw</code>. Verif
 </ol>
 <p>On completing the processing of all entries in the <a class="term-reference" href="#term:did-log">DID Log</a>, respond to the DID resolution request, including the application of query parameters such as <code>?versionId=</code> and <code>?versionTime=</code> with the appropriate DIDDoc version.</p>
 <p>The following error codes and descriptions may be returned when resolving a DID.</p>
-<div id="todo-109" class="notice todo"><a class="notice-link" href="#todo-109">TODO</a><p>Document the full list of error codes that can be generated in resolving a DID.</p>
+<div id="todo-443" class="notice todo"><a class="notice-link" href="#todo-443">TODO</a><p>Document the full list of error codes that can be generated in resolving a DID.</p>
 </div>
 <ul>
-<li>Code 400: The <code>did:tdw</code> DID Log file <code>didlog.txt</code> was not found.</li>
+<li>Code 404: The <code>did:tdw</code> DID Log file <code>didlog.txt</code> was not found.</li>
 </ul>
-<h4 id="reading-didtdw-did-urls"><a class="toc-anchor" href="#reading-didtdw-did-urls" >§</a> Reading did:tdw DID URLs</h4>
+<h5 id="reading-didtdw-did-urls"><a class="toc-anchor" href="#reading-didtdw-did-urls" >§</a> Reading did:tdw DID URLs</h5>
 <p>A <code>did:tdw</code> resolver <strong>MAY</strong> implement the resolution of the <code>#whois</code> and a DID
 URL Path using the <a href="#whois-linkedvp-service" >whois LinkedVP Service</a> and <a href="#did-url-path-resolution-service" >DID
 URL Path Resolution Service</a> as defined in
@@ -283,7 +296,7 @@ this specification by processing the <a class="term-reference" href="#term:did-l
 the DID URL] based on the contents of the DIDDoc. The client of a resolver that
 does not implement those capabilities must use the resolver to resolve the
 appropriate DIDDoc, and then process the resulting DID URLs themselves.</p>
-<h3 id="update"><a class="toc-anchor" href="#update" >§</a> Update</h3>
+<h4 id="update"><a class="toc-anchor" href="#update" >§</a> Update</h4>
 <p>To update a DID to for example, rotate a key in the DIDDoc, a new, verifiable
 <a class="term-reference" href="#term:did-log-entry">DID Log Entry</a> must be generated, appended to the existing <a class="term-reference" href="#term:did">DID</a> (<code>didlog.txt</code>) and published to the web location defined by the DID. The
 process to generate a verifiable <a class="term-reference" href="#term:did-log-entry">DID Log Entry</a> follows a similar
@@ -295,7 +308,7 @@ process to the <a href="#create-register" >Create</a> process, as follows:</p>
 <li>If <a class="term-reference" href="#term:key-pre-rotation">Key Pre-Rotation</a> is being used in the DID, only keys with a valid pre-rotation entry in a previous DIDDoc can be added, as defined in the [Key Pre-Rotation Hash Generation and Verification] section of this specification.</li>
 </ol>
 </li>
-<li>Define a JSON array of valid <a class="term-reference" href="#term:parameters">parameters</a> that affect the generation of the DID. The <a href="#parameters" >DID Generation and Validation Parameters</a> section of this specification defines the permitted <a class="term-reference" href="#term:parameters">parameters</a>.</li>
+<li>Define a JSON array of valid <a class="term-reference" href="#term:parameters">parameters</a> that affect the generation of the DID. The <a href="#didtdw-did-method-parameters" ><code>did:tdw</code> DID Method Parameters</a> section of this specification defines the permitted <a class="term-reference" href="#term:parameters">parameters</a>.</li>
 <li>Pass the existing <a class="term-reference" href="#term:did-log">DID Log</a>, the updated DIDDoc, and the <a class="term-reference" href="#term:parameters">parameters</a> to a <code>did:tdw</code> update implementation which <strong>MUST</strong>:
 <ol>
 <li>Generate a DID Entry as a JSON array (<code>[&lt;data&gt;]</code>) with the following JSON items:
@@ -340,13 +353,13 @@ no longer publicly available due to any other means.</p>
 <p>The <a href="#did-method-operations" >DID Method Operations</a> reference several processes
 that are executed during DIDDoc generation and DID resolution verification. Each
 of those processes is specified in the following sections.</p>
-<h4 id="did-generation-and-validation-parameters"><a class="toc-anchor" href="#did-generation-and-validation-parameters" >§</a> DID Generation and Validation Parameters</h4>
+<h4 id="didtdw-did-method-parameters"><a class="toc-anchor" href="#didtdw-did-method-parameters" >§</a> did:tdw DID Method Parameters</h4>
 <p>Entries in the <code>did:tdw</code> <a class="term-reference" href="#term:did-log">DID Log</a> file contain as the 4th item in the
 array a JSON dictionary that define the DID processing parameters being used by the <a class="term-reference" href="#term:did-controller">DID Controller</a> when
 publishing that and subsequent DID Entries. Correspondingly, a DID Resolver must
 use the same parameters when processing the <a class="term-reference" href="#term:did-log">DID Log</a> to resolve the DID.
 The parameters dictionary <strong>MUST</strong> only include items defined in this specification.</p>
-<div id="example-110" class="notice example"><a class="notice-link" href="#example-110">EXAMPLE</a><p>An example of the parameters item in the first DID Log entry for a DID:</p>
+<div id="example-444" class="notice example"><a class="notice-link" href="#example-444">EXAMPLE</a><p>An example of the parameters item in the first DID Log entry for a DID:</p>
 <p><code>{&quot;method&quot;:&quot;did:tdw:1&quot;,&quot;scid&quot;:&quot;ke465curdwjzrrp5x5ut92te&quot;}</code></p>
 </div>
 <p>The permitted parameter items and (where applicable) enumerated values for those
@@ -433,9 +446,7 @@ in processing the log.</li>
 <li>Replace the <code>entryHash</code> value in the entry with the calculated value from step 3.</li>
 </ol>
 <p>Example of a [[DID log entry]] that is processed in step 3 to produce a hash. As this is a first entry in a DID Log, the <code>entryHash</code> is the SCID of the DID.</p>
-<pre class="language-json"><code class="language-json">
-<span class="token punctuation">[</span><span class="token string">"ke465curdwjzrrp5x5ut92te"</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token string">"2024-04-03T03:47:51Z"</span><span class="token punctuation">,</span><span class="token punctuation">{</span><span class="token property">"method"</span><span class="token operator">:</span><span class="token string">"did:tdw:1"</span><span class="token punctuation">,</span><span class="token property">"scid"</span><span class="token operator">:</span><span class="token string">"ke465curdwjzrrp5x5ut92te"</span><span class="token punctuation">}</span><span class="token punctuation">,</span><span class="token punctuation">{</span><span class="token property">"value"</span><span class="token operator">:</span><span class="token punctuation">{</span><span class="token property">"@context"</span><span class="token operator">:</span><span class="token punctuation">[</span><span class="token string">"https://www.w3.org/ns/did/v1"</span><span class="token punctuation">,</span><span class="token string">"https://w3id.org/security/multikey/v1"</span><span class="token punctuation">]</span><span class="token punctuation">,</span><span class="token property">"id"</span><span class="token operator">:</span><span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te"</span><span class="token punctuation">,</span><span class="token property">"controller"</span><span class="token operator">:</span><span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te"</span><span class="token punctuation">,</span><span class="token property">"authentication"</span><span class="token operator">:</span><span class="token punctuation">[</span><span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te#FFhXVfsx"</span><span class="token punctuation">]</span><span class="token punctuation">,</span><span class="token property">"assertionMethod"</span><span class="token operator">:</span><span class="token punctuation">[</span><span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te#CPixwJ8x"</span><span class="token punctuation">]</span><span class="token punctuation">,</span><span class="token property">"verificationMethod"</span><span class="token operator">:</span><span class="token punctuation">[</span><span class="token punctuation">{</span><span class="token property">"id"</span><span class="token operator">:</span><span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te#FFhXVfsx"</span><span class="token punctuation">,</span><span class="token property">"controller"</span><span class="token operator">:</span><span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te"</span><span class="token punctuation">,</span><span class="token property">"type"</span><span class="token operator">:</span><span class="token string">"Multikey"</span><span class="token punctuation">,</span><span class="token property">"publicKeyMultibase"</span><span class="token operator">:</span><span class="token string">"z6MkkXKMSiE7mXvGcR2KUpeJXwT7MPXZSBC6HZw9FFhXVfsx"</span><span class="token punctuation">}</span><span class="token punctuation">,</span><span class="token punctuation">{</span><span class="token property">"id"</span><span class="token operator">:</span><span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te#CPixwJ8x"</span><span class="token punctuation">,</span><span class="token property">"controller"</span><span class="token operator">:</span><span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te"</span><span class="token punctuation">,</span><span class="token property">"type"</span><span class="token operator">:</span><span class="token string">"Multikey"</span><span class="token punctuation">,</span><span class="token property">"publicKeyMultibase"</span><span class="token operator">:</span><span class="token string">"z6Mkg8FdKNRt4NLXm5YSUZVGWzK8vvS3DJByxAqHCPixwJ8x"</span><span class="token punctuation">}</span><span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token punctuation">}</span><span class="token punctuation">]</span>
-
+<pre class="language-json"><code class="language-json"><span class="token punctuation">[</span><span class="token string">"ke465curdwjzrrp5x5ut92te"</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token string">"2024-04-03T03:47:51Z"</span><span class="token punctuation">,</span><span class="token punctuation">{</span><span class="token property">"method"</span><span class="token operator">:</span><span class="token string">"did:tdw:1"</span><span class="token punctuation">,</span><span class="token property">"scid"</span><span class="token operator">:</span><span class="token string">"ke465curdwjzrrp5x5ut92te"</span><span class="token punctuation">}</span><span class="token punctuation">,</span><span class="token punctuation">{</span><span class="token property">"value"</span><span class="token operator">:</span><span class="token punctuation">{</span><span class="token property">"@context"</span><span class="token operator">:</span><span class="token punctuation">[</span><span class="token string">"https://www.w3.org/ns/did/v1"</span><span class="token punctuation">,</span><span class="token string">"https://w3id.org/security/multikey/v1"</span><span class="token punctuation">]</span><span class="token punctuation">,</span><span class="token property">"id"</span><span class="token operator">:</span><span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te"</span><span class="token punctuation">,</span><span class="token property">"controller"</span><span class="token operator">:</span><span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te"</span><span class="token punctuation">,</span><span class="token property">"authentication"</span><span class="token operator">:</span><span class="token punctuation">[</span><span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te#FFhXVfsx"</span><span class="token punctuation">]</span><span class="token punctuation">,</span><span class="token property">"assertionMethod"</span><span class="token operator">:</span><span class="token punctuation">[</span><span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te#CPixwJ8x"</span><span class="token punctuation">]</span><span class="token punctuation">,</span><span class="token property">"verificationMethod"</span><span class="token operator">:</span><span class="token punctuation">[</span><span class="token punctuation">{</span><span class="token property">"id"</span><span class="token operator">:</span><span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te#FFhXVfsx"</span><span class="token punctuation">,</span><span class="token property">"controller"</span><span class="token operator">:</span><span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te"</span><span class="token punctuation">,</span><span class="token property">"type"</span><span class="token operator">:</span><span class="token string">"Multikey"</span><span class="token punctuation">,</span><span class="token property">"publicKeyMultibase"</span><span class="token operator">:</span><span class="token string">"z6MkkXKMSiE7mXvGcR2KUpeJXwT7MPXZSBC6HZw9FFhXVfsx"</span><span class="token punctuation">}</span><span class="token punctuation">,</span><span class="token punctuation">{</span><span class="token property">"id"</span><span class="token operator">:</span><span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te#CPixwJ8x"</span><span class="token punctuation">,</span><span class="token property">"controller"</span><span class="token operator">:</span><span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te"</span><span class="token punctuation">,</span><span class="token property">"type"</span><span class="token operator">:</span><span class="token string">"Multikey"</span><span class="token punctuation">,</span><span class="token property">"publicKeyMultibase"</span><span class="token operator">:</span><span class="token string">"z6Mkg8FdKNRt4NLXm5YSUZVGWzK8vvS3DJByxAqHCPixwJ8x"</span><span class="token punctuation">}</span><span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token punctuation">}</span><span class="token punctuation">]</span>
 </code></pre>
 <p>Resulting entry hash: <code>xkuu1nwynw5ymfv4f1np2xbmg21k4vn1rrvg3ngpdmx482c2ce20</code></p>
 <p>To verify the <code>entryHash</code> for a <code>did:tdw</code> DID entry, a DID Resolver <strong>MUST</strong> execute the following process:</p>
@@ -476,18 +487,6 @@ in processing the log.</li>
 <li>The requirement to have the key reference for external DIDs (not the controlled DID) copied into the DIDDoc is to prevent an implementation from having to resolve external DIDs (that could use any <a class="term-reference" href="#term:did-method">DID Method</a>) during the resolution of a DID. This <em>might</em> be too restrictive and could be changed in an update to this specification. For example, it might be reasonable to require that external DIDs of certain <a class="term-reference" href="#term:did-methods">DID Methods</a> (such as <code>did:tdw</code> or <code>did:web</code>) be resolved as part of resolving the controlled DID.</li>
 <li>In a future version of the specification, the authors would like to require support for <a class="term-reference" href="#term:verifiableconditions">verifiableConditions</a> key types, to enable <a class="term-reference" href="#term:multi-sig">multi-sig</a> DID control support, such as requiring “N of M” signatures must be in a proof for it to be valid.</li>
 </ul>
-<h4 id="publishing-a-parallel-didweb-did"><a class="toc-anchor" href="#publishing-a-parallel-didweb-did" >§</a> Publishing a Parallel <code>did:web</code> DID</h4>
-<p>Each time a <code>did:tdw</code> version is created, the <a class="term-reference" href="#term:did-controller">DID Controller</a> <strong>MAY</strong> generate a corresponding <code>did:web</code> to publish along with the <code>did:tdw</code>. To do so, the <a class="term-reference" href="#term:did-controller">DID Controller</a> <strong>MUST</strong>:</p>
-<ol>
-<li>Start with the resolved DIDDoc from <code>did:tdw</code>.</li>
-<li>Execute a text replacement across the DIDDoc of <code>did:tdw</code> to <code>did:web</code>.</li>
-<li>Add to the DIDDoc <code>alsoKnownAs</code> array, the full <code>did:tdw</code> DID. If the <code>alsoKnownAs</code> array does not exist in the DIDDoc, it <strong>MUST</strong> be added.</li>
-<li>Publish the resulting DIDDoc as the file <code>did.json</code> at the web location determined by the specified <code>did:web</code> DID to HTTP transformation.</li>
-</ol>
-<p>Note that the <a class="term-reference" href="#term:scid">SCID</a> remains in the <code>did:web</code> DID string.</p>
-<p>The benefit of doing this is that resolvers that have not be updated to support <code>did:tdw</code> can continue to resolve the <a class="term-reference" href="#term:did-controller">DID Controller</a>'s DIDs. <code>did:web</code> resolvers that are aware of <code>did:tdw</code> features can use
-that knowledge, and the existence of the <code>alsoKnownAs</code> <code>did:tdw</code> data in the DIDDoc to get the verifiable history of the DID.</p>
-<p>The risk of publishing the <code>did:web</code> in parallel with the <code>did:tdw</code> is that the added security and convenience of using <code>did:tdw</code> are lost.</p>
 <h4 id="generating-and-applying-a-json-patch"><a class="toc-anchor" href="#generating-and-applying-a-json-patch" >§</a> Generating and Applying a JSON Patch</h4>
 <p>Each time a new <code>did:tdw</code> version is created, the <a class="term-reference" href="#term:did-controller">DID Controller</a>
 <strong>MAY</strong> generate a <a class="term-reference" href="#term:json-patch">JSON Patch</a> to concisely define the changes in the
@@ -506,6 +505,18 @@ and <code>patch</code> for all subsequent entries.</p>
 <li>Have the fully resolved previous version of the DIDDoc.</li>
 <li>Execute an implementation of <a class="term-reference" href="#term:json-patch">JSON Patch</a> that takes the previous DIDDoc and the patch as inputs, and outputs the resulting new version of the DIDDoc.</li>
 </ol>
+<h4 id="publishing-a-parallel-didweb-did"><a class="toc-anchor" href="#publishing-a-parallel-didweb-did" >§</a> Publishing a Parallel <code>did:web</code> DID</h4>
+<p>Each time a <code>did:tdw</code> version is created, the <a class="term-reference" href="#term:did-controller">DID Controller</a> <strong>MAY</strong> generate a corresponding <code>did:web</code> to publish along with the <code>did:tdw</code>. To do so, the <a class="term-reference" href="#term:did-controller">DID Controller</a> <strong>MUST</strong>:</p>
+<ol>
+<li>Start with the resolved DIDDoc from <code>did:tdw</code>.</li>
+<li>Execute a text replacement across the DIDDoc of <code>did:tdw</code> to <code>did:web</code>.</li>
+<li>Add to the DIDDoc <code>alsoKnownAs</code> array, the full <code>did:tdw</code> DID. If the <code>alsoKnownAs</code> array does not exist in the DIDDoc, it <strong>MUST</strong> be added.</li>
+<li>Publish the resulting DIDDoc as the file <code>did.json</code> at the web location determined by the specified <code>did:web</code> DID to HTTP transformation.</li>
+</ol>
+<p>Note that the <a class="term-reference" href="#term:scid">SCID</a> remains in the <code>did:web</code> DID string.</p>
+<p>The benefit of doing this is that resolvers that have not be updated to support <code>did:tdw</code> can continue to resolve the <a class="term-reference" href="#term:did-controller">DID Controller</a>'s DIDs. <code>did:web</code> resolvers that are aware of <code>did:tdw</code> features can use
+that knowledge, and the existence of the <code>alsoKnownAs</code> <code>did:tdw</code> data in the DIDDoc to get the verifiable history of the DID.</p>
+<p>The risk of publishing the <code>did:web</code> in parallel with the <code>did:tdw</code> is that the added security and convenience of using <code>did:tdw</code> are lost.</p>
 <h4 id="pre-rotation-key-hash-generation-and-validation"><a class="toc-anchor" href="#pre-rotation-key-hash-generation-and-validation" >§</a> Pre-Rotation Key Hash Generation and Validation</h4>
 <p>Pre-rotation is a term defining how a <a class="term-reference" href="#term:did-controller">DID Controller</a> can commit to the
 keys that will be added (“rotated to”) in future versions of the DIDDoc. The
@@ -645,7 +656,7 @@ verifiable, credential-based, decentralized, multi-domain trust registry.</p>
 <h3 id="using-pre-rotation-keys"><a class="toc-anchor" href="#using-pre-rotation-keys" >§</a> Using Pre-Rotation Keys</h3>
 <p><a href="#using-pre-rotation-keys" >Using Pre-Rotation Keys</a></p>
 <p>Best practices are that the <a class="term-reference" href="#term:did-controller">DID Controller</a> generates the active key for the DIDDoc where it can be used for “production” purposes, and generates the “next key” in an isolated location from production</p>
-<div id="todo-110" class="notice todo"><a class="notice-link" href="#todo-110">TODO</a><p>Complete this section, covering guidance on where to hold pre-rotation keys and post-quantum key rotations.</p>
+<div id="todo-444" class="notice todo"><a class="notice-link" href="#todo-444">TODO</a><p>Complete this section, covering guidance on where to hold pre-rotation keys and post-quantum key rotations.</p>
 </div>
 <h2 id="definitions"><a class="toc-anchor" href="#definitions" >§</a> Definitions</h2>
 <dl>
@@ -780,18 +791,428 @@ multi-signature is considered valid.</dd>
 <p>The following shows the evolution of a <code>did:tdw</code> from inception through several
 versions, showing the DID, DIDDoc, <a class="term-reference" href="#term:did-log">DID Log</a>, and some of the
 intermediate data structures.</p>
-<h3 id="inception-data"><a class="toc-anchor" href="#inception-data" >§</a> Inception Data</h3>
+<p>In the following, all of the data for the <a class="term-reference" href="#term:did-log-entries">DID log entries</a> are displayed
+as prettified JSON for readability. In the log itself, the JSON has all
+whitespace removed, and each line ends with a <code>CR</code>.</p>
+<h3 id="did-creation-data"><a class="toc-anchor" href="#did-creation-data" >§</a> DID Creation Data</h3>
+<p>These examples show the important structures used in the <a href="##create-register" >Create (Register)</a> operation for a <code>did:tdw</code> DID.</p>
 <h4 id="diddoc-with-scid-placeholders"><a class="toc-anchor" href="#diddoc-with-scid-placeholders" >§</a> DIDDoc with SCID Placeholders</h4>
-<h4 id="initial-entry-hashing-input"><a class="toc-anchor" href="#initial-entry-hashing-input" >§</a> Initial Entry Hashing Input</h4>
+<p>This is the version of the DIDDoc that the <a class="term-reference" href="#term:did-controller">DID Controller</a> constructs
+(however they see fit) and passes into the <a href="##scid-generation-and-validation" >SCID Generation Process</a>.</p>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+      <span class="token property">"@context"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+        <span class="token string">"https://www.w3.org/ns/did/v1"</span><span class="token punctuation">,</span>
+        <span class="token string">"https://w3id.org/security/multikey/v1"</span>
+      <span class="token punctuation">]</span><span class="token punctuation">,</span>
+      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:web:example.com:{SCID}"</span><span class="token punctuation">,</span>
+      <span class="token property">"controller"</span><span class="token operator">:</span> <span class="token string">"did:web:example.com:{SCID}"</span><span class="token punctuation">,</span>
+      <span class="token property">"authentication"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+        <span class="token string">"did:web:example.com:{SCID}#FFhXVfsx"</span>
+      <span class="token punctuation">]</span><span class="token punctuation">,</span>
+      <span class="token property">"assertionMethod"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+        <span class="token string">"did:web:example.com:{SCID}#CPixwJ8x"</span>
+      <span class="token punctuation">]</span><span class="token punctuation">,</span>
+      <span class="token property">"verificationMethod"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+        <span class="token punctuation">{</span>
+          <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:web:example.com:{SCID}#FFhXVfsx"</span><span class="token punctuation">,</span>
+          <span class="token property">"controller"</span><span class="token operator">:</span> <span class="token string">"did:web:example.com:{SCID}"</span><span class="token punctuation">,</span>
+          <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"Multikey"</span><span class="token punctuation">,</span>
+          <span class="token property">"publicKeyMultibase"</span><span class="token operator">:</span> <span class="token string">"z6MkkXKMSiE7mXvGcR2KUpeJXwT7MPXZSBC6HZw9FFhXVfsx"</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token punctuation">{</span>
+          <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:web:example.com:{SCID}#CPixwJ8x"</span><span class="token punctuation">,</span>
+          <span class="token property">"controller"</span><span class="token operator">:</span> <span class="token string">"did:web:example.com:{SCID}"</span><span class="token punctuation">,</span>
+          <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"Multikey"</span><span class="token punctuation">,</span>
+          <span class="token property">"publicKeyMultibase"</span><span class="token operator">:</span> <span class="token string">"z6Mkg8FdKNRt4NLXm5YSUZVGWzK8vvS3DJByxAqHCPixwJ8x"</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">]</span>
+    <span class="token punctuation">}</span>
+</code></pre>
+<h4 id="diddoc-with-scid-in-place"><a class="toc-anchor" href="#diddoc-with-scid-in-place" >§</a> DIDDoc with SCID In Place</h4>
+<p>After the SCID is generated, the <code>{SCID}</code> placeholders are replaced by the generated <a class="term-reference" href="#term:scid">SCID</a> value.</p>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"@context"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token string">"https://www.w3.org/ns/did/v1"</span><span class="token punctuation">,</span>
+    <span class="token string">"https://w3id.org/security/multikey/v1"</span>
+  <span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te"</span><span class="token punctuation">,</span>
+  <span class="token property">"controller"</span><span class="token operator">:</span> <span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te"</span><span class="token punctuation">,</span>
+  <span class="token property">"authentication"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te#FFhXVfsx"</span>
+  <span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token property">"assertionMethod"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te#CPixwJ8x"</span>
+  <span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token property">"verificationMethod"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te#FFhXVfsx"</span><span class="token punctuation">,</span>
+      <span class="token property">"controller"</span><span class="token operator">:</span> <span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te"</span><span class="token punctuation">,</span>
+      <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"Multikey"</span><span class="token punctuation">,</span>
+      <span class="token property">"publicKeyMultibase"</span><span class="token operator">:</span> <span class="token string">"z6MkkXKMSiE7mXvGcR2KUpeJXwT7MPXZSBC6HZw9FFhXVfsx"</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te#CPixwJ8x"</span><span class="token punctuation">,</span>
+      <span class="token property">"controller"</span><span class="token operator">:</span> <span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te"</span><span class="token punctuation">,</span>
+      <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"Multikey"</span><span class="token punctuation">,</span>
+      <span class="token property">"publicKeyMultibase"</span><span class="token operator">:</span> <span class="token string">"z6Mkg8FdKNRt4NLXm5YSUZVGWzK8vvS3DJByxAqHCPixwJ8x"</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">]</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<h4 id="entry-hash-generation-input"><a class="toc-anchor" href="#entry-hash-generation-input" >§</a> Entry Hash Generation Input</h4>
+<p>The first item in the entry hashing input for Version 1 of the DIDDoc is SCID of
+the DID. The fifth item, containing the first version DIDDoc content is the full
+DIDDoc (as indicated by the <code>value</code> item).</p>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">[</span>
+  <span class="token string">"ke465curdwjzrrp5x5ut92te"</span><span class="token punctuation">,</span>
+  <span class="token number">1</span><span class="token punctuation">,</span>
+  <span class="token string">"2024-04-03T03:47:51Z"</span><span class="token punctuation">,</span>
+  <span class="token punctuation">{</span>
+    <span class="token property">"method"</span><span class="token operator">:</span> <span class="token string">"did:tdw:1"</span><span class="token punctuation">,</span>
+    <span class="token property">"scid"</span><span class="token operator">:</span> <span class="token string">"ke465curdwjzrrp5x5ut92te"</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">{</span>
+    <span class="token property">"value"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token property">"@context"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+        <span class="token string">"https://www.w3.org/ns/did/v1"</span><span class="token punctuation">,</span>
+        <span class="token string">"https://w3id.org/security/multikey/v1"</span>
+      <span class="token punctuation">]</span><span class="token punctuation">,</span>
+      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te"</span><span class="token punctuation">,</span>
+      <span class="token property">"controller"</span><span class="token operator">:</span> <span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te"</span><span class="token punctuation">,</span>
+      <span class="token property">"authentication"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+        <span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te#FFhXVfsx"</span>
+      <span class="token punctuation">]</span><span class="token punctuation">,</span>
+      <span class="token property">"assertionMethod"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+        <span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te#CPixwJ8x"</span>
+      <span class="token punctuation">]</span><span class="token punctuation">,</span>
+      <span class="token property">"verificationMethod"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+        <span class="token punctuation">{</span>
+          <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te#FFhXVfsx"</span><span class="token punctuation">,</span>
+          <span class="token property">"controller"</span><span class="token operator">:</span> <span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te"</span><span class="token punctuation">,</span>
+          <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"Multikey"</span><span class="token punctuation">,</span>
+          <span class="token property">"publicKeyMultibase"</span><span class="token operator">:</span> <span class="token string">"z6MkkXKMSiE7mXvGcR2KUpeJXwT7MPXZSBC6HZw9FFhXVfsx"</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token punctuation">{</span>
+          <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te#CPixwJ8x"</span><span class="token punctuation">,</span>
+          <span class="token property">"controller"</span><span class="token operator">:</span> <span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te"</span><span class="token punctuation">,</span>
+          <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"Multikey"</span><span class="token punctuation">,</span>
+          <span class="token property">"publicKeyMultibase"</span><span class="token operator">:</span> <span class="token string">"z6Mkg8FdKNRt4NLXm5YSUZVGWzK8vvS3DJByxAqHCPixwJ8x"</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">]</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">]</span>
+</code></pre>
 <h4 id="first-log-entry"><a class="toc-anchor" href="#first-log-entry" >§</a> First Log Entry</h4>
+<p>The following is the JSON prettified version of the entry log file that is published
+as the <code>didlog.txt</code> file. When published, all extraneous whitespace is removed, as
+shown in the block below the pretty-printed version.</p>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">[</span>
+  <span class="token string">"xkuu1nwynw5ymfv4f1np2xbmg21k4vn1rrvg3ngpdmx482c2ce20"</span><span class="token punctuation">,</span>
+  <span class="token number">1</span><span class="token punctuation">,</span>
+  <span class="token string">"2024-04-03T03:47:51Z"</span><span class="token punctuation">,</span>
+  <span class="token punctuation">{</span>
+    <span class="token property">"method"</span><span class="token operator">:</span> <span class="token string">"did:tdw:1"</span><span class="token punctuation">,</span>
+    <span class="token property">"scid"</span><span class="token operator">:</span> <span class="token string">"ke465curdwjzrrp5x5ut92te"</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">{</span>
+    <span class="token property">"value"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token property">"@context"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+        <span class="token string">"https://www.w3.org/ns/did/v1"</span><span class="token punctuation">,</span>
+        <span class="token string">"https://w3id.org/security/multikey/v1"</span>
+      <span class="token punctuation">]</span><span class="token punctuation">,</span>
+      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te"</span><span class="token punctuation">,</span>
+      <span class="token property">"controller"</span><span class="token operator">:</span> <span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te"</span><span class="token punctuation">,</span>
+      <span class="token property">"authentication"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+        <span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te#FFhXVfsx"</span>
+      <span class="token punctuation">]</span><span class="token punctuation">,</span>
+      <span class="token property">"assertionMethod"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+        <span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te#CPixwJ8x"</span>
+      <span class="token punctuation">]</span><span class="token punctuation">,</span>
+      <span class="token property">"verificationMethod"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+        <span class="token punctuation">{</span>
+          <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te#FFhXVfsx"</span><span class="token punctuation">,</span>
+          <span class="token property">"controller"</span><span class="token operator">:</span> <span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te"</span><span class="token punctuation">,</span>
+          <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"Multikey"</span><span class="token punctuation">,</span>
+          <span class="token property">"publicKeyMultibase"</span><span class="token operator">:</span> <span class="token string">"z6MkkXKMSiE7mXvGcR2KUpeJXwT7MPXZSBC6HZw9FFhXVfsx"</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token punctuation">{</span>
+          <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te#CPixwJ8x"</span><span class="token punctuation">,</span>
+          <span class="token property">"controller"</span><span class="token operator">:</span> <span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te"</span><span class="token punctuation">,</span>
+          <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"Multikey"</span><span class="token punctuation">,</span>
+          <span class="token property">"publicKeyMultibase"</span><span class="token operator">:</span> <span class="token string">"z6Mkg8FdKNRt4NLXm5YSUZVGWzK8vvS3DJByxAqHCPixwJ8x"</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">]</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">{</span>
+    <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"DataIntegrityProof"</span><span class="token punctuation">,</span>
+    <span class="token property">"created"</span><span class="token operator">:</span> <span class="token string">"2024-04-03T03:47:51Z"</span><span class="token punctuation">,</span>
+    <span class="token property">"verificationMethod"</span><span class="token operator">:</span> <span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te#FFhXVfsx"</span><span class="token punctuation">,</span>
+    <span class="token property">"cryptosuite"</span><span class="token operator">:</span> <span class="token string">"eddsa-2022"</span><span class="token punctuation">,</span>
+    <span class="token property">"proofPurpose"</span><span class="token operator">:</span> <span class="token string">"authentication"</span><span class="token punctuation">,</span>
+    <span class="token property">"challenge"</span><span class="token operator">:</span> <span class="token string">"xkuu1nwynw5ymfv4f1np2xbmg21k4vn1rrvg3ngpdmx482c2ce20"</span><span class="token punctuation">,</span>
+    <span class="token property">"proofValue"</span><span class="token operator">:</span> <span class="token string">"zK7pASjX3ou7t2bDuU43sWzG4E8B3TTDFgmY8AiFLahPaLzXn4fGrXksKbWr6o2RLr7rCTT2VRAgc8F9LQKLEJkg"</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">]</span>
+</code></pre>
+<p>The same content as it is found in the <code>didlog.txt</code> file:</p>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">[</span><span class="token string">"xkuu1nwynw5ymfv4f1np2xbmg21k4vn1rrvg3ngpdmx482c2ce20"</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token string">"2024-04-03T03:47:51Z"</span><span class="token punctuation">,</span><span class="token punctuation">{</span><span class="token property">"method"</span><span class="token operator">:</span><span class="token string">"did:tdw:1"</span><span class="token punctuation">,</span><span class="token property">"scid"</span><span class="token operator">:</span><span class="token string">"ke465curdwjzrrp5x5ut92te"</span><span class="token punctuation">}</span><span class="token punctuation">,</span><span class="token punctuation">{</span><span class="token property">"value"</span><span class="token operator">:</span><span class="token punctuation">{</span><span class="token property">"@context"</span><span class="token operator">:</span><span class="token punctuation">[</span><span class="token string">"https://www.w3.org/ns/did/v1"</span><span class="token punctuation">,</span><span class="token string">"https://w3id.org/security/multikey/v1"</span><span class="token punctuation">]</span><span class="token punctuation">,</span><span class="token property">"id"</span><span class="token operator">:</span><span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te"</span><span class="token punctuation">,</span><span class="token property">"controller"</span><span class="token operator">:</span><span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te"</span><span class="token punctuation">,</span><span class="token property">"authentication"</span><span class="token operator">:</span><span class="token punctuation">[</span><span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te#FFhXVfsx"</span><span class="token punctuation">]</span><span class="token punctuation">,</span><span class="token property">"assertionMethod"</span><span class="token operator">:</span><span class="token punctuation">[</span><span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te#CPixwJ8x"</span><span class="token punctuation">]</span><span class="token punctuation">,</span><span class="token property">"verificationMethod"</span><span class="token operator">:</span><span class="token punctuation">[</span><span class="token punctuation">{</span><span class="token property">"id"</span><span class="token operator">:</span><span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te#FFhXVfsx"</span><span class="token punctuation">,</span><span class="token property">"controller"</span><span class="token operator">:</span><span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te"</span><span class="token punctuation">,</span><span class="token property">"type"</span><span class="token operator">:</span><span class="token string">"Multikey"</span><span class="token punctuation">,</span><span class="token property">"publicKeyMultibase"</span><span class="token operator">:</span><span class="token string">"z6MkkXKMSiE7mXvGcR2KUpeJXwT7MPXZSBC6HZw9FFhXVfsx"</span><span class="token punctuation">}</span><span class="token punctuation">,</span><span class="token punctuation">{</span><span class="token property">"id"</span><span class="token operator">:</span><span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te#CPixwJ8x"</span><span class="token punctuation">,</span><span class="token property">"controller"</span><span class="token operator">:</span><span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te"</span><span class="token punctuation">,</span><span class="token property">"type"</span><span class="token operator">:</span><span class="token string">"Multikey"</span><span class="token punctuation">,</span><span class="token property">"publicKeyMultibase"</span><span class="token operator">:</span><span class="token string">"z6Mkg8FdKNRt4NLXm5YSUZVGWzK8vvS3DJByxAqHCPixwJ8x"</span><span class="token punctuation">}</span><span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token punctuation">}</span><span class="token punctuation">,</span><span class="token punctuation">{</span><span class="token property">"type"</span><span class="token operator">:</span><span class="token string">"DataIntegrityProof"</span><span class="token punctuation">,</span><span class="token property">"created"</span><span class="token operator">:</span><span class="token string">"2024-04-03T03:47:51Z"</span><span class="token punctuation">,</span><span class="token property">"verificationMethod"</span><span class="token operator">:</span><span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te#FFhXVfsx"</span><span class="token punctuation">,</span><span class="token property">"cryptosuite"</span><span class="token operator">:</span><span class="token string">"eddsa-2022"</span><span class="token punctuation">,</span><span class="token property">"proofPurpose"</span><span class="token operator">:</span><span class="token string">"authentication"</span><span class="token punctuation">,</span><span class="token property">"challenge"</span><span class="token operator">:</span><span class="token string">"xkuu1nwynw5ymfv4f1np2xbmg21k4vn1rrvg3ngpdmx482c2ce20"</span><span class="token punctuation">,</span><span class="token property">"proofValue"</span><span class="token operator">:</span><span class="token string">"zK7pASjX3ou7t2bDuU43sWzG4E8B3TTDFgmY8AiFLahPaLzXn4fGrXksKbWr6o2RLr7rCTT2VRAgc8F9LQKLEJkg"</span><span class="token punctuation">}</span><span class="token punctuation">]</span>
+</code></pre>
 <h4 id="didweb-version-of-diddoc"><a class="toc-anchor" href="#didweb-version-of-diddoc" >§</a> <code>did:web</code> Version of DIDDoc</h4>
-<h3 id="version-2"><a class="toc-anchor" href="#version-2" >§</a> Version 2</h3>
-<h4 id="version-2-target-diddoc"><a class="toc-anchor" href="#version-2-target-diddoc" >§</a> Version 2 Target DIDDoc</h4>
+<p>As noted in the <a href="" >publishing a parallel <code>did:web</code>
+version</a>(#publishing-a-parallel-didweb-did) of the DIDDoc section of this
+specification, here is what the <code>did:web</code> DIDDoc looks like for the <code>did:tdw</code>
+above.</p>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"@context"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token string">"https://www.w3.org/ns/did/v1"</span><span class="token punctuation">,</span>
+    <span class="token string">"https://w3id.org/security/multikey/v1"</span>
+  <span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:web:example.com:ke465curdwjzrrp5x5ut92te"</span><span class="token punctuation">,</span>
+  <span class="token property">"alsoKnownAs"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token property">"controller"</span><span class="token operator">:</span> <span class="token string">"did:web:example.com:ke465curdwjzrrp5x5ut92te"</span><span class="token punctuation">,</span>
+  <span class="token property">"authentication"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token string">"did:web:example.com:ke465curdwjzrrp5x5ut92te#FFhXVfsx"</span>
+  <span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token property">"assertionMethod"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token string">"did:web:example.com:ke465curdwjzrrp5x5ut92te#CPixwJ8x"</span>
+  <span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token property">"verificationMethod"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:web:example.com:ke465curdwjzrrp5x5ut92te#FFhXVfsx"</span><span class="token punctuation">,</span>
+      <span class="token property">"controller"</span><span class="token operator">:</span> <span class="token string">"did:web:example.com:ke465curdwjzrrp5x5ut92te"</span><span class="token punctuation">,</span>
+      <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"Multikey"</span><span class="token punctuation">,</span>
+      <span class="token property">"publicKeyMultibase"</span><span class="token operator">:</span> <span class="token string">"z6MkkXKMSiE7mXvGcR2KUpeJXwT7MPXZSBC6HZw9FFhXVfsx"</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:web:example.com:ke465curdwjzrrp5x5ut92te#CPixwJ8x"</span><span class="token punctuation">,</span>
+      <span class="token property">"controller"</span><span class="token operator">:</span> <span class="token string">"did:web:example.com:ke465curdwjzrrp5x5ut92te"</span><span class="token punctuation">,</span>
+      <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"Multikey"</span><span class="token punctuation">,</span>
+      <span class="token property">"publicKeyMultibase"</span><span class="token operator">:</span> <span class="token string">"z6Mkg8FdKNRt4NLXm5YSUZVGWzK8vvS3DJByxAqHCPixwJ8x"</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">]</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<h3 id="version-2-of-the-diddoc"><a class="toc-anchor" href="#version-2-of-the-diddoc" >§</a> Version 2 of the DIDDoc</h3>
+<p>Time passes, and the <a class="term-reference" href="#term:did-controller">DID Controller</a> of the <code>did:tdw</code> DID decides to
+update its DID to a new version, version 2.</p>
+<h4 id="target-version-2-diddoc"><a class="toc-anchor" href="#target-version-2-diddoc" >§</a> Target Version 2 DIDDoc</h4>
+<p>The <a class="term-reference" href="#term:did-controller">DID Controller</a> constructs the new target DIDDoc (below) in
+preparation for passing it into the process to <a href="#update" >Update</a> the <code>did:tdw</code>
+DID.</p>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"@context"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token string">"https://www.w3.org/ns/did/v1"</span><span class="token punctuation">,</span>
+    <span class="token string">"https://w3id.org/security/multikey/v1"</span><span class="token punctuation">,</span>
+    <span class="token string">"https://identity.foundation/linked-vp/contexts/v1"</span>
+  <span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te"</span><span class="token punctuation">,</span>
+  <span class="token property">"controller"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token string">"did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te"</span>
+  <span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token property">"authentication"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token string">"did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te#5b48Zj6B"</span>
+  <span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token property">"assertionMethod"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token string">"did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te#CpsUrTh3"</span>
+  <span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token property">"verificationMethod"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te#5b48Zj6B"</span><span class="token punctuation">,</span>
+      <span class="token property">"controller"</span><span class="token operator">:</span> <span class="token string">"did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te"</span><span class="token punctuation">,</span>
+      <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"Multikey"</span><span class="token punctuation">,</span>
+      <span class="token property">"publicKeyMultibase"</span><span class="token operator">:</span> <span class="token string">"z6Mkw1KSvGWNAwSwWbcpwPgFARX4vKPa1xvcDMsJ5b48Zj6B"</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te#CpsUrTh3"</span><span class="token punctuation">,</span>
+      <span class="token property">"controller"</span><span class="token operator">:</span> <span class="token string">"did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te"</span><span class="token punctuation">,</span>
+      <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"Multikey"</span><span class="token punctuation">,</span>
+      <span class="token property">"publicKeyMultibase"</span><span class="token operator">:</span> <span class="token string">"z6MkuocstfAaHsJgRnQgfQdtJiECuWEMDAbQV61aCpsUrTh3"</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token property">"service"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te#whois"</span><span class="token punctuation">,</span>
+      <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"LinkedVerifiablePresentation"</span><span class="token punctuation">,</span>
+      <span class="token property">"serviceEndpoint"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+        <span class="token string">"https://example.com/docs/ke465curdwjzrrp5x5ut92te/whois.json"</span>
+      <span class="token punctuation">]</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">]</span>
+<span class="token punctuation">}</span>
+</code></pre>
 <h4 id="version-2-entry-hashing-input"><a class="toc-anchor" href="#version-2-entry-hashing-input" >§</a> Version 2 Entry Hashing Input</h4>
+<p>The first item in the entry hashing input for Version 2 of the DIDDoc is the
+entry hash generated for the Version 1 of the DIDDoc. The fifth item, containing the new
+version DIDDoc content is in the form of a [<a class="spec-reference" href="#ref:RFC6902">RFC6902</a>] JSON Patch (as
+indicated by the <code>patch</code> item), and are the set of operations to transition the
+DIDDoc from version 1 to this new version 2 DIDDoc.</p>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">[</span>
+  <span class="token string">"xkuu1nwynw5ymfv4f1np2xbmg21k4vn1rrvg3ngpdmx482c2ce20"</span><span class="token punctuation">,</span>
+  <span class="token number">2</span><span class="token punctuation">,</span>
+  <span class="token string">"2024-04-03T03:47:51Z"</span><span class="token punctuation">,</span>
+  <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">{</span>
+    <span class="token property">"patch"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+      <span class="token punctuation">{</span>
+        <span class="token property">"op"</span><span class="token operator">:</span> <span class="token string">"replace"</span><span class="token punctuation">,</span>
+        <span class="token property">"path"</span><span class="token operator">:</span> <span class="token string">"/verificationMethod/1/publicKeyMultibase"</span><span class="token punctuation">,</span>
+        <span class="token property">"value"</span><span class="token operator">:</span> <span class="token string">"z6MkuocstfAaHsJgRnQgfQdtJiECuWEMDAbQV61aCpsUrTh3"</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token punctuation">{</span>
+        <span class="token property">"op"</span><span class="token operator">:</span> <span class="token string">"replace"</span><span class="token punctuation">,</span>
+        <span class="token property">"path"</span><span class="token operator">:</span> <span class="token string">"/verificationMethod/1/controller"</span><span class="token punctuation">,</span>
+        <span class="token property">"value"</span><span class="token operator">:</span> <span class="token string">"did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te"</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token punctuation">{</span>
+        <span class="token property">"op"</span><span class="token operator">:</span> <span class="token string">"replace"</span><span class="token punctuation">,</span>
+        <span class="token property">"path"</span><span class="token operator">:</span> <span class="token string">"/verificationMethod/1/id"</span><span class="token punctuation">,</span>
+        <span class="token property">"value"</span><span class="token operator">:</span> <span class="token string">"did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te#CpsUrTh3"</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token punctuation">{</span>
+        <span class="token property">"op"</span><span class="token operator">:</span> <span class="token string">"replace"</span><span class="token punctuation">,</span>
+        <span class="token property">"path"</span><span class="token operator">:</span> <span class="token string">"/verificationMethod/0/publicKeyMultibase"</span><span class="token punctuation">,</span>
+        <span class="token property">"value"</span><span class="token operator">:</span> <span class="token string">"z6Mkw1KSvGWNAwSwWbcpwPgFARX4vKPa1xvcDMsJ5b48Zj6B"</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token punctuation">{</span>
+        <span class="token property">"op"</span><span class="token operator">:</span> <span class="token string">"replace"</span><span class="token punctuation">,</span>
+        <span class="token property">"path"</span><span class="token operator">:</span> <span class="token string">"/verificationMethod/0/controller"</span><span class="token punctuation">,</span>
+        <span class="token property">"value"</span><span class="token operator">:</span> <span class="token string">"did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te"</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token punctuation">{</span>
+        <span class="token property">"op"</span><span class="token operator">:</span> <span class="token string">"replace"</span><span class="token punctuation">,</span>
+        <span class="token property">"path"</span><span class="token operator">:</span> <span class="token string">"/verificationMethod/0/id"</span><span class="token punctuation">,</span>
+        <span class="token property">"value"</span><span class="token operator">:</span> <span class="token string">"did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te#5b48Zj6B"</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token punctuation">{</span>
+        <span class="token property">"op"</span><span class="token operator">:</span> <span class="token string">"replace"</span><span class="token punctuation">,</span>
+        <span class="token property">"path"</span><span class="token operator">:</span> <span class="token string">"/assertionMethod/0"</span><span class="token punctuation">,</span>
+        <span class="token property">"value"</span><span class="token operator">:</span> <span class="token string">"did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te#CpsUrTh3"</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token punctuation">{</span>
+        <span class="token property">"op"</span><span class="token operator">:</span> <span class="token string">"replace"</span><span class="token punctuation">,</span>
+        <span class="token property">"path"</span><span class="token operator">:</span> <span class="token string">"/authentication/0"</span><span class="token punctuation">,</span>
+        <span class="token property">"value"</span><span class="token operator">:</span> <span class="token string">"did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te#5b48Zj6B"</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token punctuation">{</span>
+        <span class="token property">"op"</span><span class="token operator">:</span> <span class="token string">"replace"</span><span class="token punctuation">,</span>
+        <span class="token property">"path"</span><span class="token operator">:</span> <span class="token string">"/controller"</span><span class="token punctuation">,</span>
+        <span class="token property">"value"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+          <span class="token string">"did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te"</span>
+        <span class="token punctuation">]</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token punctuation">{</span>
+        <span class="token property">"op"</span><span class="token operator">:</span> <span class="token string">"replace"</span><span class="token punctuation">,</span>
+        <span class="token property">"path"</span><span class="token operator">:</span> <span class="token string">"/id"</span><span class="token punctuation">,</span>
+        <span class="token property">"value"</span><span class="token operator">:</span> <span class="token string">"did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te"</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token punctuation">{</span>
+        <span class="token property">"op"</span><span class="token operator">:</span> <span class="token string">"add"</span><span class="token punctuation">,</span>
+        <span class="token property">"path"</span><span class="token operator">:</span> <span class="token string">"/@context/2"</span><span class="token punctuation">,</span>
+        <span class="token property">"value"</span><span class="token operator">:</span> <span class="token string">"https://identity.foundation/linked-vp/contexts/v1"</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token punctuation">{</span>
+        <span class="token property">"op"</span><span class="token operator">:</span> <span class="token string">"add"</span><span class="token punctuation">,</span>
+        <span class="token property">"path"</span><span class="token operator">:</span> <span class="token string">"/service"</span><span class="token punctuation">,</span>
+        <span class="token property">"value"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+          <span class="token punctuation">{</span>
+            <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te#whois"</span><span class="token punctuation">,</span>
+            <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"LinkedVerifiablePresentation"</span><span class="token punctuation">,</span>
+            <span class="token property">"serviceEndpoint"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+              <span class="token string">"https://example.com/docs/ke465curdwjzrrp5x5ut92te/whois.json"</span>
+            <span class="token punctuation">]</span>
+          <span class="token punctuation">}</span>
+        <span class="token punctuation">]</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">]</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">]</span>
+</code></pre>
 <h4 id="log-file-for-version-2"><a class="toc-anchor" href="#log-file-for-version-2" >§</a> Log File For Version 2</h4>
+<p>The new version 2 <code>didlog.txt</code> file contains two entries, one for each version
+of the DIDDoc. The data integrity proof on the version 2 entry <strong>MUST</strong> be from
+an <code>authentication</code> key from the version 1 DIDDoc.</p>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">[</span><span class="token string">"xkuu1nwynw5ymfv4f1np2xbmg21k4vn1rrvg3ngpdmx482c2ce20"</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token string">"2024-04-03T03:47:51Z"</span><span class="token punctuation">,</span><span class="token punctuation">{</span><span class="token property">"method"</span><span class="token operator">:</span><span class="token string">"did:tdw:1"</span><span class="token punctuation">,</span><span class="token property">"scid"</span><span class="token operator">:</span><span class="token string">"ke465curdwjzrrp5x5ut92te"</span><span class="token punctuation">}</span><span class="token punctuation">,</span><span class="token punctuation">{</span><span class="token property">"value"</span><span class="token operator">:</span><span class="token punctuation">{</span><span class="token property">"@context"</span><span class="token operator">:</span><span class="token punctuation">[</span><span class="token string">"https://www.w3.org/ns/did/v1"</span><span class="token punctuation">,</span><span class="token string">"https://w3id.org/security/multikey/v1"</span><span class="token punctuation">]</span><span class="token punctuation">,</span><span class="token property">"id"</span><span class="token operator">:</span><span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te"</span><span class="token punctuation">,</span><span class="token property">"controller"</span><span class="token operator">:</span><span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te"</span><span class="token punctuation">,</span><span class="token property">"authentication"</span><span class="token operator">:</span><span class="token punctuation">[</span><span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te#FFhXVfsx"</span><span class="token punctuation">]</span><span class="token punctuation">,</span><span class="token property">"assertionMethod"</span><span class="token operator">:</span><span class="token punctuation">[</span><span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te#CPixwJ8x"</span><span class="token punctuation">]</span><span class="token punctuation">,</span><span class="token property">"verificationMethod"</span><span class="token operator">:</span><span class="token punctuation">[</span><span class="token punctuation">{</span><span class="token property">"id"</span><span class="token operator">:</span><span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te#FFhXVfsx"</span><span class="token punctuation">,</span><span class="token property">"controller"</span><span class="token operator">:</span><span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te"</span><span class="token punctuation">,</span><span class="token property">"type"</span><span class="token operator">:</span><span class="token string">"Multikey"</span><span class="token punctuation">,</span><span class="token property">"publicKeyMultibase"</span><span class="token operator">:</span><span class="token string">"z6MkkXKMSiE7mXvGcR2KUpeJXwT7MPXZSBC6HZw9FFhXVfsx"</span><span class="token punctuation">}</span><span class="token punctuation">,</span><span class="token punctuation">{</span><span class="token property">"id"</span><span class="token operator">:</span><span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te#CPixwJ8x"</span><span class="token punctuation">,</span><span class="token property">"controller"</span><span class="token operator">:</span><span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te"</span><span class="token punctuation">,</span><span class="token property">"type"</span><span class="token operator">:</span><span class="token string">"Multikey"</span><span class="token punctuation">,</span><span class="token property">"publicKeyMultibase"</span><span class="token operator">:</span><span class="token string">"z6Mkg8FdKNRt4NLXm5YSUZVGWzK8vvS3DJByxAqHCPixwJ8x"</span><span class="token punctuation">}</span><span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token punctuation">}</span><span class="token punctuation">,</span><span class="token punctuation">{</span><span class="token property">"type"</span><span class="token operator">:</span><span class="token string">"DataIntegrityProof"</span><span class="token punctuation">,</span><span class="token property">"created"</span><span class="token operator">:</span><span class="token string">"2024-04-03T03:47:51Z"</span><span class="token punctuation">,</span><span class="token property">"verificationMethod"</span><span class="token operator">:</span><span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te#FFhXVfsx"</span><span class="token punctuation">,</span><span class="token property">"cryptosuite"</span><span class="token operator">:</span><span class="token string">"eddsa-2022"</span><span class="token punctuation">,</span><span class="token property">"proofPurpose"</span><span class="token operator">:</span><span class="token string">"authentication"</span><span class="token punctuation">,</span><span class="token property">"challenge"</span><span class="token operator">:</span><span class="token string">"xkuu1nwynw5ymfv4f1np2xbmg21k4vn1rrvg3ngpdmx482c2ce20"</span><span class="token punctuation">,</span><span class="token property">"proofValue"</span><span class="token operator">:</span><span class="token string">"zK7pASjX3ou7t2bDuU43sWzG4E8B3TTDFgmY8AiFLahPaLzXn4fGrXksKbWr6o2RLr7rCTT2VRAgc8F9LQKLEJkg"</span><span class="token punctuation">}</span><span class="token punctuation">]</span>
+<span class="token punctuation">[</span><span class="token string">"zbuqyfaytakn9bhqhwrn0f3kh3fc5trz5qxmj91ay6rn71qhcnw0"</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token string">"2024-04-03T03:47:51Z"</span><span class="token punctuation">,</span><span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span><span class="token punctuation">{</span><span class="token property">"patch"</span><span class="token operator">:</span><span class="token punctuation">[</span><span class="token punctuation">{</span><span class="token property">"op"</span><span class="token operator">:</span><span class="token string">"replace"</span><span class="token punctuation">,</span><span class="token property">"path"</span><span class="token operator">:</span><span class="token string">"/verificationMethod/1/publicKeyMultibase"</span><span class="token punctuation">,</span><span class="token property">"value"</span><span class="token operator">:</span><span class="token string">"z6MkuocstfAaHsJgRnQgfQdtJiECuWEMDAbQV61aCpsUrTh3"</span><span class="token punctuation">}</span><span class="token punctuation">,</span><span class="token punctuation">{</span><span class="token property">"op"</span><span class="token operator">:</span><span class="token string">"replace"</span><span class="token punctuation">,</span><span class="token property">"path"</span><span class="token operator">:</span><span class="token string">"/verificationMethod/1/controller"</span><span class="token punctuation">,</span><span class="token property">"value"</span><span class="token operator">:</span><span class="token string">"did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te"</span><span class="token punctuation">}</span><span class="token punctuation">,</span><span class="token punctuation">{</span><span class="token property">"op"</span><span class="token operator">:</span><span class="token string">"replace"</span><span class="token punctuation">,</span><span class="token property">"path"</span><span class="token operator">:</span><span class="token string">"/verificationMethod/1/id"</span><span class="token punctuation">,</span><span class="token property">"value"</span><span class="token operator">:</span><span class="token string">"did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te#CpsUrTh3"</span><span class="token punctuation">}</span><span class="token punctuation">,</span><span class="token punctuation">{</span><span class="token property">"op"</span><span class="token operator">:</span><span class="token string">"replace"</span><span class="token punctuation">,</span><span class="token property">"path"</span><span class="token operator">:</span><span class="token string">"/verificationMethod/0/publicKeyMultibase"</span><span class="token punctuation">,</span><span class="token property">"value"</span><span class="token operator">:</span><span class="token string">"z6Mkw1KSvGWNAwSwWbcpwPgFARX4vKPa1xvcDMsJ5b48Zj6B"</span><span class="token punctuation">}</span><span class="token punctuation">,</span><span class="token punctuation">{</span><span class="token property">"op"</span><span class="token operator">:</span><span class="token string">"replace"</span><span class="token punctuation">,</span><span class="token property">"path"</span><span class="token operator">:</span><span class="token string">"/verificationMethod/0/controller"</span><span class="token punctuation">,</span><span class="token property">"value"</span><span class="token operator">:</span><span class="token string">"did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te"</span><span class="token punctuation">}</span><span class="token punctuation">,</span><span class="token punctuation">{</span><span class="token property">"op"</span><span class="token operator">:</span><span class="token string">"replace"</span><span class="token punctuation">,</span><span class="token property">"path"</span><span class="token operator">:</span><span class="token string">"/verificationMethod/0/id"</span><span class="token punctuation">,</span><span class="token property">"value"</span><span class="token operator">:</span><span class="token string">"did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te#5b48Zj6B"</span><span class="token punctuation">}</span><span class="token punctuation">,</span><span class="token punctuation">{</span><span class="token property">"op"</span><span class="token operator">:</span><span class="token string">"replace"</span><span class="token punctuation">,</span><span class="token property">"path"</span><span class="token operator">:</span><span class="token string">"/assertionMethod/0"</span><span class="token punctuation">,</span><span class="token property">"value"</span><span class="token operator">:</span><span class="token string">"did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te#CpsUrTh3"</span><span class="token punctuation">}</span><span class="token punctuation">,</span><span class="token punctuation">{</span><span class="token property">"op"</span><span class="token operator">:</span><span class="token string">"replace"</span><span class="token punctuation">,</span><span class="token property">"path"</span><span class="token operator">:</span><span class="token string">"/authentication/0"</span><span class="token punctuation">,</span><span class="token property">"value"</span><span class="token operator">:</span><span class="token string">"did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te#5b48Zj6B"</span><span class="token punctuation">}</span><span class="token punctuation">,</span><span class="token punctuation">{</span><span class="token property">"op"</span><span class="token operator">:</span><span class="token string">"replace"</span><span class="token punctuation">,</span><span class="token property">"path"</span><span class="token operator">:</span><span class="token string">"/controller"</span><span class="token punctuation">,</span><span class="token property">"value"</span><span class="token operator">:</span><span class="token punctuation">[</span><span class="token string">"did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te"</span><span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token punctuation">,</span><span class="token punctuation">{</span><span class="token property">"op"</span><span class="token operator">:</span><span class="token string">"replace"</span><span class="token punctuation">,</span><span class="token property">"path"</span><span class="token operator">:</span><span class="token string">"/id"</span><span class="token punctuation">,</span><span class="token property">"value"</span><span class="token operator">:</span><span class="token string">"did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te"</span><span class="token punctuation">}</span><span class="token punctuation">,</span><span class="token punctuation">{</span><span class="token property">"op"</span><span class="token operator">:</span><span class="token string">"add"</span><span class="token punctuation">,</span><span class="token property">"path"</span><span class="token operator">:</span><span class="token string">"/@context/2"</span><span class="token punctuation">,</span><span class="token property">"value"</span><span class="token operator">:</span><span class="token string">"https://identity.foundation/linked-vp/contexts/v1"</span><span class="token punctuation">}</span><span class="token punctuation">,</span><span class="token punctuation">{</span><span class="token property">"op"</span><span class="token operator">:</span><span class="token string">"add"</span><span class="token punctuation">,</span><span class="token property">"path"</span><span class="token operator">:</span><span class="token string">"/service"</span><span class="token punctuation">,</span><span class="token property">"value"</span><span class="token operator">:</span><span class="token punctuation">[</span><span class="token punctuation">{</span><span class="token property">"id"</span><span class="token operator">:</span><span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te#whois"</span><span class="token punctuation">,</span><span class="token property">"type"</span><span class="token operator">:</span><span class="token string">"LinkedVerifiablePresentation"</span><span class="token punctuation">,</span><span class="token property">"serviceEndpoint"</span><span class="token operator">:</span><span class="token punctuation">[</span><span class="token string">"https://example.com/docs/ke465curdwjzrrp5x5ut92te/whois.json"</span><span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token punctuation">,</span><span class="token punctuation">{</span><span class="token property">"type"</span><span class="token operator">:</span><span class="token string">"DataIntegrityProof"</span><span class="token punctuation">,</span><span class="token property">"created"</span><span class="token operator">:</span><span class="token string">"2024-04-03T03:47:51Z"</span><span class="token punctuation">,</span><span class="token property">"verificationMethod"</span><span class="token operator">:</span><span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te#FFhXVfsx"</span><span class="token punctuation">,</span><span class="token property">"cryptosuite"</span><span class="token operator">:</span><span class="token string">"eddsa-2022"</span><span class="token punctuation">,</span><span class="token property">"proofPurpose"</span><span class="token operator">:</span><span class="token string">"authentication"</span><span class="token punctuation">,</span><span class="token property">"challenge"</span><span class="token operator">:</span><span class="token string">"zbuqyfaytakn9bhqhwrn0f3kh3fc5trz5qxmj91ay6rn71qhcnw0"</span><span class="token punctuation">,</span><span class="token property">"proofValue"</span><span class="token operator">:</span><span class="token string">"z4zn3AVWC76rDoDtvNW2ospTPC3vDMfbxcZ383AkDun43KUBhBAv3ZJcE9zRXT8K3pHEDBaYvc19Q1weH5zoMa2Lf"</span><span class="token punctuation">}</span><span class="token punctuation">]</span>
+</code></pre>
 <h3 id="version-3"><a class="toc-anchor" href="#version-3" >§</a> Version 3</h3>
 <h4 id="version-3-target-diddoc"><a class="toc-anchor" href="#version-3-target-diddoc" >§</a> Version 3 Target DIDDoc</h4>
+<p>Here is the target update for the version 3 DIDDoc, as constructed by the DID Controller. It is the data used as input to the <code>did:tdw</code> log entry generation process.</p>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"@context"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token string">"https://www.w3.org/ns/did/v1"</span><span class="token punctuation">,</span>
+    <span class="token string">"https://w3id.org/security/multikey/v1"</span><span class="token punctuation">,</span>
+    <span class="token string">"https://identity.foundation/linked-vp/contexts/v1"</span><span class="token punctuation">,</span>
+    <span class="token string">"https://didcomm.org/messaging/v2"</span>
+  <span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te"</span><span class="token punctuation">,</span>
+  <span class="token property">"controller"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token string">"did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te"</span>
+  <span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token property">"authentication"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token string">"did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te#gJqvqaYD"</span>
+  <span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token property">"assertionMethod"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token string">"did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te#CZSeAWLE"</span>
+  <span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token property">"keyAgreement"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token string">"did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te#qnYZ6fWH"</span>
+  <span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token property">"verificationMethod"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te#gJqvqaYD"</span><span class="token punctuation">,</span>
+      <span class="token property">"controller"</span><span class="token operator">:</span> <span class="token string">"did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te"</span><span class="token punctuation">,</span>
+      <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"Multikey"</span><span class="token punctuation">,</span>
+      <span class="token property">"publicKeyMultibase"</span><span class="token operator">:</span> <span class="token string">"z6MksNvDtgMutKMzjezRqj8JbYuCHNjHR5HBaF2ogJqvqaYD"</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te#CZSeAWLE"</span><span class="token punctuation">,</span>
+      <span class="token property">"controller"</span><span class="token operator">:</span> <span class="token string">"did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te"</span><span class="token punctuation">,</span>
+      <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"Multikey"</span><span class="token punctuation">,</span>
+      <span class="token property">"publicKeyMultibase"</span><span class="token operator">:</span> <span class="token string">"z6Mkq7Qoa2LCvLCUiq9W2J9vXH1ooDqSX2ehWGUzCZSeAWLE"</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te#qnYZ6fWH"</span><span class="token punctuation">,</span>
+      <span class="token property">"controller"</span><span class="token operator">:</span> <span class="token string">"did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te"</span><span class="token punctuation">,</span>
+      <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"Multikey"</span><span class="token punctuation">,</span>
+      <span class="token property">"publicKeyMultibase"</span><span class="token operator">:</span> <span class="token string">"z6LSdYjdAE7ZY1Gh5VPAxDJdgbg45Lq6im3N9o6HqnYZ6fWH"</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token property">"service"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te#whois"</span><span class="token punctuation">,</span>
+      <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"LinkedVerifiablePresentation"</span><span class="token punctuation">,</span>
+      <span class="token property">"serviceEndpoint"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+        <span class="token string">"https://example.com/docs/ke465curdwjzrrp5x5ut92te/whois.json"</span>
+      <span class="token punctuation">]</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te#didcomm"</span><span class="token punctuation">,</span>
+      <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"DIDCommMessaging"</span><span class="token punctuation">,</span>
+      <span class="token property">"serviceEndpoint"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"uri"</span><span class="token operator">:</span> <span class="token string">"https://example.com/didcomm"</span><span class="token punctuation">,</span>
+        <span class="token property">"accept"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+          <span class="token string">"didcomm/v2"</span><span class="token punctuation">,</span>
+          <span class="token string">"didcomm/aip2;env=rfc587"</span>
+        <span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token property">"routingKeys"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+          <span class="token string">"did:example:somemediator#somekey"</span>
+        <span class="token punctuation">]</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">]</span>
+<span class="token punctuation">}</span>
+</code></pre>
 <h4 id="log-file-for-version-3"><a class="toc-anchor" href="#log-file-for-version-3" >§</a> Log File For Version 3</h4>
+<p>The new version 3 <code>didlog.txt</code> file contains three entries, one for each version
+of the DIDDoc. The data integrity proof on the version 3 entry <strong>MUST</strong> be from
+an <code>authentication</code> key from the version 2 DIDDoc.</p>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">[</span><span class="token string">"xkuu1nwynw5ymfv4f1np2xbmg21k4vn1rrvg3ngpdmx482c2ce20"</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token string">"2024-04-03T03:47:51Z"</span><span class="token punctuation">,</span><span class="token punctuation">{</span><span class="token property">"method"</span><span class="token operator">:</span><span class="token string">"did:tdw:1"</span><span class="token punctuation">,</span><span class="token property">"scid"</span><span class="token operator">:</span><span class="token string">"ke465curdwjzrrp5x5ut92te"</span><span class="token punctuation">}</span><span class="token punctuation">,</span><span class="token punctuation">{</span><span class="token property">"value"</span><span class="token operator">:</span><span class="token punctuation">{</span><span class="token property">"@context"</span><span class="token operator">:</span><span class="token punctuation">[</span><span class="token string">"https://www.w3.org/ns/did/v1"</span><span class="token punctuation">,</span><span class="token string">"https://w3id.org/security/multikey/v1"</span><span class="token punctuation">]</span><span class="token punctuation">,</span><span class="token property">"id"</span><span class="token operator">:</span><span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te"</span><span class="token punctuation">,</span><span class="token property">"controller"</span><span class="token operator">:</span><span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te"</span><span class="token punctuation">,</span><span class="token property">"authentication"</span><span class="token operator">:</span><span class="token punctuation">[</span><span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te#FFhXVfsx"</span><span class="token punctuation">]</span><span class="token punctuation">,</span><span class="token property">"assertionMethod"</span><span class="token operator">:</span><span class="token punctuation">[</span><span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te#CPixwJ8x"</span><span class="token punctuation">]</span><span class="token punctuation">,</span><span class="token property">"verificationMethod"</span><span class="token operator">:</span><span class="token punctuation">[</span><span class="token punctuation">{</span><span class="token property">"id"</span><span class="token operator">:</span><span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te#FFhXVfsx"</span><span class="token punctuation">,</span><span class="token property">"controller"</span><span class="token operator">:</span><span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te"</span><span class="token punctuation">,</span><span class="token property">"type"</span><span class="token operator">:</span><span class="token string">"Multikey"</span><span class="token punctuation">,</span><span class="token property">"publicKeyMultibase"</span><span class="token operator">:</span><span class="token string">"z6MkkXKMSiE7mXvGcR2KUpeJXwT7MPXZSBC6HZw9FFhXVfsx"</span><span class="token punctuation">}</span><span class="token punctuation">,</span><span class="token punctuation">{</span><span class="token property">"id"</span><span class="token operator">:</span><span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te#CPixwJ8x"</span><span class="token punctuation">,</span><span class="token property">"controller"</span><span class="token operator">:</span><span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te"</span><span class="token punctuation">,</span><span class="token property">"type"</span><span class="token operator">:</span><span class="token string">"Multikey"</span><span class="token punctuation">,</span><span class="token property">"publicKeyMultibase"</span><span class="token operator">:</span><span class="token string">"z6Mkg8FdKNRt4NLXm5YSUZVGWzK8vvS3DJByxAqHCPixwJ8x"</span><span class="token punctuation">}</span><span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token punctuation">}</span><span class="token punctuation">,</span><span class="token punctuation">{</span><span class="token property">"type"</span><span class="token operator">:</span><span class="token string">"DataIntegrityProof"</span><span class="token punctuation">,</span><span class="token property">"created"</span><span class="token operator">:</span><span class="token string">"2024-04-03T03:47:51Z"</span><span class="token punctuation">,</span><span class="token property">"verificationMethod"</span><span class="token operator">:</span><span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te#FFhXVfsx"</span><span class="token punctuation">,</span><span class="token property">"cryptosuite"</span><span class="token operator">:</span><span class="token string">"eddsa-2022"</span><span class="token punctuation">,</span><span class="token property">"proofPurpose"</span><span class="token operator">:</span><span class="token string">"authentication"</span><span class="token punctuation">,</span><span class="token property">"challenge"</span><span class="token operator">:</span><span class="token string">"xkuu1nwynw5ymfv4f1np2xbmg21k4vn1rrvg3ngpdmx482c2ce20"</span><span class="token punctuation">,</span><span class="token property">"proofValue"</span><span class="token operator">:</span><span class="token string">"zK7pASjX3ou7t2bDuU43sWzG4E8B3TTDFgmY8AiFLahPaLzXn4fGrXksKbWr6o2RLr7rCTT2VRAgc8F9LQKLEJkg"</span><span class="token punctuation">}</span><span class="token punctuation">]</span>
+<span class="token punctuation">[</span><span class="token string">"zbuqyfaytakn9bhqhwrn0f3kh3fc5trz5qxmj91ay6rn71qhcnw0"</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token string">"2024-04-03T03:47:51Z"</span><span class="token punctuation">,</span><span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span><span class="token punctuation">{</span><span class="token property">"patch"</span><span class="token operator">:</span><span class="token punctuation">[</span><span class="token punctuation">{</span><span class="token property">"op"</span><span class="token operator">:</span><span class="token string">"replace"</span><span class="token punctuation">,</span><span class="token property">"path"</span><span class="token operator">:</span><span class="token string">"/verificationMethod/1/publicKeyMultibase"</span><span class="token punctuation">,</span><span class="token property">"value"</span><span class="token operator">:</span><span class="token string">"z6MkuocstfAaHsJgRnQgfQdtJiECuWEMDAbQV61aCpsUrTh3"</span><span class="token punctuation">}</span><span class="token punctuation">,</span><span class="token punctuation">{</span><span class="token property">"op"</span><span class="token operator">:</span><span class="token string">"replace"</span><span class="token punctuation">,</span><span class="token property">"path"</span><span class="token operator">:</span><span class="token string">"/verificationMethod/1/controller"</span><span class="token punctuation">,</span><span class="token property">"value"</span><span class="token operator">:</span><span class="token string">"did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te"</span><span class="token punctuation">}</span><span class="token punctuation">,</span><span class="token punctuation">{</span><span class="token property">"op"</span><span class="token operator">:</span><span class="token string">"replace"</span><span class="token punctuation">,</span><span class="token property">"path"</span><span class="token operator">:</span><span class="token string">"/verificationMethod/1/id"</span><span class="token punctuation">,</span><span class="token property">"value"</span><span class="token operator">:</span><span class="token string">"did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te#CpsUrTh3"</span><span class="token punctuation">}</span><span class="token punctuation">,</span><span class="token punctuation">{</span><span class="token property">"op"</span><span class="token operator">:</span><span class="token string">"replace"</span><span class="token punctuation">,</span><span class="token property">"path"</span><span class="token operator">:</span><span class="token string">"/verificationMethod/0/publicKeyMultibase"</span><span class="token punctuation">,</span><span class="token property">"value"</span><span class="token operator">:</span><span class="token string">"z6Mkw1KSvGWNAwSwWbcpwPgFARX4vKPa1xvcDMsJ5b48Zj6B"</span><span class="token punctuation">}</span><span class="token punctuation">,</span><span class="token punctuation">{</span><span class="token property">"op"</span><span class="token operator">:</span><span class="token string">"replace"</span><span class="token punctuation">,</span><span class="token property">"path"</span><span class="token operator">:</span><span class="token string">"/verificationMethod/0/controller"</span><span class="token punctuation">,</span><span class="token property">"value"</span><span class="token operator">:</span><span class="token string">"did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te"</span><span class="token punctuation">}</span><span class="token punctuation">,</span><span class="token punctuation">{</span><span class="token property">"op"</span><span class="token operator">:</span><span class="token string">"replace"</span><span class="token punctuation">,</span><span class="token property">"path"</span><span class="token operator">:</span><span class="token string">"/verificationMethod/0/id"</span><span class="token punctuation">,</span><span class="token property">"value"</span><span class="token operator">:</span><span class="token string">"did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te#5b48Zj6B"</span><span class="token punctuation">}</span><span class="token punctuation">,</span><span class="token punctuation">{</span><span class="token property">"op"</span><span class="token operator">:</span><span class="token string">"replace"</span><span class="token punctuation">,</span><span class="token property">"path"</span><span class="token operator">:</span><span class="token string">"/assertionMethod/0"</span><span class="token punctuation">,</span><span class="token property">"value"</span><span class="token operator">:</span><span class="token string">"did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te#CpsUrTh3"</span><span class="token punctuation">}</span><span class="token punctuation">,</span><span class="token punctuation">{</span><span class="token property">"op"</span><span class="token operator">:</span><span class="token string">"replace"</span><span class="token punctuation">,</span><span class="token property">"path"</span><span class="token operator">:</span><span class="token string">"/authentication/0"</span><span class="token punctuation">,</span><span class="token property">"value"</span><span class="token operator">:</span><span class="token string">"did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te#5b48Zj6B"</span><span class="token punctuation">}</span><span class="token punctuation">,</span><span class="token punctuation">{</span><span class="token property">"op"</span><span class="token operator">:</span><span class="token string">"replace"</span><span class="token punctuation">,</span><span class="token property">"path"</span><span class="token operator">:</span><span class="token string">"/controller"</span><span class="token punctuation">,</span><span class="token property">"value"</span><span class="token operator">:</span><span class="token punctuation">[</span><span class="token string">"did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te"</span><span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token punctuation">,</span><span class="token punctuation">{</span><span class="token property">"op"</span><span class="token operator">:</span><span class="token string">"replace"</span><span class="token punctuation">,</span><span class="token property">"path"</span><span class="token operator">:</span><span class="token string">"/id"</span><span class="token punctuation">,</span><span class="token property">"value"</span><span class="token operator">:</span><span class="token string">"did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te"</span><span class="token punctuation">}</span><span class="token punctuation">,</span><span class="token punctuation">{</span><span class="token property">"op"</span><span class="token operator">:</span><span class="token string">"add"</span><span class="token punctuation">,</span><span class="token property">"path"</span><span class="token operator">:</span><span class="token string">"/@context/2"</span><span class="token punctuation">,</span><span class="token property">"value"</span><span class="token operator">:</span><span class="token string">"https://identity.foundation/linked-vp/contexts/v1"</span><span class="token punctuation">}</span><span class="token punctuation">,</span><span class="token punctuation">{</span><span class="token property">"op"</span><span class="token operator">:</span><span class="token string">"add"</span><span class="token punctuation">,</span><span class="token property">"path"</span><span class="token operator">:</span><span class="token string">"/service"</span><span class="token punctuation">,</span><span class="token property">"value"</span><span class="token operator">:</span><span class="token punctuation">[</span><span class="token punctuation">{</span><span class="token property">"id"</span><span class="token operator">:</span><span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te#whois"</span><span class="token punctuation">,</span><span class="token property">"type"</span><span class="token operator">:</span><span class="token string">"LinkedVerifiablePresentation"</span><span class="token punctuation">,</span><span class="token property">"serviceEndpoint"</span><span class="token operator">:</span><span class="token punctuation">[</span><span class="token string">"https://example.com/docs/ke465curdwjzrrp5x5ut92te/whois.json"</span><span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token punctuation">,</span><span class="token punctuation">{</span><span class="token property">"type"</span><span class="token operator">:</span><span class="token string">"DataIntegrityProof"</span><span class="token punctuation">,</span><span class="token property">"created"</span><span class="token operator">:</span><span class="token string">"2024-04-03T03:47:51Z"</span><span class="token punctuation">,</span><span class="token property">"verificationMethod"</span><span class="token operator">:</span><span class="token string">"did:tdw:example.com:ke465curdwjzrrp5x5ut92te#FFhXVfsx"</span><span class="token punctuation">,</span><span class="token property">"cryptosuite"</span><span class="token operator">:</span><span class="token string">"eddsa-2022"</span><span class="token punctuation">,</span><span class="token property">"proofPurpose"</span><span class="token operator">:</span><span class="token string">"authentication"</span><span class="token punctuation">,</span><span class="token property">"challenge"</span><span class="token operator">:</span><span class="token string">"zbuqyfaytakn9bhqhwrn0f3kh3fc5trz5qxmj91ay6rn71qhcnw0"</span><span class="token punctuation">,</span><span class="token property">"proofValue"</span><span class="token operator">:</span><span class="token string">"z4zn3AVWC76rDoDtvNW2ospTPC3vDMfbxcZ383AkDun43KUBhBAv3ZJcE9zRXT8K3pHEDBaYvc19Q1weH5zoMa2Lf"</span><span class="token punctuation">}</span><span class="token punctuation">]</span>
+<span class="token punctuation">[</span><span class="token string">"3856ukdk0tardcm40tg11qe8dche5w38b6z3cchrraabka80ejy0"</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">,</span><span class="token string">"2024-04-03T03:47:51Z"</span><span class="token punctuation">,</span><span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span><span class="token punctuation">{</span><span class="token property">"patch"</span><span class="token operator">:</span><span class="token punctuation">[</span><span class="token punctuation">{</span><span class="token property">"op"</span><span class="token operator">:</span><span class="token string">"add"</span><span class="token punctuation">,</span><span class="token property">"path"</span><span class="token operator">:</span><span class="token string">"/service/1"</span><span class="token punctuation">,</span><span class="token property">"value"</span><span class="token operator">:</span><span class="token punctuation">{</span><span class="token property">"id"</span><span class="token operator">:</span><span class="token string">"did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te#didcomm"</span><span class="token punctuation">,</span><span class="token property">"type"</span><span class="token operator">:</span><span class="token string">"DIDCommMessaging"</span><span class="token punctuation">,</span><span class="token property">"serviceEndpoint"</span><span class="token operator">:</span><span class="token punctuation">{</span><span class="token property">"uri"</span><span class="token operator">:</span><span class="token string">"https://example.com/didcomm"</span><span class="token punctuation">,</span><span class="token property">"accept"</span><span class="token operator">:</span><span class="token punctuation">[</span><span class="token string">"didcomm/v2"</span><span class="token punctuation">,</span><span class="token string">"didcomm/aip2;env=rfc587"</span><span class="token punctuation">]</span><span class="token punctuation">,</span><span class="token property">"routingKeys"</span><span class="token operator">:</span><span class="token punctuation">[</span><span class="token string">"did:example:somemediator#somekey"</span><span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token punctuation">}</span><span class="token punctuation">}</span><span class="token punctuation">,</span><span class="token punctuation">{</span><span class="token property">"op"</span><span class="token operator">:</span><span class="token string">"replace"</span><span class="token punctuation">,</span><span class="token property">"path"</span><span class="token operator">:</span><span class="token string">"/verificationMethod/1/publicKeyMultibase"</span><span class="token punctuation">,</span><span class="token property">"value"</span><span class="token operator">:</span><span class="token string">"z6Mkq7Qoa2LCvLCUiq9W2J9vXH1ooDqSX2ehWGUzCZSeAWLE"</span><span class="token punctuation">}</span><span class="token punctuation">,</span><span class="token punctuation">{</span><span class="token property">"op"</span><span class="token operator">:</span><span class="token string">"replace"</span><span class="token punctuation">,</span><span class="token property">"path"</span><span class="token operator">:</span><span class="token string">"/verificationMethod/1/id"</span><span class="token punctuation">,</span><span class="token property">"value"</span><span class="token operator">:</span><span class="token string">"did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te#CZSeAWLE"</span><span class="token punctuation">}</span><span class="token punctuation">,</span><span class="token punctuation">{</span><span class="token property">"op"</span><span class="token operator">:</span><span class="token string">"replace"</span><span class="token punctuation">,</span><span class="token property">"path"</span><span class="token operator">:</span><span class="token string">"/verificationMethod/0/publicKeyMultibase"</span><span class="token punctuation">,</span><span class="token property">"value"</span><span class="token operator">:</span><span class="token string">"z6MksNvDtgMutKMzjezRqj8JbYuCHNjHR5HBaF2ogJqvqaYD"</span><span class="token punctuation">}</span><span class="token punctuation">,</span><span class="token punctuation">{</span><span class="token property">"op"</span><span class="token operator">:</span><span class="token string">"replace"</span><span class="token punctuation">,</span><span class="token property">"path"</span><span class="token operator">:</span><span class="token string">"/verificationMethod/0/id"</span><span class="token punctuation">,</span><span class="token property">"value"</span><span class="token operator">:</span><span class="token string">"did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te#gJqvqaYD"</span><span class="token punctuation">}</span><span class="token punctuation">,</span><span class="token punctuation">{</span><span class="token property">"op"</span><span class="token operator">:</span><span class="token string">"add"</span><span class="token punctuation">,</span><span class="token property">"path"</span><span class="token operator">:</span><span class="token string">"/verificationMethod/2"</span><span class="token punctuation">,</span><span class="token property">"value"</span><span class="token operator">:</span><span class="token punctuation">{</span><span class="token property">"id"</span><span class="token operator">:</span><span class="token string">"did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te#qnYZ6fWH"</span><span class="token punctuation">,</span><span class="token property">"controller"</span><span class="token operator">:</span><span class="token string">"did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te"</span><span class="token punctuation">,</span><span class="token property">"type"</span><span class="token operator">:</span><span class="token string">"Multikey"</span><span class="token punctuation">,</span><span class="token property">"publicKeyMultibase"</span><span class="token operator">:</span><span class="token string">"z6LSdYjdAE7ZY1Gh5VPAxDJdgbg45Lq6im3N9o6HqnYZ6fWH"</span><span class="token punctuation">}</span><span class="token punctuation">}</span><span class="token punctuation">,</span><span class="token punctuation">{</span><span class="token property">"op"</span><span class="token operator">:</span><span class="token string">"replace"</span><span class="token punctuation">,</span><span class="token property">"path"</span><span class="token operator">:</span><span class="token string">"/assertionMethod/0"</span><span class="token punctuation">,</span><span class="token property">"value"</span><span class="token operator">:</span><span class="token string">"did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te#CZSeAWLE"</span><span class="token punctuation">}</span><span class="token punctuation">,</span><span class="token punctuation">{</span><span class="token property">"op"</span><span class="token operator">:</span><span class="token string">"replace"</span><span class="token punctuation">,</span><span class="token property">"path"</span><span class="token operator">:</span><span class="token string">"/authentication/0"</span><span class="token punctuation">,</span><span class="token property">"value"</span><span class="token operator">:</span><span class="token string">"did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te#gJqvqaYD"</span><span class="token punctuation">}</span><span class="token punctuation">,</span><span class="token punctuation">{</span><span class="token property">"op"</span><span class="token operator">:</span><span class="token string">"add"</span><span class="token punctuation">,</span><span class="token property">"path"</span><span class="token operator">:</span><span class="token string">"/@context/3"</span><span class="token punctuation">,</span><span class="token property">"value"</span><span class="token operator">:</span><span class="token string">"https://didcomm.org/messaging/v2"</span><span class="token punctuation">}</span><span class="token punctuation">,</span><span class="token punctuation">{</span><span class="token property">"op"</span><span class="token operator">:</span><span class="token string">"add"</span><span class="token punctuation">,</span><span class="token property">"path"</span><span class="token operator">:</span><span class="token string">"/keyAgreement"</span><span class="token punctuation">,</span><span class="token property">"value"</span><span class="token operator">:</span><span class="token punctuation">[</span><span class="token string">"did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te#qnYZ6fWH"</span><span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token punctuation">,</span><span class="token punctuation">{</span><span class="token property">"type"</span><span class="token operator">:</span><span class="token string">"DataIntegrityProof"</span><span class="token punctuation">,</span><span class="token property">"created"</span><span class="token operator">:</span><span class="token string">"2024-04-03T03:47:51Z"</span><span class="token punctuation">,</span><span class="token property">"verificationMethod"</span><span class="token operator">:</span><span class="token string">"did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te#5b48Zj6B"</span><span class="token punctuation">,</span><span class="token property">"cryptosuite"</span><span class="token operator">:</span><span class="token string">"eddsa-2022"</span><span class="token punctuation">,</span><span class="token property">"proofPurpose"</span><span class="token operator">:</span><span class="token string">"authentication"</span><span class="token punctuation">,</span><span class="token property">"challenge"</span><span class="token operator">:</span><span class="token string">"3856ukdk0tardcm40tg11qe8dche5w38b6z3cchrraabka80ejy0"</span><span class="token punctuation">,</span><span class="token property">"proofValue"</span><span class="token operator">:</span><span class="token string">"z4e1hqAH9jNmwvfh1HvBDpB69Vq8nAGCdrCKa2ebK2kf7Pd2eNpPznKZRo9vfn72JjYabwe4drhQF9uQFmL4KxuiJ"</span><span class="token punctuation">}</span><span class="token punctuation">]</span>
+</code></pre>
+<p>And so on…</p>
 
                     </article>    
       
@@ -825,26 +1246,19 @@ intermediate data structures.</p>
 <li><a href="#did-method-operations" >DID Method Operations</a>
 <ul>
 <li><a href="#create-register" >Create (Register)</a></li>
-</ul>
-</li>
-<li><a href="#read-resolve" >Read (Resolve)</a>
-<ul>
-<li><a href="#reading-didtdw-did-urls" >Reading did:tdw DID URLs</a></li>
-</ul>
-</li>
-<li><a href="#update" >Update</a>
-<ul>
+<li><a href="#read-resolve" >Read (Resolve)</a></li>
+<li><a href="#update" >Update</a></li>
 <li><a href="#deactivate-revoke" >Deactivate (Revoke)</a></li>
 </ul>
 </li>
 <li><a href="#did-method-processes" >DID Method Processes</a>
 <ul>
-<li><a href="#did-generation-and-validation-parameters" >DID Generation and Validation Parameters</a></li>
+<li><a href="#didtdw-did-method-parameters" >did:tdw DID Method Parameters</a></li>
 <li><a href="#scid-generation-and-validation" >SCID Generation and Validation</a></li>
 <li><a href="#entry-hash-generation-and-validation" >Entry Hash Generation and Validation</a></li>
 <li><a href="#authorization-keys" >Authorization Keys</a></li>
-<li><a href="#publishing-a-parallel-didweb-did" >Publishing a Parallel <code>did:web</code> DID</a></li>
 <li><a href="#generating-and-applying-a-json-patch" >Generating and Applying a JSON Patch</a></li>
+<li><a href="#publishing-a-parallel-didweb-did" >Publishing a Parallel <code>did:web</code> DID</a></li>
 <li><a href="#pre-rotation-key-hash-generation-and-validation" >Pre-Rotation Key Hash Generation and Validation</a></li>
 </ul>
 </li>
@@ -864,17 +1278,18 @@ intermediate data structures.</p>
 <li><a href="#definitions" >Definitions</a></li>
 <li><a href="#didtdw-example" ><code>did:tdw</code> Example</a>
 <ul>
-<li><a href="#inception-data" >Inception Data</a>
+<li><a href="#did-creation-data" >DID Creation Data</a>
 <ul>
 <li><a href="#diddoc-with-scid-placeholders" >DIDDoc with SCID Placeholders</a></li>
-<li><a href="#initial-entry-hashing-input" >Initial Entry Hashing Input</a></li>
+<li><a href="#diddoc-with-scid-in-place" >DIDDoc with SCID In Place</a></li>
+<li><a href="#entry-hash-generation-input" >Entry Hash Generation Input</a></li>
 <li><a href="#first-log-entry" >First Log Entry</a></li>
 <li><a href="#didweb-version-of-diddoc" ><code>did:web</code> Version of DIDDoc</a></li>
 </ul>
 </li>
-<li><a href="#version-2" >Version 2</a>
+<li><a href="#version-2-of-the-diddoc" >Version 2 of the DIDDoc</a>
 <ul>
-<li><a href="#version-2-target-diddoc" >Version 2 Target DIDDoc</a></li>
+<li><a href="#target-version-2-diddoc" >Target Version 2 DIDDoc</a></li>
 <li><a href="#version-2-entry-hashing-input" >Version 2 Entry Hashing Input</a></li>
 <li><a href="#log-file-for-version-2" >Log File For Version 2</a></li>
 </ul>

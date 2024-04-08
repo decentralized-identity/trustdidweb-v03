@@ -303,9 +303,9 @@ To verify the `entryHash` for a `did:tdw` DID entry, a DID Resolver **MUST** exe
    3. `base32_lower` as defined by the [[ref: base32_lower]] function. Its output is the lower case of the Base32 encoded string of the input hash.
 5. Verify that the calculated value from Step 4 matches the extracted value from Step 1.
 
-#### Authorization Keys
+#### Authorized Keys
 
-Each entry in the [[ref: DID Log]] MUST include a [[ref: Data Integrity]] proof signed by a key **authorized** to control (create, update, deactive) the DID. For `did:tdw`, the following defines the process for collecting the authorized keys.
+Each entry in the [[ref: DID Log]] MUST include a [[ref: Data Integrity]] proof signed by a key **authorized** to control (create, update, deactivate) the DID. For `did:tdw`, the following defines the process for collecting the authorized keys.
 
 1. Retrieve the DIDDoc in which the set of authorized controller DIDs is found. For the first version (`1`) of the DID, that is the first (and only) DIDDoc. For all subsequent versions of the DID, the **previous** DIDDoc version is used.
 2. From the DIDDoc, the top-level `controller` item is retrieved to create a (possibly empty) array of controller DIDs from the DIDDoc.
@@ -318,11 +318,15 @@ The controller of the DID **MUST** use a key from the resulting key references t
 
 A resolver of the DID **MUST** verify that the key used for signing the [[ref: DID Log]] entry is in the list of authorized DID key references, and **MUST** verify the proof.
 
-The following is some non-normative background on the process listed above:
 
-- The [[ref: DID Core Specification]] is not clear (at least to the authors of this specification) on what key types define those authorized to update a DID.
-- The requirement to have the key reference for external DIDs (not the controlled DID) copied into the DIDDoc is to prevent an implementation from having to resolve external DIDs (that could use any [[ref: DID Method]]) during the resolution of a DID. This *might* be too restrictive and could be changed in an update to this specification. For example, it might be reasonable to require that external DIDs of certain [[ref: DID Methods]] (such as `did:tdw` or `did:web`) be resolved as part of resolving the controlled DID.
-- In a future version of the specification, the authors would like to require support for [[ref: verifiableConditions]] key types, to enable [[ref: multi-sig]] DID control support, such as requiring "N of M" signatures must be in a proof for it to be valid.
+::: note https://github.com/decentralized-identity/presentation-exchange/issues/119
+
+- The following is some non-normative background on the process listed above:
+   - The [[ref: DID Core Specification]] is not clear (at least to the authors of this specification) on what key types define those authorized to update a DID.
+   - The requirement to have the key reference for external DIDs (not the controlled DID) copied into the DIDDoc is to prevent an implementation from having to resolve external DIDs (that could use any [[ref: DID Method]]) during the resolution of a DID. This *might* be too restrictive and could be changed in an update to this specification. For example, it might be reasonable to require that external DIDs of certain [[ref: DID Methods]] (such as `did:tdw` or `did:web`) be resolved as part of resolving the controlled DID.
+   - In a future version of the specification, the authors would like to require support for [[ref: verifiableConditions]] key types, to enable [[ref: multi-sig]] DID control support, such as requiring "N of M" signatures must be in a proof for it to be valid.
+
+:::
 
 #### Generating and Applying a JSON Patch
 

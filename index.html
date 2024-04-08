@@ -64,21 +64,9 @@ customElements.define("slide-panels",class extends HTMLElement{static get observ
 </dl>
 <hr>
 <h2 id="abstract"><a class="toc-anchor" href="#abstract" >§</a> Abstract</h2>
-<p><code>did:web</code> a useful, simple DID Method that makes deployment easy, and can be
-used to build beautifully on a domain’s existing reputation – or even be
-published content publishing platforms such as GitHub. But <code>did:web</code> also
-inherits some of the security flaws of the Web and lacks a specified way to access the
-history of the DID–features that created the initial excitement around
-ledger-based DIDs. For something as important as cryptographic key publishing,
-those missing features can be a problem.</p>
-<p>We propose a new DID Method that compliments <code>did:web</code> that, with a relatively
-simple set of dependencies and processing steps, adds a fully verifiable history
-to a web-based DID such as one might get from a ledger-based DID, but without
-the ledger. For backwards compatibility, and for verifiers that just “trust”
-<code>did:web</code>, the resulting DID can be published in parallel as a <code>did:web</code> DID. For
-resolvers that want more assurance, <code>did:tdw</code> (Trust DID Web) provides a way to
-“trust did:web” (or to enable a “trusted web” if you say it fast), by supporting
-these features:</p>
+<p>The evolution of Decentralized Identifiers (DIDs) continues to be a dynamic area of development in the quest for secure and private digital identity management. The <code>did:web</code> method, praised for its simplicity and ease of deployment, allows for DIDs to be associated with a domain’s reputation or published on platforms like GitHub. However, it is not without its challenges, particularly concerning security vulnerabilities inherited from the web and the absence of a verifiable history for the DID. Addressing these concerns, the proposed <code>did:tdw</code> (Trust DID Web) method aims to enhance the <code>did:web</code> by introducing a verifiable history feature, akin to what is available with ledger-based DIDs, but crucially, without relying on a ledger. This approach not only maintains backward compatibility but also offers an additional layer of assurance for those requiring more robust verification processes. By publishing the resulting DID as both <code>did:web</code> and <code>did:tdw</code>, it caters to a broader range of trust requirements, from those who are comfortable with the existing <code>did:web</code> infrastructure to those seeking greater security assurances provided by <code>did:tdw</code>. This innovative step represents a significant stride towards a more trusted and secure web, where the integrity of cryptographic key publishing is paramount.</p>
+<p>The key differences between <code>did:web</code> and <code>did:tdw</code> revolve around the core issues of decentralization and security. <code>did:web</code> is recognized for its simplicity and cost-effectiveness, allowing for easy establishment of a credential ecosystem. However, it is not inherently decentralized as it relies on DNS domain names, which require centralized registries, and it lacks a cryptographically verifiable, tamper-resistant, and persistently stored DID document. In contrast, <code>did:tdw</code> (Trust DID Web) is proposed as an enhancement to <code>did:web</code>, aiming to address these limitations by adding a verifiable history to the DID without the need for a ledger. This method seeks to provide a more decentralized approach by ensuring that the security of the embedded self-certifying identifier does not depend on DNS. Additionally, <code>did:tdw</code> offers a cryptographically verifiable trust registry and status lists, using DID-Linked Resources, which <code>did:web</code> lacks. These features are designed to build a trusted web, offering a higher level of assurance for cryptographic key publishing and management.</p>
+<p>For backwards compatibility, and for verifiers that just “trust” <code>did:web</code>, a <code>did:tdw</code> can be trivially modified and published in parallel as a <code>did:web</code> DID. For resolvers that want more assurance, <code>did:tdw</code> provides a way to “trust did:web” (or to enable a “trusted web” if you say it fast), by supporting these features:</p>
 <ul>
 <li>Ongoing publishing of all DID Document (DIDDoc) versions for a DID instead of, or beside, a <code>did:web</code> DID.</li>
 <li>Uses the same DID-to-HTTPS transformations as <code>did:web</code>.</li>
@@ -103,17 +91,16 @@ file is found. The same <code>did:web</code> DID-to-HTTPS transformation is used
 <li>The <code>didlog.txt</code> is a list of JSON <a class="term-reference" href="#term:did-log-entries">DID log entries</a>, one per line,
 whitespace removed, each of which contains the information needed to derive a
 version of the DIDDoc from its preceding version.</li>
-<li>Each entry includes JSON entries containing:
-<ul>
+<li>Each entry includes six JSON entries:
+<ol>
 <li>A hash of the entry.</li>
 <li>The <code>versionId</code> of the DIDDoc, starting from 1 and incrementing.</li>
 <li>The <code>versionTime</code> (as stated by the DID Controller) of the entry.</li>
 <li>A set of <code>parameters</code> that impact the processing of the current and
 future log entries.
 <ul>
-<li>Examples parameters are the version of the <code>did:tdw</code> specification
-and the hash algorithm being used by the controller. All available parameters are
-defined in this specification.</li>
+<li>Example parameters are the version of the <code>did:tdw</code> specification
+and hash algorithm being used.</li>
 </ul>
 </li>
 <li>The new version of the DIDDoc as either a <code>value</code> (the full document) or a
@@ -121,7 +108,7 @@ defined in this specification.</li>
 previous entry.</li>
 <li>A <a class="term-reference" href="#term:data-integrity">Data Integrity</a> (DI) proof across the entry, signed by a DID
 Controller authorized to update the DIDDoc.</li>
-</ul>
+</ol>
 </li>
 <li>In generating the first version of the DIDDoc, the DID Controller calculates
 the <a class="term-reference" href="#term:scid">SCID</a> for the DID, includes it as a <code>parameter</code> in the first log entry, and
@@ -259,7 +246,7 @@ simple retrieval of the <code>did:web</code> DIDDoc.</p>
 <li><code>versionId</code></li>
 <li><code>versionTime</code></li>
 <li><code>parameters</code></li>
-<li>DIDDoc content – either the full <code>value</code> or a <a class="term-reference" href="#term:json-patch">JSON Patch</a> <code>patch</code></li>
+<li>DIDDoc content – either the full <code>value</code> or a <a class="term-reference" href="#term:json-patch">JSON Patch</a> <code>patch</code> to be applied to the prior version of the DIDDoc.</li>
 <li>A Data Integrity proof over the entry.</li>
 </ol>
 </li>
@@ -267,8 +254,8 @@ simple retrieval of the <code>did:web</code> DIDDoc.</p>
 <ol>
 <li>Update the currently active <a class="term-reference" href="#term:parameters">parameters</a> with the parameters from the entry (if any). Continue processing using the now active set of <a class="term-reference" href="#term:parameters">parameters</a>.</li>
 <li>Verify that the Data Integrity proof in the entry is valid, and is signed by an authorized key as defined in the <a href="#authorization-keys" >Authorization Keys</a> section of this specification.</li>
-<li>Verify that the <code>entryHash</code> for the entry according to the process defined in the [Entry Hash Generation and Verification] section of this specification.</li>
-<li>For the initial version of the DIDDoc (<code>1</code>) verify that the <a class="term-reference" href="#term:scid">SCID</a> (defined in the <a class="term-reference" href="#term:parameters">parameters</a>) is being used for the DID as defined in the [SCID Generation and Verification] section of this specification.</li>
+<li>Verify that the <code>entryHash</code> for the entry using to the process defined in the [Entry Hash Generation and Verification] section of this specification.</li>
+<li>For the initial version of the DIDDoc (<code>1</code>) verify that the <a class="term-reference" href="#term:scid">SCID</a> (defined in the <a class="term-reference" href="#term:parameters">parameters</a>) is being used in the DID, and verifies according to the [SCID Generation and Verification] section of this specification.</li>
 <li>Generate the version of the DIDDoc for the entry by using the JSON value of the <code>value</code> item, or by using <a class="term-reference" href="#term:json-patch">JSON Patch</a> to apply the JSON value of the <code>patch</code> entry item to the previous version of the DIDDoc.</li>
 <li>If <a class="term-reference" href="#term:key-pre-rotation">Key Pre-Rotation</a> is being used, verify that any added keys in the DIDDoc have a valid pre-rotation entry as defined in the [Key Pre-Rotation Hash Generation and Verification] section of this specification.</li>
 <li>Once each version entry has been processed, collect about each version (at least) the following information:
@@ -465,8 +452,8 @@ in processing the log.</li>
 </li>
 <li>Verify that the calculated value from Step 4 matches the extracted value from Step 1.</li>
 </ol>
-<h4 id="authorization-keys"><a class="toc-anchor" href="#authorization-keys" >§</a> Authorization Keys</h4>
-<p>Each entry in the <a class="term-reference" href="#term:did-log">DID Log</a> MUST include a <a class="term-reference" href="#term:data-integrity">Data Integrity</a> proof signed by a key <strong>authorized</strong> to control (create, update, deactive) the DID. For <code>did:tdw</code>, the following defines the process for collecting the authorized keys.</p>
+<h4 id="authorized-keys"><a class="toc-anchor" href="#authorized-keys" >§</a> Authorized Keys</h4>
+<p>Each entry in the <a class="term-reference" href="#term:did-log">DID Log</a> MUST include a <a class="term-reference" href="#term:data-integrity">Data Integrity</a> proof signed by a key <strong>authorized</strong> to control (create, update, deactivate) the DID. For <code>did:tdw</code>, the following defines the process for collecting the authorized keys.</p>
 <ol>
 <li>Retrieve the DIDDoc in which the set of authorized controller DIDs is found. For the first version (<code>1</code>) of the DID, that is the first (and only) DIDDoc. For all subsequent versions of the DID, the <strong>previous</strong> DIDDoc version is used.</li>
 <li>From the DIDDoc, the top-level <code>controller</code> item is retrieved to create a (possibly empty) array of controller DIDs from the DIDDoc.
@@ -483,12 +470,16 @@ in processing the log.</li>
 </ol>
 <p>The controller of the DID <strong>MUST</strong> use a key from the resulting key references to sign the <a class="term-reference" href="#term:did-log">DID Log</a> entry.</p>
 <p>A resolver of the DID <strong>MUST</strong> verify that the key used for signing the <a class="term-reference" href="#term:did-log">DID Log</a> entry is in the list of authorized DID key references, and <strong>MUST</strong> verify the proof.</p>
-<p>The following is some non-normative background on the process listed above:</p>
+<div id="https://github.com/decentralized-identity/presentation-exchange/issues/119" class="notice note"><a class="notice-link" href="#https://github.com/decentralized-identity/presentation-exchange/issues/119">NOTE</a><ul>
+<li>The following is some non-normative background on the process listed above:
 <ul>
 <li>The <a class="term-reference" href="#term:did-core-specification">DID Core Specification</a> is not clear (at least to the authors of this specification) on what key types define those authorized to update a DID.</li>
 <li>The requirement to have the key reference for external DIDs (not the controlled DID) copied into the DIDDoc is to prevent an implementation from having to resolve external DIDs (that could use any <a class="term-reference" href="#term:did-method">DID Method</a>) during the resolution of a DID. This <em>might</em> be too restrictive and could be changed in an update to this specification. For example, it might be reasonable to require that external DIDs of certain <a class="term-reference" href="#term:did-methods">DID Methods</a> (such as <code>did:tdw</code> or <code>did:web</code>) be resolved as part of resolving the controlled DID.</li>
 <li>In a future version of the specification, the authors would like to require support for <a class="term-reference" href="#term:verifiableconditions">verifiableConditions</a> key types, to enable <a class="term-reference" href="#term:multi-sig">multi-sig</a> DID control support, such as requiring “N of M” signatures must be in a proof for it to be valid.</li>
 </ul>
+</li>
+</ul>
+</div>
 <h4 id="generating-and-applying-a-json-patch"><a class="toc-anchor" href="#generating-and-applying-a-json-patch" >§</a> Generating and Applying a JSON Patch</h4>
 <p>Each time a new <code>did:tdw</code> version is created, the <a class="term-reference" href="#term:did-controller">DID Controller</a>
 <strong>MAY</strong> generate a <a class="term-reference" href="#term:json-patch">JSON Patch</a> to concisely define the changes in the
@@ -1284,7 +1275,7 @@ an <code>authentication</code> key from the version 2 DIDDoc.</p>
 <li><a href="#didtdw-did-method-parameters" >did:tdw DID Method Parameters</a></li>
 <li><a href="#scid-generation-and-validation" >SCID Generation and Validation</a></li>
 <li><a href="#entry-hash-generation-and-validation" >Entry Hash Generation and Validation</a></li>
-<li><a href="#authorization-keys" >Authorization Keys</a></li>
+<li><a href="#authorized-keys" >Authorized Keys</a></li>
 <li><a href="#generating-and-applying-a-json-patch" >Generating and Applying a JSON Patch</a></li>
 <li><a href="#publishing-a-parallel-didweb-did" >Publishing a Parallel <code>did:web</code> DID</a></li>
 <li><a href="#pre-rotation-key-hash-generation-and-validation" >Pre-Rotation Key Hash Generation and Validation</a></li>

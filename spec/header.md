@@ -1,7 +1,7 @@
 Trust DID Web - `did:tdw`
 ==================
 
-**Specification Status:** v1.0
+**Specification Status:** DRAFT
 
 **Latest Draft:**
   [https://github.com/bcogv/trustdidweb](https://github.com/bcogv/trustdidweb)

@@ -73,7 +73,7 @@ Creating a `did:tdw` DID is done by carrying out the following steps.
 
 1. Define the DID string, and hence, the web location at which the DID Log (`didlog.txt`) will be published. Identify (using the placeholder `{SCID}`) where the required [[ref: SCID]] will be placed in the DID string.
 2. Create the initial DIDDoc (`did.json`) file for the DID, with whatever content is required. Wherever there is self-reference to the DID in the DIDDoc, use the form defined in step 1, with the identified placeholder for the [[ref: SCID]].
-   1. As per the [Authorization Keys](#authorization-keys), the DIDDoc **MUST** contain at least one `authorization` or `verificationMethod` key type.
+   1. As per the [Authorized Keys](#authorized-keys), the DIDDoc **MUST** contain at least one `authentication` or `verificationMethod` key type.
 3. Define a JSON array of valid [[ref: parameters]] that affect the generation of the DID. The [DID Generation and Validation Parameters](#parameters) section of this specification defines the permitted [[ref: parameters]].
 4. Pass the DID string, initial DIDDoc, and [[ref: parameters]] to a `did:tdw` "Create" implementation that **MUST**:
    1. Calculate the [[ref: SCID]] for the DID as defined in the [SCID Generation and Validation](#scid-generation-and-validation) section of this specification.
@@ -86,7 +86,7 @@ Creating a `did:tdw` DID is done by carrying out the following steps.
       5. The contents of the initial DIDDoc, in the form: `{"value": <DIDDoc>}`
    4. Calculate the [[ref: Entry Hash]] (`entryHash`) of the DID Entry as defined in the [Entry Hash Generation and Validation](#entry-hash-generation-and-validation) section of this specification.
    5. Update the `entryHash` with the value produced in the previous step.
-   6. Generate a [[ref: Data Integrity]] proof across the entry using an authorized key from the DID, and the `entryHash` as the proof `challenge`. The definition of "authorized" in this case is specified in the [Authorization Keys](#authorization-keys) section of this specification. The proof becomes the sixth and last JSON item in the DID log entry.
+   6. Generate a [[ref: Data Integrity]] proof across the entry using an authorized key from the DID, and the `entryHash` as the proof `challenge`. The definition of "authorized" in this case is specified in the [Authorized Keys](#authorized-keys) section of this specification. The proof becomes the sixth and last JSON item in the DID log entry.
    7. Put the resulting entry, with extraneous white space removed as the contents of a file `didlog.txt` and publish the file at the appropriate location defined by the `did:tdw` value.
       1. This is a logical operation -- how a deployment serves the `didlog.txt` content is not constrained.
 
@@ -122,7 +122,7 @@ To process the retrieved [[ref: DID Log]] file, the resolver **MUST** carry out 
    6. A Data Integrity proof over the entry.
 2. For each entry:
    1. Update the currently active [[ref: parameters]] with the parameters from the entry (if any). Continue processing using the now active set of [[ref: parameters]].
-   2. Verify that the Data Integrity proof in the entry is valid, and is signed by an authorized key as defined in the [Authorization Keys](#authorization-keys) section of this specification.
+   2. Verify that the Data Integrity proof in the entry is valid, and is signed by an authorized key as defined in the [Authorized Keys](#authorized-keys) section of this specification.
    3. Verify that the `entryHash` for the entry using to the process defined in the [Entry Hash Generation and Verification] section of this specification.
    4. For the initial version of the DIDDoc (`1`) verify that the [[ref: SCID]] (defined in the [[ref: parameters]]) is being used in the DID, and verifies according to the [SCID Generation and Verification] section of this specification.
    5. Generate the version of the DIDDoc for the entry by using the JSON value of the `value` item, or by using [[ref: JSON Patch]] to apply the JSON value of the `patch` entry item to the previous version of the DIDDoc.
@@ -180,7 +180,7 @@ process to the [Create](#create-register) process, as follows:
          1. An implementation **MAY** skip the [[ref: JSON Patch]] process and simply put the full new version of the DIDDoc in the item `{"value": <DIDDoc>}` as is done in the initial entry in the log.
    2. Calculate the [[ref: Entry Hash]] (`entryHash`) of the DID Entry as defined in the [Entry Hash Generation and Validation] section of this specification.
    3. Update the `entryHash` with the value produced in the previous step.
-   4. Generate a [[ref: Data Integrity]] proof across the entry using an authorized key from the DID, and the `entryHash` as the proof `challenge`. The definition of "authorized" is formalized in the [Authorization Keys](#authorization-keys) section of this specification. The proof becomes the last JSON item in the entry.
+   4. Generate a [[ref: Data Integrity]] proof across the entry using an authorized key from the DID, and the `entryHash` as the proof `challenge`. The definition of "authorized" is formalized in the [Authorized Keys](#authorized-keys) section of this specification. The proof becomes the last JSON item in the entry.
    5. Append the resulting entry to the existing contents of the [[ref: DID Log]] file `didlog.txt`.
 4. Update the [[ref: DID Log]] file at the appropriate location defined by the `did:tdw` identifier.
       1. This is a logical operation -- how a deployment serves the `didlog.txt` content is not constrained.

@@ -146,13 +146,16 @@ Document the full list of error codes that can be generated in resolving a DID.
 
 ##### Reading did:tdw DID URLs
 
-A `did:tdw` resolver **MAY** implement the resolution of the `#whois` and a DID
+A `did:tdw` resolver **MAY** implement the resolution of the `/whois` and a DID
 URL Path using the [whois LinkedVP Service](#whois-linkedvp-service) and [DID
 URL Path Resolution Service](#did-url-path-resolution-service) as defined in
 this specification by processing the [[ref: DID Log]] and then [dereferencing
 the DID URL] based on the contents of the DIDDoc. The client of a resolver that
 does not implement those capabilities must use the resolver to resolve the
-appropriate DIDDoc, and then process the resulting DID URLs themselves.
+appropriate DIDDoc, and then process the resulting DID URLs themselves. Since
+the default DID-to-HTTPS URL transformation is trivial, `did:tdw` [[ref: DID
+Controllers]] are strongly encouraged to use the default behavior for DID URL
+Path resolution.
 
 #### Update
 
@@ -403,88 +406,101 @@ When processing a [[ref: DID log entry]] where the `pre-rotation` parameter is a
 
 ### DID URL Resolution
 
-A `did:tdw` resolver **SHOULD** resolve DID URLs in addition to resolve simple
-DIDs, since failure to do so requires the resolver clients to implement their
-own DID URL resolution. The DID URL resolution process **MUST** support the
-resolution of DID URL fragments, DID URL query parameters, DID URL paths. The
-following sections document the specific DID URL patterns that all
-`did:tdw` implementations **MUST** implement.
+The `did:tdw` DID Method embraces the power and usefulness of DID URLs, along with the semantic simplicity
+of using them in a web-based DID method. Specifically, a `did:tdw` implementation
+**MUST**:
+
+- Resolve the `/whois` DID URL path using a [[spec:LINKED-VP]] service, whether or not it exists in the `did:tdw` DIDDoc, returning a `Verifiable Presentation`, if published by the [[ref: DID Controller]], found at the web location `whois.vp` beside where the `didlog.txt` file is found.
+  - For example, `did:tdw:{SCID}.example.com/whois` returns the verifiable presentation `https://{SCID}.example.com/.well-known/whois.vp`
+- Resolve any`did:tdw` DID URL using a [[spec:DID-CORE]] `relativeRef` DID paraemeters, whether or not a supporting service exists in the `did:tdw` DIDDoc, returning the file, if published by the [[ref: DID Controller]], found at the web location relative to where the `didlog.txt` file is found.
+  - For example, `did:tdw:{SCID}.example.com/governance/issuers.vc` returns the file `https://{SCID}.example.com/.well-known/governance/issuer.vc`
+
+In both cases, a [[ref: DID Controller]] **MAY** define services in the DIDDoc that override the default services that **MUST** be resolved by the `did:tdw` DID Method.
+
+The sections below formalize the services that exist by default in `did:tdw` and how a [[ref: DID Controller]] can override them.
 
 #### whois LinkedVP Service
 
-This service enables those that receive a `did:tdw` DID to retrieve and verify a
-verifiable presentation (and embedded Verifiable Credentials) the DID controller
-has decided to publish about itself. The intention is that anyone interested in
-a particular `did:tdw` DID can see if there is a `#whois` Verifiable
-Presentation, and if so, if it contains any useful (to the resolver) Verifiable
-Credentials that might help in learning more about who is the controller of the
-DID and if they should be trusted. It is up to the DID Controller to decide to
-publish a `whois` verifiable presentation and if so, which Verifiable
-Credentials to put into the verifiable presentation.
+The `#whois` service enables those that receive a `did:tdw` DID to retrieve and
+verify a [[xref:VCDM,VCDM Presentation]] (and embedded
+[[xref:VCDM,VCDM Credential]]s) the [[ref: DID Controller]] has decided to
+publish about itself. The intention is that anyone interested in a particular
+`did:tdw` DID can resolve the a `<did>/whois` DID URL, and if returned, if it
+contains any useful (to the resolver) Verifiable Credentials that might help in
+learning more about who is the controller of the DID and if they should be
+trusted. It is up to the [[ref: DID Controller]] to decide to publish a `whois.vp`
+verifiable presentation and if so, which verifiable credentials to put into the
+verifiable presentation.
 
-A `did:tdw` DIDDoc **SHOULD** include a `whois` service endpoint with the
-following definition based on the [Linked Verifiable
-Presentation](https://identity.foundation/linked-vp/)
+`did:tdw` DIDs **automatically** supports a `#whois` service endpoint with the
+following definition based on the [[xref:LINKED-VP,Linked VP Specification]], with the `serviceEndpoint`
+matching the `did:tdw` DID-to-HTTPS DIDDoc transformation and `didlog.txt`
+changed to `whois.vp`.
 
 ```json
 {
+   "@context": "https://identity.foundation/linked-vp/contexts/v1",
    "id": `#whois`,
    "type": "LinkedVerifiablePresentation",
    "serviceEndpoint": `https://example.com/dids/<scid>/whois.json`]
 }
 ```
 
-A [[ref: DID Controller]] that adds to their DIDDoc a `did:tdw` service with the
-`"id": "#whois"` **MUST** have a `serviceEndpoint` that **MUST** be an HTTP URL
-that **SHOULD** be found in the same web location as the `did:tdw` [[ref:DID
-log]], and that **MUST** return a [[ref: Verifiable Presentation]]. 
+A [[ref: DID Controller]] **MAY** explicitly add to their DIDDoc a `did:tdw` service with the
+`"id": "#whois"`. Such an entry **MUST** override the implicit `service` above.
 
-To resolve the DID URL `<did:tdw DID>#whois`, the resolver **MUST**:
+To resolve the DID URL `<did:tdw DID>/whois`, the resolver **MUST**:
 
 1. Resolve the given `did:tdw` DID by retrieving, processing, and verifying the [[ref: DID log]] for the `did:tdw` as defined in this specification.
-2. Find the DIDDoc `service` with the `id` `#whois`, if any.
-   1. If none, return an error `404 Not Found`.
-3. Resolve the `serviceEndpoint` HTTP address, and return the document found.
+2. Find the DIDDoc `service` with the `id` `#whois`, if any, or use the implicit service (above).
+3. Resolve the `serviceEndpoint` URL, if possible, and return the document found.
+   1. If the `serviceEndpoint` URL can't be resolved by the resolver (such as if the URL protocol is not supported by the resolver), the error `Error XXX: YYY` **MUST** be returned.
+   2. If the file at the defined `serviceEndpoint` is not found, return `Error 404: Not Found` **MUST** be returned.
 
 ##### The `whois` Use Case
 
 This section is informative.
 
-The following is a use case for the `whois` capability. Consider an example of the
-`did:tdw` controller being an educational institution that issues "degree"
-verifiable credentials to its graduate students. A graduate from the school
-submits as part of their job application to a company a [[ref: Verifiable
-Presentation]] derived from the verifiable credential they received from the
-school. The company receiving the presentation can verify the cryptography of
-the presentation, but can they trust the the usefulness of a degree from the school that issued the verifiable
-credential? If the school issued the verifiable credential using its `did:tdw`
-DID, the company can resolve the DID. It can also resolve the DID's `#whois` DID
-URL where it might find VCs from issuers it trusts with the `did:tdw` DID as
-the subject. For example:
+The following is a use case for the `whois` capability. Consider an example of the `did:tdw` controller being an educational institution that issues "degree" verifiable credentials to its graduate students. A graduate from the school submits as part of their job application to a company a [[ref: Verifiable Presentation]] derived from the verifiable credential they received from the school. The company receiving the presentation can verify the cryptography of the presentation, but can they trust the the usefulness of a degree from the school that issued the verifiable credential? If the school issued the verifiable credential using its `did:tdw` DID, the company can resolve the DID. It can also resolve the DID's `/whois` DID URL Path where it might find VCs from issuers it trusts with the `did:tdw` DID as the subject. For example:
 
-- A verifiable credential issued by the Legal Entity Registrar for the
-  jurisdiction in which the school is headquartered.
-  - Since the company knows about the Legal Entity Registrar, they can automate
-    this lookup to get more information about the school from the verifiable
-    credential -- its legal name, when it was registered, contact information,
-    etc.
-- A verifiable credential issued by the "Association of Colleges and
-  Universities" for the jurisdiction of the school.
-  - Perhaps the company does not know about the Association for that
-    jurisdiction. The company can repeat the `whois` resolution process for the
-    issuer of _that_ credential. The company might (for example), resolve and
-    verify the `did:tdw` DID for the Association, and then resolve the `#whois`
-    DID URL to find a verifiable credential issued by the government of the
-    jurisdiction. The company recognizes and trusts that government's authority,
-    and so can decide to recognize and trust the Association.
-- A verifiable credential issued by US News magazine about the school's
-  placement on the [US News Rankings of Colleges and Universities].
+- A verifiable credential issued by the Legal Entity Registrar for the jurisdiction in which the school is headquartered.
+  - Since the company knows about the Legal Entity Registrar, they can automate this lookup to get more information about the school from the verifiable credential -- its legal name, when it was registered, contact information, etc.
+- A verifiable credential issued by the "Association of Colleges and Universities" for the jurisdiction of the school.
+  - Perhaps the company does not know about the Association for that jurisdiction. The company can repeat the `whois` resolution process for the issuer of _that_ credential. The company might (for example), resolve and verify the `did:tdw` DID for the Association, and then resolve the `/whois` DID URL to find a verifiable credential issued by the government of the jurisdiction. The company recognizes and trusts that government's authority, and so can decide to recognize and trust the Association.
+- A verifiable credential issued by US News magazine about the school's placement on the [US News Rankings of Colleges and Universities].
 
-Such checks can all be done with a handful of HTTPS requests and the processing
-of the DIDs and verifiable presentations. The result is an efficient,
-verifiable, credential-based, decentralized, multi-domain trust registry.
+Such checks can all be done with a handful of HTTPS requests and the processing of the DIDs and verifiable presentations. The result is an efficient, verifiable, credential-based, decentralized, multi-domain trust registry.
 
 [US News Rankings of Colleges and Universities]: https://www.usnews.com/education/best-global-universities
 
 #### DID URL Path Resolution Service
 
+The automatic resolution of `did:tdw` DID URL paths follows the [[spec:DID-CORE]] `relativeRef` specification, as follows:
+
+- a DID path, such as example 2 in [section 3.2 DID URL Syntax] gives the example: `did:example:123456/resume.pdf`
+- In turn, that can be treated as the following, as shown in example 8 in the same section: `did:example:123456?service=files&relativeRef=/resume.pdf`
+- The `#files` service defined below then defines the `serviceEndpoint` for the `relativeRef`.
+  - For `did:tdw`, that service is implicitly defined, with the
+    `serviceEndpoint` matching the `did:tdw` DID-to-HTTPS DIDDoc transformation
+    and `didlog.txt` replaced by the DID URL Path.
+
+Thus, the implicit service for DID `did:tdw:example.com:dids:<scid>` is:
+
+```json
+{
+   "id": `#files`,
+   "type": "relativeRef",
+   "serviceEndpoint": `https://example.com/dids/<scid>`]
+}
+```
+
+A [[ref: DID Controller]] **MAY** explicitly add to their DIDDoc a service with the
+`"id": "#files"`. Such an entry **MUST** override the implicit `service` defined above.
+
+To resolve the DID URL `<did:tdw DID>/path/to/file`, the resolver **MUST**:
+
+1. Resolve the given `did:tdw` DID by retrieving, processing, and verifying the [[ref: DID log]] for the `did:tdw` as defined in this specification.
+2. Find the DIDDoc `service` with the `id` `#files`, if any, or use the implicit service (above).
+3. Resolve the `serviceEndpoint` URL with the DID URL Path appended, if possible, and return the document found at that location.
+   1. If the `serviceEndpoint` URL can't be resolved by the resolver (such as if the URL protocol is not supported by the resolver), the error `Error XXX: YYY` **MUST** be returned.
+   2. If the file at the path appended to the defined `serviceEndpoint` is not found, the error `Error 404: Not Found` **MUST** be returned.

@@ -197,7 +197,7 @@ The same content as it is found in the `didlog.txt` file:
 #### `did:web` Version of DIDDoc
 
 As noted in the [publishing a parallel `did:web`
-version]()(#publishing-a-parallel-didweb-did) of the DIDDoc section of this
+version](#publishing-a-parallel-didweb-did) of the DIDDoc section of this
 specification, here is what the `did:web` DIDDoc looks like for the `did:tdw`
 above.
 

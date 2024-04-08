@@ -33,7 +33,13 @@
           "module": true
         }
       ],
-      "katex": true
+      "katex": true,
+      "external_specs": [
+        {
+          "LINKED-VP": "https://identity.foundation/linked-vp/",
+          "VCDM": "https://www.w3.org/TR/vc-data-model/"
+        }
+      ]
     }
   ]
 }

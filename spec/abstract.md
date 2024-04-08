@@ -12,26 +12,27 @@ We propose a new DID Method that compliments `did:web` that, with a relatively
 simple set of dependencies and processing steps, adds a fully verifiable history
 to a web-based DID such as one might get from a ledger-based DID, but without
 the ledger. For backwards compatibility, and for verifiers that just "trust"
-`did:web`, the resulting DID can be published as a `did:web` in parallel. For
+`did:web`, the resulting DID can be published in parallel as a `did:web` DID. For
 resolvers that want more assurance, `did:tdw` (Trust DID Web) provides a way to
 "trust did:web" (or to enable a "trusted web" if you say it fast), by supporting
 these features:
 
-- Publishing of all DID Document (DIDDoc) versions for a DID instead of, or beside, a `did:web` DID.
+- Ongoing publishing of all DID Document (DIDDoc) versions for a DID instead of, or beside, a `did:web` DID.
 - Uses the same DID-to-HTTPS transformations as `did:web`.
-- Provides resolvers with the full history of the DID via a verifiable chain of
-  updates to the DIDDoc from creation to the latest update.
+- Provides resolvers the full history of the DID using a verifiable chain of
+  updates to the DIDDoc from creation to the current update.
 - A [[def: self-certifying identifier]] (SCID) for the DID that is globally unique and
   derived from the initial DIDDoc, enabling verifiable "alsoKnownAs" DIDs.
-- Each DIDDoc update includes a proof signed by the DID Controller(s) authorized
+- DIDDoc updates include a proof signed by the DID Controller(s) authorized
   to update the DID.
 - An optional mechanism for publishing "pre-rotation" keys to prevent loss of
   control of the DID in cases where an active private key is compromised.
-- A DID Method-specific (but useful for other DID Methods) approach to
-  publishing documents (files, verifiable credentials, verifiable presentations,
-  etc.) via the DID URL path. For example, a company can publish a verifiable
-  credential rendering package as a JWS signed by the issuer's DID and at the
-  URL `<did>/path/to/render_credential.jws`.
+- DID URL path handling that defaults to automatically resolving a
+  `<did>/path/to/file` being retrieved through using a comparable DID-to-HTTPS
+  translation as for the DIDDoc.
+- A DID URL path `<did>/whois` that defaults to automatically returning a [[ref:
+  Verifiable Presentation]] containing [[ref: Verifiable Credentials]] with the
+  DID as the `credentialSubject`, signed by the DID.
 
 The following is a `tl;dr` summary of the specification summarizing how `did:tdw` works.
 
@@ -70,8 +71,8 @@ The following is a `tl;dr` summary of the specification summarizing how `did:tdw
   can verify the DIDDoc, if wanted).
   - Of course, a resolver settling for just the `did:web` version of the DID
     does not get the verifiability of the `did:tdw` log.
-- `did:tdw` DID URLs with paths can be resolved to documents published by the
-  DID Controller.
+- `did:tdw` DID URLs with paths and `/whois` are resolved to documents published by the
+  DID Controller by default in the web location relative to the `didlog.txt` file.
 
 An example of a `did:tdw` evolving through a series of versions can be seen in
 the [did:tdw Examples](#didtdw-example) of this specification.

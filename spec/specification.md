@@ -118,13 +118,13 @@ To process the retrieved [[ref: DID Log]] file, the resolver **MUST** carry out 
    2. `versionId`
    3. `versionTime`
    4. `parameters`
-   5. DIDDoc content -- either the full `value` or a [[ref: JSON Patch]] `patch`
+   5. DIDDoc content -- either the full `value` or a [[ref: JSON Patch]] `patch` to be applied to the prior version of the DIDDoc.
    6. A Data Integrity proof over the entry.
 2. For each entry:
    1. Update the currently active [[ref: parameters]] with the parameters from the entry (if any). Continue processing using the now active set of [[ref: parameters]].
    2. Verify that the Data Integrity proof in the entry is valid, and is signed by an authorized key as defined in the [Authorization Keys](#authorization-keys) section of this specification.
-   3. Verify that the `entryHash` for the entry according to the process defined in the [Entry Hash Generation and Verification] section of this specification.
-   4. For the initial version of the DIDDoc (`1`) verify that the [[ref: SCID]] (defined in the [[ref: parameters]]) is being used for the DID as defined in the [SCID Generation and Verification] section of this specification.
+   3. Verify that the `entryHash` for the entry using to the process defined in the [Entry Hash Generation and Verification] section of this specification.
+   4. For the initial version of the DIDDoc (`1`) verify that the [[ref: SCID]] (defined in the [[ref: parameters]]) is being used in the DID, and verifies according to the [SCID Generation and Verification] section of this specification.
    5. Generate the version of the DIDDoc for the entry by using the JSON value of the `value` item, or by using [[ref: JSON Patch]] to apply the JSON value of the `patch` entry item to the previous version of the DIDDoc.
    6. If [[ref: Key Pre-Rotation]] is being used, verify that any added keys in the DIDDoc have a valid pre-rotation entry as defined in the [Key Pre-Rotation Hash Generation and Verification] section of this specification.
    7. Once each version entry has been processed, collect about each version (at least) the following information:

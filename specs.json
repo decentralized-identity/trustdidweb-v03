@@ -17,7 +17,7 @@
         "repo": "trustdidweb"
       },
       "output_path": "./",
-      "logo": "didtdw_dark.jpg",
+      "logo": "didtdw_dark.svg",
       "logo_link": "https://github.com/bcgov/trustdidweb",
       "assets": [
         {

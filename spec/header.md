@@ -8,7 +8,7 @@ Trust DID Web - `did:tdw`
 
 **Editors:**
 ~ [Stephen Curran](https://github.com/swcurran)
-~ [John Jordan, BC Gov](mailto:john.jordan@gov.bc.ca)
+~ [John Jordan, BC Gov](https://github.com/jljordan42)
 ~ [Andrew Whitehead](https://github.com/andrewhitehead)
 ~ [Brian Richter](https://github.com/brianorwhatever)
 

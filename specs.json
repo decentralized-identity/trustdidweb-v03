@@ -6,9 +6,11 @@
       "markdown_paths": [
         "header.md",
         "abstract.md",
-        "specification.md",
-        "implementors_guide.md",
         "definitions.md",
+        "specification.md",
+        "security_and_privacy.md",
+        "references.md",
+        "implementors_guide.md",
         "example.md"
       ],
       "source": {

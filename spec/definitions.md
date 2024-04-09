@@ -105,5 +105,3 @@ thresholds, relationships, or delegation to external verification methods.
 multi-signature key reference points to a verification method that defines what
 keys may contribute to the signature, and under what conditions the
 multi-signature is considered valid.
-
-[[spec]]

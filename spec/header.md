@@ -4,7 +4,7 @@ Trust DID Web - `did:tdw`
 **Specification Status:** DRAFT
 
 **Latest Draft:**
-  [https://github.com/bcogv/trustdidweb](https://github.com/bcogv/trustdidweb)
+  [https://github.com/bcgov/trustdidweb](https://github.com/bcgov/trustdidweb)
 
 **Editors:**
 ~ [Stephen Curran](https://github.com/swcurran)
@@ -13,8 +13,8 @@ Trust DID Web - `did:tdw`
 ~ [Brian Richter](https://github.com/brianorwhatever)
 
 **Participate:**
-~ [GitHub repo](https://github.com/bcogv/trustdidweb)
-~ [File a bug](https://github.com/bcogv/trustdidweb/issues)
-~ [Commit history](https://github.com/bcogv/trustdidweb/commits/main)
+~ [GitHub repo](https://github.com/bcgov/trustdidweb)
+~ [File a bug](https://github.com/bcgov/trustdidweb/issues)
+~ [Commit history](https://github.com/bcgov/trustdidweb/commits/main)
 
 ------------------------------------

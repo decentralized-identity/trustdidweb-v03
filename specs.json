@@ -6,9 +6,11 @@
       "markdown_paths": [
         "header.md",
         "abstract.md",
-        "specification.md",
-        "implementors_guide.md",
         "definitions.md",
+        "specification.md",
+        "security_and_privacy.md",
+        "references.md",
+        "implementors_guide.md",
         "example.md"
       ],
       "source": {
@@ -19,25 +21,10 @@
       "output_path": "./",
       "logo": "didtdw_dark.svg",
       "logo_link": "https://github.com/bcgov/trustdidweb",
-      "assets": [
-        {
-          "path": "/custom-assets/custom.css"
-        },
-        {
-          "path": "/custom-assets/custom-head.js",
-          "inject": "head"
-        },
-        {
-          "path": "/custom-assets/custom-body.js",
-          "inject": "body",
-          "module": true
-        }
-      ],
       "katex": true,
       "external_specs": [
         {
-          "LINKED-VP": "https://identity.foundation/linked-vp/",
-          "VCDM": "https://www.w3.org/TR/vc-data-model/"
+          "LINKED-VP": "https://identity.foundation/linked-vp/"
         }
       ]
     }

@@ -2,7 +2,9 @@
 
 ### Target System
 
-The target system of the Trust DID Web (TDW) DID method is the host (or domain if the host is not specified) name when the domain specified by the DID is resolved through the Domain Name System (DNS).
+The target system of the Trust DID Web (TDW) DID method is the host (or domain)
+name when the domain specified by the DID is resolved through the Domain Name
+System (DNS).
 
 ### Method Name
 
@@ -20,8 +22,8 @@ identifier **MUST** contain a [[ref: self-certifying identifier]] (SCID) as
 either part of the subdomain component of the domain name, or as a component of
 the optional path. The content of the [[ref: SCID]] is
 [generated](#scid-generation-and-validation) in creating the DID. The formal
-rules describing valid domain name syntax are described in [RFC1035], [RFC1123],
-and [RFC2181].
+rules describing valid domain name syntax are described in [[spec:RFC1035]], [[spec:RFC1123]],
+and [[spec:RFC2181]].
 
 The domain name component of the method specific identifier MUST match the
 common name used in the SSL/TLS certificate, and it MUST NOT include IP
@@ -33,7 +35,7 @@ The [[ref: SCID]], a globally unique identifier, is generated as part of the
 creation of the DID and placed into the DID identifier.
 
 As specified in the following Augmented Backus-Naur Form (ABNF) notation
-([[spec:rfc2234]]) the [[ref: SCID]] **MUST** be present in the DID string, but
+[[spec:rfc2234]] the [[ref: SCID]] **MUST** be present in the DID string, but
 may be placed in the (optional) subdomain component of the domain, or as a
 segment in the (optional) URL path. See examples below. The `domain-segment` and
 `path-segment` elements refer to [[spec:rfc3986]]'s ABNF for a Generic URL (page 49).
@@ -54,15 +56,29 @@ lower-base32 = [2-7a-z]
 `did:tdw` DIDs and the corresponding web locations for their `did:tdw` log file.
 `{SCID}` is a placeholder for where the generated SCID will be placed in the examples.
 
-`did:tdw:{SCID}.example.com` --> `https://{SCID}.example.com/.well-known/didlog.txt`
+---
 
-`did:tdw:example.com:dids:{SCID}` --> `https://example.com/dids/{SCID}/didlog.txt`
+subdomain
 
-`did:tdw:example.com%3A3000:dids:{SCID}` --> `https://example.com:3000/dids/{SCID}/didlog.txt`
+`did:tdw:{SCID}.example.com` -->
+
+`https://{SCID}.example.com/.well-known/didlog.txt`
+
+path
+
+`did:tdw:example.com:dids:{SCID}` -->
+
+`https://example.com/dids/{SCID}/didlog.txt`
+
+path w/ port
+
+`did:tdw:example.com%3A3000:dids:{SCID}` -->
+
+`https://example.com:3000/dids/{SCID}/didlog.txt`
 
 :::
 
-The location of the `did:tdw` `didlog.txt` file is logically beside where the comparable `did:web`
+The location of the `did:tdw` `didlog.txt` file is the same as where the comparable `did:web`
 `did.json` file is published. A [[ref: DID Controller]] **MAY** choose to publish both DIDs and so both files.
 
 ### DID Method Operations
@@ -71,14 +87,24 @@ The location of the `did:tdw` `didlog.txt` file is logically beside where the co
 
 Creating a `did:tdw` DID is done by carrying out the following steps.
 
-1. Define the DID string, and hence, the web location at which the DID Log (`didlog.txt`) will be published. Identify (using the placeholder `{SCID}`) where the required [[ref: SCID]] will be placed in the DID string.
-2. Create the initial DIDDoc (`did.json`) file for the DID, with whatever content is required. Wherever there is self-reference to the DID in the DIDDoc, use the form defined in step 1, with the identified placeholder for the [[ref: SCID]].
-   1. As per the [Authorized Keys](#authorized-keys), the DIDDoc **MUST** contain at least one `authentication` or `verificationMethod` key type.
-3. Define a JSON array of valid [[ref: parameters]] that affect the generation of the DID. The [DID Generation and Validation Parameters](#parameters) section of this specification defines the permitted [[ref: parameters]].
+1. Define the DID string, and hence, the web location at which the DID Log
+   (`didlog.txt`) will be published. Identify (using the placeholder `{SCID}`)
+   where the required [[ref: SCID]] will be placed in the DID string (ie.
+   `did:tdw:example.com:{SCID}`).
+2. Create the initial DIDDoc (`did.json`) file for the DID, with whatever
+   content is required. Wherever there is self-reference to the DID in the
+   DIDDoc, use the absolute form defined in step 1, with the identified
+   placeholder for the [[ref: SCID]] (ie. `did:tdw:example.com:{SCID}#key-1`).
+   1. As per [Authorized Keys](#authorized-keys), the DIDDoc **MUST** contain at
+      least one `authentication` or `verificationMethod` key type.
+3. Define a JSON array of valid [[ref: parameters]] that affect the generation
+   of the DID. The [DID Generation and Validation
+   Parameters](#didtdw-did-method-parameters) section of this specification
+   defines the permitted [[ref: parameters]].
 4. Pass the DID string, initial DIDDoc, and [[ref: parameters]] to a `did:tdw` "Create" implementation that **MUST**:
    1. Calculate the [[ref: SCID]] for the DID as defined in the [SCID Generation and Validation](#scid-generation-and-validation) section of this specification.
    2. Replace in the DIDDoc the placeholder for the [[ref: SCID]] `{SCID}` with the calculated `SCID`.
-   3. Generate a DID Entry as a JSON array (`[<data>]`) with the following five JSON items:
+   3. Generate a DID Entry as a JSON array with the following five JSON items:
       1. The [[ref: SCID]] as the `entryHash` value: `"ke465curdwjzrrp5x5ut92te"`
       2. An integer, `1`, that is the versionId for this first version of the DIDDoc: `1`
       3. A string that is the current time in [[ref: ISO8601]] format: `"2024-04-04T07:32:58Z"`
@@ -107,7 +133,7 @@ The following steps MUST be executed to resolve the DIDDoc for a `did:tdw` DID:
 3. Generate an HTTPS URL to the expected location of the DIDDoc by prepending `https://`.
 4. If no path has been specified in the URL, append `/.well-known`.
 5. Append `/didlog.txt` to complete the URL.
-6. Perform an HTTP GET request to the URL using an agent that can successfully negotiate a secure HTTPS connection, which enforces the security requirements as described in 2.6 Security and privacy considerations.
+6. Perform an HTTP GET request to the URL using an agent that can successfully negotiate a secure HTTPS connection, which enforces the security requirements as described in [Security and privacy considerations](#security-and-privacy-considerations).
 7. When performing the DNS resolution during the HTTP GET request, the client SHOULD utilize [[spec:rfc8484]] in order to prevent tracking of the identity being resolved.
 8. Process the [[ref: DID Log]] file as described below.
 
@@ -123,10 +149,10 @@ To process the retrieved [[ref: DID Log]] file, the resolver **MUST** carry out 
 2. For each entry:
    1. Update the currently active [[ref: parameters]] with the parameters from the entry (if any). Continue processing using the now active set of [[ref: parameters]].
    2. Verify that the Data Integrity proof in the entry is valid, and is signed by an authorized key as defined in the [Authorized Keys](#authorized-keys) section of this specification.
-   3. Verify that the `entryHash` for the entry using to the process defined in the [Entry Hash Generation and Verification] section of this specification.
-   4. For the initial version of the DIDDoc (`1`) verify that the [[ref: SCID]] (defined in the [[ref: parameters]]) is being used in the DID, and verifies according to the [SCID Generation and Verification] section of this specification.
+   3. Verify that the `entryHash` for the entry using to the process defined in the [Entry Hash Generation and Verification](#entry-hash-generation-and-validation) section of this specification.
+   4. For the initial version of the DIDDoc (`1`) verify that the [[ref: SCID]] (defined in the [[ref: parameters]]) is being used in the DID, and verifies according to the [SCID Generation and Verification](#scid-generation-and-validation) section of this specification.
    5. Generate the version of the DIDDoc for the entry by using the JSON value of the `value` item, or by using [[ref: JSON Patch]] to apply the JSON value of the `patch` entry item to the previous version of the DIDDoc.
-   6. If [[ref: Key Pre-Rotation]] is being used, verify that any added keys in the DIDDoc have a valid pre-rotation entry as defined in the [Key Pre-Rotation Hash Generation and Verification] section of this specification.
+   6. If [[ref: Key Pre-Rotation]] is being used, verify that any added keys in the DIDDoc have a valid pre-rotation entry as defined in the [Key Pre-Rotation Hash Generation and Verification](#pre-rotation-key-hash-generation-and-validation) section of this specification.
    7. Once each version entry has been processed, collect about each version (at least) the following information:
       1. `versionId`
       2. `versionTime`
@@ -157,7 +183,7 @@ the default DID-to-HTTPS URL transformation is trivial, `did:tdw` [[ref: DID
 Controllers]] are strongly encouraged to use the default behavior for DID URL
 Path resolution.
 
-#### Update
+#### Update (Rotate)
 
 To update a DID to for example, rotate a key in the DIDDoc, a new, verifiable
 [[ref: DID Log Entry]] must be generated, appended to the existing [[ref: DID
@@ -165,22 +191,50 @@ Log]] (`didlog.txt`) and published to the web location defined by the DID. The
 process to generate a verifiable [[ref: DID Log Entry]] follows a similar
 process to the [Create](#create-register) process, as follows:
 
-1. Make the desired changes to the DIDDoc. While the contents of a new DIDDoc version are (mostly) up to the DID controller, there are some limitations:
-   1. The `id` of the DIDDoc **MAY** be changed when the DID Controller wants to (or must) publish the DID at a different location and wants to retain the [[ref: SCID]] and history of the DID. For details, see the section [Moving a DID's Web Location].
-   2. If [[ref: Key Pre-Rotation]] is being used in the DID, only keys with a valid pre-rotation entry in a previous DIDDoc can be added, as defined in the [Key Pre-Rotation Hash Generation and Verification] section of this specification.
-2. Define a JSON array of valid [[ref: parameters]] that affect the generation of the DID. The [`did:tdw` DID Method Parameters](#didtdw-did-method-parameters) section of this specification defines the permitted [[ref: parameters]].
-3. Pass the existing [[ref: DID Log]], the updated DIDDoc, and the [[ref: parameters]] to a `did:tdw` update implementation which **MUST**:
-   1. Generate a DID Entry as a JSON array (`[<data>]`) with the following JSON items:
-      1. The `entryHash` from the previous [[ref: DID Log Entry]] as the `entryHash` value.
-      2. An integer that is one more than the `versionId` of the previous [[ref: DID Log Entry]].
-      3. A string that is the current time in [[ref: ISO8601]] format: `"2024-04-05T07:32:58Z"`
+1. Make the desired changes to the DIDDoc. While the contents of a new DIDDoc
+   version are (mostly) up to the DID controller, there are some limitations:
+   1. The `id` of the DIDDoc **MAY** be changed when the DID Controller wants to
+      (or must) publish the DID at a different location and wants to retain the
+      [[ref: SCID]] and history of the DID. For details, see the section [Moving
+      a DID's Web Location].
+   2. If [[ref: Key Pre-Rotation]] is being used in the DID, only keys with a
+      valid pre-rotation entry in a previous DIDDoc can be added, as defined in
+      the [Key Pre-Rotation Hash Generation and Verification] section of this
+      specification.
+2. Define a JSON array of valid [[ref: parameters]] that affect the generation
+   of the DID. The [`did:tdw` DID Method
+   Parameters](#didtdw-did-method-parameters) section of this specification
+   defines the permitted [[ref: parameters]].
+3. Pass the existing [[ref: DID Log]], the updated DIDDoc, and the [[ref:
+   parameters]] to a `did:tdw` update implementation which **MUST**:
+   1. Generate a DID Entry as a JSON array (`[<data>]`) with the following JSON
+      items:
+      1. The `entryHash` from the previous [[ref: DID Log Entry]] as the
+         `entryHash` value.
+      2. An integer that is one more than the `versionId` of the previous [[ref:
+         DID Log Entry]].
+      3. A string that is the current time in [[ref: ISO8601]] format:
+         `"2024-04-05T07:32:58Z"`
       4. The [[ref: parameters]] passed in as a JSON dict: `{}`
-         1. [[ref: parameters]] from previous versions continue to apply and do not need to be repeated in each version. As a result, the `parameters` item will often be an empty dict.
-      5. Generate a [[ref: JSON Patch]] to evolve the previous DIDDoc version to the new DIDDoc version, and put the resulting patch in the item `{"patch": <DIDDoc Patch>}`. For details see the [Generating and Applying a JSON Patch].
-         1. An implementation **MAY** skip the [[ref: JSON Patch]] process and simply put the full new version of the DIDDoc in the item `{"value": <DIDDoc>}` as is done in the initial entry in the log.
-   2. Calculate the [[ref: Entry Hash]] (`entryHash`) of the DID Entry as defined in the [Entry Hash Generation and Validation] section of this specification.
+         1. [[ref: parameters]] from previous versions continue to apply and do
+            not need to be repeated in each version. As a result, the
+            `parameters` item will often be an empty dict.
+      5. Generate a [[ref: JSON Patch]] to evolve the previous DIDDoc version to
+         the new DIDDoc version, and put the resulting patch in the item
+         `{"patch": <DIDDoc Patch>}`. For details see the [Generating and
+         Applying a JSON Patch].
+         1. An implementation **MAY** skip the [[ref: JSON Patch]] process and
+            simply put the full new version of the DIDDoc in the item `{"value":
+            <DIDDoc>}` as is done in the initial entry in the log.
+   2. Calculate the [[ref: Entry Hash]] (`entryHash`) of the DID Entry as
+      defined in the [Entry Hash Generation and Validation] section of this
+      specification.
    3. Update the `entryHash` with the value produced in the previous step.
-   4. Generate a [[ref: Data Integrity]] proof across the entry using an authorized key from the DID, and the `entryHash` as the proof `challenge`. The definition of "authorized" is formalized in the [Authorized Keys](#authorized-keys) section of this specification. The proof becomes the last JSON item in the entry.
+   4. Generate a [[ref: Data Integrity]] proof across the entry using an
+      authorized key from the DID, and the `entryHash` as the proof `challenge`.
+      The definition of "authorized" is formalized in the [Authorized
+      Keys](#authorized-keys) section of this specification. The proof becomes
+      the last JSON item in the entry.
    5. Append the resulting entry to the existing contents of the [[ref: DID Log]] file `didlog.txt`.
 4. Update the [[ref: DID Log]] file at the appropriate location defined by the `did:tdw` identifier.
       1. This is a logical operation -- how a deployment serves the `didlog.txt` content is not constrained.
@@ -322,7 +376,7 @@ A resolver of the DID **MUST** verify that the key used for signing the [[ref: D
 ::: note https://github.com/decentralized-identity/presentation-exchange/issues/119
 
 - The following is some non-normative background on the process listed above:
-   - The [[ref: DID Core Specification]] is not clear (at least to the authors of this specification) on what key types define those authorized to update a DID.
+   - [[spec: DID-CORE]] is not clear (at least to the authors of this specification) on what key types define those authorized to update a DID.
    - The requirement to have the key reference for external DIDs (not the controlled DID) copied into the DIDDoc is to prevent an implementation from having to resolve external DIDs (that could use any [[ref: DID Method]]) during the resolution of a DID. This *might* be too restrictive and could be changed in an update to this specification. For example, it might be reasonable to require that external DIDs of certain [[ref: DID Methods]] (such as `did:tdw` or `did:web`) be resolved as part of resolving the controlled DID.
    - In a future version of the specification, the authors would like to require support for [[ref: verifiableConditions]] key types, to enable [[ref: multi-sig]] DID control support, such as requiring "N of M" signatures must be in a proof for it to be valid.
 

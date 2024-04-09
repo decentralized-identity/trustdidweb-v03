@@ -75,12 +75,12 @@ digits 2-7.
 ~ The [[spec:rfc8785]] canonicalizes a JSON
 structure such that is suitable for verifiable hashing or signing.
 
-[[def: DID Core Specification, DID]]
+[[def: Decentralized Identifier, Decentralized Identifiers, DID]]
 
-~ Decentralized Identifiers (DIDs) ([[spec:did-core]]) are a type of identifier that enable
+~ Decentralized Identifiers (DIDs) [[spec:did-core]] are a type of identifier that enable
 verifiable, decentralized digital identities. A DID refers to any subject (e.g.,
 a person, organization, thing, data model, abstract entity, etc.) as determined
-by the controller of the DID..
+by the controller of the DID.
 
 [[def: DID Method, DID Methods]]
 
@@ -105,5 +105,3 @@ thresholds, relationships, or delegation to external verification methods.
 multi-signature key reference points to a verification method that defines what
 keys may contribute to the signature, and under what conditions the
 multi-signature is considered valid.
-
-[[spec]]

@@ -22,6 +22,6 @@
   },
   "homepage": "https://github.com/bcgov/trustdidweb#readme",
   "dependencies": {
-    "spec-up": "^0.10.7"
+    "spec-up": "github:brianorwhatever/spec-up#master"
   }
 }

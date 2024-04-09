@@ -452,8 +452,8 @@ in processing the log.</li>
 </li>
 <li>Verify that the calculated value from Step 4 matches the extracted value from Step 1.</li>
 </ol>
-<h4 id="authorization-keys"><a class="toc-anchor" href="#authorization-keys" >§</a> Authorization Keys</h4>
-<p>Each entry in the <a class="term-reference" href="#term:did-log">DID Log</a> MUST include a <a class="term-reference" href="#term:data-integrity">Data Integrity</a> proof signed by a key <strong>authorized</strong> to control (create, update, deactive) the DID. For <code>did:tdw</code>, the following defines the process for collecting the authorized keys.</p>
+<h4 id="authorized-keys"><a class="toc-anchor" href="#authorized-keys" >§</a> Authorized Keys</h4>
+<p>Each entry in the <a class="term-reference" href="#term:did-log">DID Log</a> MUST include a <a class="term-reference" href="#term:data-integrity">Data Integrity</a> proof signed by a key <strong>authorized</strong> to control (create, update, deactivate) the DID. For <code>did:tdw</code>, the following defines the process for collecting the authorized keys.</p>
 <ol>
 <li>Retrieve the DIDDoc in which the set of authorized controller DIDs is found. For the first version (<code>1</code>) of the DID, that is the first (and only) DIDDoc. For all subsequent versions of the DID, the <strong>previous</strong> DIDDoc version is used.</li>
 <li>From the DIDDoc, the top-level <code>controller</code> item is retrieved to create a (possibly empty) array of controller DIDs from the DIDDoc.
@@ -470,12 +470,16 @@ in processing the log.</li>
 </ol>
 <p>The controller of the DID <strong>MUST</strong> use a key from the resulting key references to sign the <a class="term-reference" href="#term:did-log">DID Log</a> entry.</p>
 <p>A resolver of the DID <strong>MUST</strong> verify that the key used for signing the <a class="term-reference" href="#term:did-log">DID Log</a> entry is in the list of authorized DID key references, and <strong>MUST</strong> verify the proof.</p>
-<p>The following is some non-normative background on the process listed above:</p>
+<div id="https://github.com/decentralized-identity/presentation-exchange/issues/119" class="notice note"><a class="notice-link" href="#https://github.com/decentralized-identity/presentation-exchange/issues/119">NOTE</a><ul>
+<li>The following is some non-normative background on the process listed above:
 <ul>
 <li>The <a class="term-reference" href="#term:did-core-specification">DID Core Specification</a> is not clear (at least to the authors of this specification) on what key types define those authorized to update a DID.</li>
 <li>The requirement to have the key reference for external DIDs (not the controlled DID) copied into the DIDDoc is to prevent an implementation from having to resolve external DIDs (that could use any <a class="term-reference" href="#term:did-method">DID Method</a>) during the resolution of a DID. This <em>might</em> be too restrictive and could be changed in an update to this specification. For example, it might be reasonable to require that external DIDs of certain <a class="term-reference" href="#term:did-methods">DID Methods</a> (such as <code>did:tdw</code> or <code>did:web</code>) be resolved as part of resolving the controlled DID.</li>
 <li>In a future version of the specification, the authors would like to require support for <a class="term-reference" href="#term:verifiableconditions">verifiableConditions</a> key types, to enable <a class="term-reference" href="#term:multi-sig">multi-sig</a> DID control support, such as requiring “N of M” signatures must be in a proof for it to be valid.</li>
 </ul>
+</li>
+</ul>
+</div>
 <h4 id="generating-and-applying-a-json-patch"><a class="toc-anchor" href="#generating-and-applying-a-json-patch" >§</a> Generating and Applying a JSON Patch</h4>
 <p>Each time a new <code>did:tdw</code> version is created, the <a class="term-reference" href="#term:did-controller">DID Controller</a>
 <strong>MAY</strong> generate a <a class="term-reference" href="#term:json-patch">JSON Patch</a> to concisely define the changes in the
@@ -1268,7 +1272,7 @@ an <code>authentication</code> key from the version 2 DIDDoc.</p>
 <li><a href="#didtdw-did-method-parameters" >did:tdw DID Method Parameters</a></li>
 <li><a href="#scid-generation-and-validation" >SCID Generation and Validation</a></li>
 <li><a href="#entry-hash-generation-and-validation" >Entry Hash Generation and Validation</a></li>
-<li><a href="#authorization-keys" >Authorization Keys</a></li>
+<li><a href="#authorized-keys" >Authorized Keys</a></li>
 <li><a href="#generating-and-applying-a-json-patch" >Generating and Applying a JSON Patch</a></li>
 <li><a href="#publishing-a-parallel-didweb-did" >Publishing a Parallel <code>did:web</code> DID</a></li>
 <li><a href="#pre-rotation-key-hash-generation-and-validation" >Pre-Rotation Key Hash Generation and Validation</a></li>

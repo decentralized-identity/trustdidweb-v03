@@ -306,7 +306,7 @@ items are defined below.
 
 To generate the required [[ref: SCID]] for a `did:tdw` DID, the DID Controller **MUST** execute the following function:
 
- `left(base32_lower(hash(JCS(initial DIDDoc with placeholders))), 24)`
+ `left(base32_lower(hash(JCS(initial DIDDoc with placeholders))), <length>)`
 
 Where:
 
@@ -314,15 +314,19 @@ Where:
 2. `JCS` is an implementation of the [[ref: JSON Canonicalization Scheme]] ([[spec:rfc8785]]). Its output is a canonicalized representation of its input.
 3. `hash` is either [sha256] or an alternative hash algorithm defined in the `hash` item in the [[ref: parameters]]. Its output is the hash of its input.
 4. `base32_lower` as defined by the [[ref: base32_lower]] function. Its output is the lower case of the Base32 encoded string of its input.
-5. `left` extracts the defined number of characters (in this case, `24`) from the string input.
+5. `left` extracts the `<length>` number of characters from the string input.
+   1. `<length>` **MUST** be at least 24 characters.
 
 To validate the [[ref: SCID]] of a `did:tdw` DID being resolved, the resolver **MUST** execute the following process:
 
 1. Extract from the [[ref: parameters]] in the first [[ref: DID log entry]] for the DID the `scid` item's value.
-2. Extract from the first [[ref: DID log entry]] the `value` item's value, which is the initial DIDDoc.
-3. Treat the `value`s value as a string and do a text replacement of the `scid` from the first step with `{SCID}`. This results in the `initial DIDDoc with placeholders` data needed for the next step.
-4. Execute the function defined above to generate the `calulatedSCID`.
-5. Verify that the `scid` value extracted from the [[ref: DID log entry]] from step 1 matches the `calulatedSCID` in step 5.
+2. Verify that the length of the `scid` is at least 24 characters.
+   1. If less than 24 characters, terminate the resolution process with an error.
+3. Extract from the first [[ref: DID log entry]] the `value` item's value, which is the initial DIDDoc.
+4. Treat the `value`s value as a string and do a text replacement of the `scid` from the first step with `{SCID}`. This should result in the `initial DIDDoc with placeholders` data needed for the next step.
+5. Execute the hashing process defined in the generation defined above to generate the value `calculatedSCID`.
+   1. For the `<length>` value, use the length of the `scid` extracted in step 1.
+6. Verify that the `scid` matches the `calculatedSCID`.
 
 #### Entry Hash Generation and Validation
 
@@ -469,9 +473,9 @@ of using them in a web-based DID method. Specifically, a `did:tdw` implementatio
 **MUST**:
 
 - Resolve the `/whois` DID URL path using a [[spec:LINKED-VP]] service, whether or not it exists in the `did:tdw` DIDDoc, returning a `Verifiable Presentation`, if published by the [[ref: DID Controller]], found at the web location `whois.vp` beside where the `didlog.txt` file is found.
-  - For example, `did:tdw:{SCID}.example.com/whois` returns the verifiable presentation `https://{SCID}.example.com/.well-known/whois.vp`
+  - For example, `did:tdw:{SCID}.example.com/whois` returns the verifiable presentation `https://{SCID}.example.com/.well-known/whois`
 - Resolve any`did:tdw` DID URL using a [[spec:DID-CORE]] `relativeRef` DID paraemeters, whether or not a supporting service exists in the `did:tdw` DIDDoc, returning the file, if published by the [[ref: DID Controller]], found at the web location relative to where the `didlog.txt` file is found.
-  - For example, `did:tdw:{SCID}.example.com/governance/issuers.vc` returns the file `https://{SCID}.example.com/.well-known/governance/issuer.vc`
+  - For example, `did:tdw:{SCID}.example.com/governance/issuers.json` returns the file `https://{SCID}.example.com/.well-known/governance/issuer.json`
 
 In both cases, a [[ref: DID Controller]] **MAY** define services in the DIDDoc that override the default services that **MUST** be resolved by the `did:tdw` DID Method.
 
@@ -480,8 +484,8 @@ The sections below formalize the services that exist by default in `did:tdw` and
 #### whois LinkedVP Service
 
 The `#whois` service enables those that receive a `did:tdw` DID to retrieve and
-verify a [[xref:VCDM,VCDM Presentation]] (and embedded
-[[xref:VCDM,VCDM Credential]]s) the [[ref: DID Controller]] has decided to
+verify a [[ref: Verifiable Presentation]] (and embedded
+[[:ref Verifiable Credentials]]) the [[ref: DID Controller]] has decided to
 publish about itself. The intention is that anyone interested in a particular
 `did:tdw` DID can resolve the a `<did>/whois` DID URL, and if returned, if it
 contains any useful (to the resolver) Verifiable Credentials that might help in
@@ -491,16 +495,16 @@ verifiable presentation and if so, which verifiable credentials to put into the
 verifiable presentation.
 
 `did:tdw` DIDs **automatically** supports a `#whois` service endpoint with the
-following definition based on the [[xref:LINKED-VP,Linked VP Specification]], with the `serviceEndpoint`
+following definition based on the [[ref: Linked VP]] specification, with the `serviceEndpoint`
 matching the `did:tdw` DID-to-HTTPS DIDDoc transformation and `didlog.txt`
-changed to `whois.vp`.
+changed to `whois`.
 
 ```json
 {
    "@context": "https://identity.foundation/linked-vp/contexts/v1",
-   "id": `#whois`,
+   "id": "#whois",
    "type": "LinkedVerifiablePresentation",
-   "serviceEndpoint": `https://example.com/dids/<scid>/whois.json`]
+   "serviceEndpoint": "https://example.com/dids/<scid>/whois.json"
 }
 ```
 
@@ -514,6 +518,7 @@ To resolve the DID URL `<did:tdw DID>/whois`, the resolver **MUST**:
 3. Resolve the `serviceEndpoint` URL, if possible, and return the document found.
    1. If the `serviceEndpoint` URL can't be resolved by the resolver (such as if the URL protocol is not supported by the resolver), the error `Error XXX: YYY` **MUST** be returned.
    2. If the file at the defined `serviceEndpoint` is not found, return `Error 404: Not Found` **MUST** be returned.
+4. The web server handling the HTTPS get for the `/whois` endpoint **SHOULD** include an HTTP Header parameter with the MIME Type of the `whois` file.
 
 ##### The `whois` Use Case
 
@@ -546,9 +551,9 @@ Thus, the implicit service for DID `did:tdw:example.com:dids:<scid>` is:
 
 ```json
 {
-   "id": `#files`,
+   "id": "#files",
    "type": "relativeRef",
-   "serviceEndpoint": `https://example.com/dids/<scid>`]
+   "serviceEndpoint": "https://example.com/dids/<scid>"
 }
 ```
 

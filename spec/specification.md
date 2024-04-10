@@ -490,9 +490,13 @@ publish about itself. The intention is that anyone interested in a particular
 `did:tdw` DID can resolve the a `<did>/whois` DID URL, and if returned, if it
 contains any useful (to the resolver) Verifiable Credentials that might help in
 learning more about who is the controller of the DID and if they should be
-trusted. It is up to the [[ref: DID Controller]] to decide to publish a `whois.vp`
+trusted. It is up to the [[ref: DID Controller]] to decide to publish a `whois`
 verifiable presentation and if so, which verifiable credentials to put into the
 verifiable presentation.
+
+See the [The `/whois` Use Case](#the-whois-use-case) in this specification for
+the background about why this capability is so useful, particularly for a
+web-based DID Method like `did:tdw`.
 
 `did:tdw` DIDs **automatically** supports a `#whois` service endpoint with the
 following definition based on the [[ref: Linked VP]] specification, with the `serviceEndpoint`
@@ -519,22 +523,6 @@ To resolve the DID URL `<did:tdw DID>/whois`, the resolver **MUST**:
    1. If the `serviceEndpoint` URL can't be resolved by the resolver (such as if the URL protocol is not supported by the resolver), the error `Error XXX: YYY` **MUST** be returned.
    2. If the file at the defined `serviceEndpoint` is not found, return `Error 404: Not Found` **MUST** be returned.
 4. The web server handling the HTTPS get for the `/whois` endpoint **SHOULD** include an HTTP Header parameter with the MIME Type of the `whois` file.
-
-##### The `whois` Use Case
-
-This section is informative.
-
-The following is a use case for the `whois` capability. Consider an example of the `did:tdw` controller being an educational institution that issues "degree" verifiable credentials to its graduate students. A graduate from the school submits as part of their job application to a company a [[ref: Verifiable Presentation]] derived from the verifiable credential they received from the school. The company receiving the presentation can verify the cryptography of the presentation, but can they trust the the usefulness of a degree from the school that issued the verifiable credential? If the school issued the verifiable credential using its `did:tdw` DID, the company can resolve the DID. It can also resolve the DID's `/whois` DID URL Path where it might find VCs from issuers it trusts with the `did:tdw` DID as the subject. For example:
-
-- A verifiable credential issued by the Legal Entity Registrar for the jurisdiction in which the school is headquartered.
-  - Since the company knows about the Legal Entity Registrar, they can automate this lookup to get more information about the school from the verifiable credential -- its legal name, when it was registered, contact information, etc.
-- A verifiable credential issued by the "Association of Colleges and Universities" for the jurisdiction of the school.
-  - Perhaps the company does not know about the Association for that jurisdiction. The company can repeat the `whois` resolution process for the issuer of _that_ credential. The company might (for example), resolve and verify the `did:tdw` DID for the Association, and then resolve the `/whois` DID URL to find a verifiable credential issued by the government of the jurisdiction. The company recognizes and trusts that government's authority, and so can decide to recognize and trust the Association.
-- A verifiable credential issued by US News magazine about the school's placement on the [US News Rankings of Colleges and Universities].
-
-Such checks can all be done with a handful of HTTPS requests and the processing of the DIDs and verifiable presentations. The result is an efficient, verifiable, credential-based, decentralized, multi-domain trust registry.
-
-[US News Rankings of Colleges and Universities]: https://www.usnews.com/education/best-global-universities
 
 #### DID URL Path Resolution Service
 

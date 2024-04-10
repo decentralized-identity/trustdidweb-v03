@@ -134,7 +134,7 @@ DIDDoc (as indicated by the `value` item).
 #### First Log Entry
 
 The following is the JSON prettified version of the entry log file that is published
-as the `didlog.txt` file. When published, all extraneous whitespace is removed, as
+as the `did.jsonl` file. When published, all extraneous whitespace is removed, as
 shown in the block below the pretty-printed version.
 
 ```json
@@ -188,7 +188,7 @@ shown in the block below the pretty-printed version.
 ]
 ```
 
-The same content as it is found in the `didlog.txt` file:
+The same content as it is found in the `did.jsonl` file:
 
 ```json
 ["xkuu1nwynw5ymfv4f1np2xbmg21k4vn1rrvg3ngpdmx482c2ce20",1,"2024-04-03T03:47:51Z",{"method":"did:tdw:1","scid":"ke465curdwjzrrp5x5ut92te"},{"value":{"@context":["https://www.w3.org/ns/did/v1","https://w3id.org/security/multikey/v1"],"id":"did:tdw:example.com:ke465curdwjzrrp5x5ut92te","controller":"did:tdw:example.com:ke465curdwjzrrp5x5ut92te","authentication":["did:tdw:example.com:ke465curdwjzrrp5x5ut92te#FFhXVfsx"],"assertionMethod":["did:tdw:example.com:ke465curdwjzrrp5x5ut92te#CPixwJ8x"],"verificationMethod":[{"id":"did:tdw:example.com:ke465curdwjzrrp5x5ut92te#FFhXVfsx","controller":"did:tdw:example.com:ke465curdwjzrrp5x5ut92te","type":"Multikey","publicKeyMultibase":"z6MkkXKMSiE7mXvGcR2KUpeJXwT7MPXZSBC6HZw9FFhXVfsx"},{"id":"did:tdw:example.com:ke465curdwjzrrp5x5ut92te#CPixwJ8x","controller":"did:tdw:example.com:ke465curdwjzrrp5x5ut92te","type":"Multikey","publicKeyMultibase":"z6Mkg8FdKNRt4NLXm5YSUZVGWzK8vvS3DJByxAqHCPixwJ8x"}]}},{"type":"DataIntegrityProof","created":"2024-04-03T03:47:51Z","verificationMethod":"did:tdw:example.com:ke465curdwjzrrp5x5ut92te#FFhXVfsx","cryptosuite":"eddsa-2022","proofPurpose":"authentication","challenge":"xkuu1nwynw5ymfv4f1np2xbmg21k4vn1rrvg3ngpdmx482c2ce20","proofValue":"zK7pASjX3ou7t2bDuU43sWzG4E8B3TTDFgmY8AiFLahPaLzXn4fGrXksKbWr6o2RLr7rCTT2VRAgc8F9LQKLEJkg"}]
@@ -379,7 +379,7 @@ DIDDoc from version 1 to this new version 2 DIDDoc.
 
 #### Log File For Version 2
 
-The new version 2 `didlog.txt` file contains two entries, one for each version
+The new version 2 `did.jsonl` file contains two entries, one for each version
 of the DIDDoc. The data integrity proof on the version 2 entry **MUST** be from
 an `authentication` key from the version 1 DIDDoc.
 
@@ -463,7 +463,7 @@ Here is the target update for the version 3 DIDDoc, as constructed by the DID Co
 
 #### Log File For Version 3
 
-The new version 3 `didlog.txt` file contains three entries, one for each version
+The new version 3 `did.jsonl` file contains three entries, one for each version
 of the DIDDoc. The data integrity proof on the version 3 entry **MUST** be from
 an `authentication` key from the version 2 DIDDoc.
 

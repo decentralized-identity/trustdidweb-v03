@@ -5,6 +5,13 @@
 ~ A log of JSON arrays each of which provides the information necessary to
 generate and validate a version of the DIDDoc from the previous version.
 
+[[def: JSON Lines]]
+
+~ A file of JSON Lines, as described on the site
+[https://jsonlines.org/](https://jsonlines.org/). In short, `JSONL` is lines of JSON with
+whitespace removed and separated by a newline that is convenient for handling
+streaming JSON data or log files.
+
 [[def: self-certifying identifier, SCID]]
 
 ~ An object identifier derived from initial data such that an attacker could not

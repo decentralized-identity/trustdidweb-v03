@@ -63,9 +63,9 @@ The following is a `tl;dr` summary of the specification summarizing how
 `did:tdw` works.
 
 1. In the same path as where DID resolvers find a `did:web`'s `did.json`,
-  `did:tdw`'s `didlog.txt` file is found. The same `did:web` DID-to-HTTPS
+  `did:tdw`'s `did.jsonl` ([[ref: JSON Lines]]) file is found. The same `did:web` DID-to-HTTPS
   transformation is used.
-2. The `didlog.txt` is a list of JSON [[ref: DID log entries]], one per line,
+2. The `did.jsonl` is a list of JSON [[ref: DID log entries]], one per line,
   whitespace removed, each of which contains the information needed to derive a
   version of the DIDDoc from its preceding version.
 3. Each entry includes six JSON entries:
@@ -89,14 +89,14 @@ The following is a `tl;dr` summary of the specification summarizing how
   available at the appropriate location on the web, based on the identifier of the
   DID.
 6. Given a `did:tdw` DID, a resolver converts the DID to an HTTPS URL,
-  retrieves, and processes the log file `didlog.txt`, generating and verifying
+  retrieves, and processes the log file `did.jsonl`, generating and verifying
   each log entry as per the requirements outlined in this specification.
     - In the process, the resolvers may collect all the DIDDoc versions and public
       keys (by reference) used by the DID currently, or in the past. This enables
       resolving both current and past DID URLs.
 7. `did:tdw` DID URLs with paths and `/whois` are resolved to documents
   published by the DID Controller that are by default in the web location relative to the
-  `didlog.txt` file. See the [note below](#the-whois-use-case) about the
+  `did.jsonl` file. See the [note below](#the-whois-use-case) about the
    powerful capability enabled by the `/whois` DID URL path.
 8. Optionally, a DID Controller can generate and publish a `did:web` DIDDoc
   from the latest `did:tdw` DIDDoc by changing the `id` to the `did:web` DID,
@@ -115,7 +115,7 @@ the [did:tdw Examples](#didtdw-example) of this specification.
 
 This DID Method introduces what we hope will be a widely embraced convention for all DID Methods -- the `/whois` path. This feature harkens back to the `WHOIS` protocol that was created in the 1970s to provide a directory about people and entities in the early days of ARPANET. In the 80's, `whois` evolved into a [[spec-inform:rfc920]] that has expanded into the [global whois](https://en.wikipedia.org/wiki/WHOIS) feature we know today as [[spec-inform:rfc3912]]. Submit a `whois` request about a domain name, and get back the information published about that domain.
 
-We propose that the `/whois` path for a DID enable a comparable, decentralized, version of the `WHOIS` protocol for DIDs. Notably, when `<did>/whois` is resolved (using a standard DID `service` that follows the [[ref: Linked-VP]] specification), a [[ref: Verifiable Presentation]] (VP) may be returned (if published by the DID Controller) containing [[ref: Verifiable Credentials]] with the DID as the `credentialSubject`, and the VP signed by the DID. Given a DID, one can find out who controls that DID by calling `<did>/whois` and processing the returned VP. That's powerful -- a decentralized trust registry. For `did:tdw`, the approach is very simple -- transform the DID to its HTTPS equivalent, and `GET <https>/whois`. Need to know who issued the VCs in the VP? Get the issuer DIDs from the VCs, and resolve `<issuer did>/whois`. This is comparable to walking a CA (Certificate Authority) hierarchy, but self-managed by the DID Controllers -- and the issuers that attest to them.
+We propose that the `/whois` path for a DID enable a comparable, decentralized, version of the `WHOIS` protocol for DIDs. Notably, when `<did>/whois` is resolved (using a standard DID `service` that follows the [[ref: Linked-VP]] specification), a [[ref: Verifiable Presentation]] (VP) may be returned (if published by the DID Controller) containing [[ref: Verifiable Credentials]] with the DID as the `credentialSubject`, and the VP signed by the DID. Given a DID, one can find out who controls that DID by calling `<did>/whois` and processing the returned VP. That's powerful -- a decentralized trust registry. For `did:tdw`, the approach is very simple -- transform the DID to its HTTPS equivalent, and `GET <https>/whois.json`. Need to know who issued the VCs in the VP? Get the issuer DIDs from the VCs, and resolve `<issuer did>/whois`. This is comparable to walking a CA (Certificate Authority) hierarchy, but self-managed by the DID Controllers -- and the issuers that attest to them.
 
 The following is a use case for the `/whois` capability. Consider an example of the `did:tdw` controller being a mining company that has exported a shipment and created a "Product Passport" Verifiable Credential with information about the shipment. A country importing the shipment (the Importer) might want to know more about the issuer of the VC, and hence, the details of the shipment. They resolve the `<did>/whois` of the entity and get back a Verifiable Presentation about that DID. It might contain:
 

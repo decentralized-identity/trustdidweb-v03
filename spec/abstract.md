@@ -29,6 +29,6 @@ Combined, the additional feature enable greater trust and security without
 compromising the simplicity of `did:web`. The incorporation of the DID Core
 compatible "/whois" path, drawing inspiration from the traditional WHOIS
 protocol [[spec:rfc3912]], offers an easy to use, decentralized, trust registry.
-This `did:tdw` aims to establish a more trusted and secure web environment by
+The `did:tdw` method aims to establish a more trusted and secure web environment by
 providing robust verification processes and enabling transparency and
 authenticity in the management of decentralized digital identities.

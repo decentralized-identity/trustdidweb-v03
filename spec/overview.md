@@ -45,10 +45,10 @@ The following is a `tl;dr` summary of how `did:tdw` works.
 1. In the same path as where DID resolvers find a `did:web`'s `did.json`,
   `did:tdw`'s `didlog.txt` file is found. The same `did:web` DID-to-HTTPS
   transformation is used.
-1. The `didlog.txt` is a list of JSON [[ref: DID log entries]], one per line,
+2. The `didlog.txt` is a list of JSON [[ref: DID log entries]], one per line,
   whitespace removed, each of which contains the information needed to derive a
   version of the DIDDoc from its preceding version.
-1. Each entry includes six JSON entries:
+3. Each entry includes six JSON entries:
     1. A hash of the entry.
     2. The `versionId` of the DIDDoc, starting from 1 and incrementing.
     3. The `versionTime` (as stated by the DID Controller) of the entry.
@@ -61,24 +61,24 @@ The following is a `tl;dr` summary of how `did:tdw` works.
       the previous entry.
     6. A [[ref: Data Integrity]] (DI) proof across the entry, signed by a DID
       Controller authorized to update the DIDDoc.
-2. In generating the first version of the DIDDoc, the DID Controller calculates
+4. In generating the first version of the DIDDoc, the DID Controller calculates
   the [[ref: SCID]] for the DID, includes it as a `parameter` in the first log
   entry, and inserts it where needed in the initial (and all subsequent)
   DIDDocs.
-1. A DID Controller generates and publishes the updated log file by making it
+5. A DID Controller generates and publishes the updated log file by making it
   available at the appropriate location on the web, based on the identifier of the
   DID.
-1. Given a `did:tdw` DID, a resolver converts the DID to an HTTPS URL,
+6. Given a `did:tdw` DID, a resolver converts the DID to an HTTPS URL,
   retrieves, and processes the log file `didlog.txt`, generating and verifying
   each log entry as per the requirements outlined in this specification.
     - In the process, the resolvers may collect all the DIDDoc versions and public
       keys (by reference) used by the DID currently, or in the past. This enables
       resolving both current and past DID URLs.
-1. `did:tdw` DID URLs with paths and `/whois` are resolved to documents
+7. `did:tdw` DID URLs with paths and `/whois` are resolved to documents
   published by the DID Controller that are by default in the web location relative to the
   `didlog.txt` file. See the [note below](#the-whois-use-case) about the
    powerful capability enabled by the `/whois` DID URL path.
-1. Optionally, a DID Controller can generate and publish a `did:web` DIDDoc
+8. Optionally, a DID Controller can generate and publish a `did:web` DIDDoc
   from the latest `did:tdw` DIDDoc by changing the `id` to the `did:web` DID,
   and adding an `alsoKnownAs` for the `did:tdw` (indicating to a resolver that
   they can verify the DIDDoc, if wanted).
@@ -96,7 +96,7 @@ the [did:tdw Examples](#didtdw-example) of this specification.
 This DID Method introduces what we hope will be a widely embraced convention for
 all DID Methods -- the `/whois` path. This feature harkens back to the `WHOIS`
 protocol that was created in the 1970s to provide a directory about people and
-entities in the early days of ARPANET. In the 80's, `whois` evolved into a
+entities in the early days of ARPANET. In the 80's, `whois` evolved into
 [[spec-inform:rfc920]] that has expanded into the [global
 whois](https://en.wikipedia.org/wiki/WHOIS) feature we know today as
 [[spec-inform:rfc3912]]. Submit a `whois` request about a domain name, and get

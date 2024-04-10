@@ -10,12 +10,12 @@ whitespace removed, and each line ends with a `CR`.
 
 ### DID Creation Data
 
-These examples show the important structures used in the [Create (Register)](##create-register) operation for a `did:tdw` DID.
+These examples show the important structures used in the [Create (Register)](#create-register) operation for a `did:tdw` DID.
 
 #### DIDDoc with SCID Placeholders
 
 This is the version of the DIDDoc that the [[ref: DID Controller]] constructs
-(however they see fit) and passes into the [SCID Generation Process](##scid-generation-and-validation).
+(however they see fit) and passes into the [SCID Generation Process](#scid-generation-and-validation).
 
 ```json
 {
@@ -197,9 +197,8 @@ The same content as it is found in the `didlog.txt` file:
 #### `did:web` Version of DIDDoc
 
 As noted in the [publishing a parallel `did:web`
-version](#publishing-a-parallel-didweb-did) of the DIDDoc section of this
-specification, here is what the `did:web` DIDDoc looks like for the `did:tdw`
-above.
+DID](#publishing-a-parallel-didweb-did) section of this specification, here is
+what the `did:web` DIDDoc looks like for the `did:tdw` above.
 
 ```json
 {
@@ -241,7 +240,7 @@ update its DID to a new version, version 2.
 #### Target Version 2 DIDDoc
 
 The [[ref: DID Controller]] constructs the new target DIDDoc (below) in
-preparation for passing it into the process to [Update](#update) the `did:tdw`
+preparation for passing it into the process to [Update](#update-rotate) the `did:tdw`
 DID.
 
 ```json

@@ -10,9 +10,9 @@
         "overview.md",
         "specification.md",
         "security_and_privacy.md",
-        "references.md",
         "implementors_guide.md",
-        "example.md"
+        "example.md",
+        "references.md"
       ],
       "source": {
         "host": "github",
@@ -25,7 +25,8 @@
       "katex": true,
       "external_specs": [
         {
-          "LINKED-VP": "https://identity.foundation/linked-vp/"
+          "LINKED-VP": "https://identity.foundation/linked-vp/",
+          "TOIP": "https://trustoverip.github.io/ctwg-main-glossary/"
         }
       ]
     }

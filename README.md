@@ -63,7 +63,7 @@ installed. Follow these steps:
   - Use `npm run edit` to interactively edit, render and review the spec.
 - Review the resulting `index.html` file in a browser.
 
-This specification is currently in
+The specification is currently in
 [Spec-Up](https://github.com/decentralized-identity/spec-up) format. See the
 [Spec-Up Documentation](https://identity.foundation/spec-up/) for a list of
 Spec-Up features and functionality.

@@ -104,7 +104,8 @@ The following is a `tl;dr` summary of the specification summarizing how
   they can verify the DIDDoc, if wanted).
 
   ::: warning
-    A resolver settling for just the `did:web` version of the DID does not get the verifiability of the `did:tdw` log.
+    A resolver settling for just the `did:web` version of the DID does not get the **verifiability**
+    of the `did:tdw` log.
   :::
 
 An example of a `did:tdw` evolving through a series of versions can be seen in

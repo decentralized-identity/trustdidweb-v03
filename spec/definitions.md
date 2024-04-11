@@ -114,7 +114,7 @@ associated DID document are created, resolved, updated, and deactivated. DID
 methods are defined using separate DID method specifications. This document is
 the DID Method Specification for `did:tdw`.
 
-[[def: verifiableConditions]]
+[[def: Verifiable Conditions, verifiableConditions]]
 
 ~ The (proposed) [verifiableConditions
 Specification](https://github.com/w3c-ccg/verifiable-conditions) defines a way

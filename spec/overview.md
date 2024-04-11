@@ -91,6 +91,13 @@ The following is a `tl;dr` summary of how `did:tdw` works.
 An example of a `did:tdw` evolving through a series of versions can be seen in
 the [did:tdw Examples](#didtdw-example) of this specification.
 
+This draft specification was developed in parallel with the development of two proof
+of concept implementations. The specification/implementation interplay helped
+immensely in defining a practical, easy to use, easy to understand, DID method.
+The existing proof of concept implementations of the `did:tdw` DID Method are
+listed in the [Implementors Guide](#Implementations). The current Typescript
+implementation is less than 1000 lines of Typescript code.
+
 ### The `/whois` Use Case
 
 This DID Method introduces what we hope will be a widely embraced convention for
@@ -108,13 +115,14 @@ resolved (using a standard DID `service` that follows the [[ref: Linked-VP]]
 specification), a [[ref: Verifiable Presentation]] (VP) may be returned (if
 published by the DID Controller) containing [[ref: Verifiable Credentials]] with
 the DID as the `credentialSubject`, and the VP signed by the DID. Given a DID,
-one can find out who controls that DID by calling `<did>/whois` and processing
-the returned VP. That's powerful -- a decentralized trust registry. For
-`did:tdw`, the approach is very simple -- transform the DID to its HTTPS
-equivalent, and `GET <https>/whois`. Need to know who issued the VCs in the VP?
-Get the issuer DIDs from the VCs, and resolve `<issuer did>/whois`. This is
-comparable to walking a CA (Certificate Authority) hierarchy, but self-managed
-by the DID Controllers -- and the issuers that attest to them.
+one can gather verifiable data about the [[ref: DID Controller]] by resolving
+`<did>/whois` and processing the returned VP. That's powerful -- an efficient,
+highly decentralized, trust registry. For `did:tdw`, the approach is very simple
+-- transform the DID to its HTTPS equivalent, and execute a `GET <https>/whois`.
+Need to know who issued the VCs in the VP? Get the issuer DIDs from those VCs,
+and resolve `<issuer did>/whois` for each. This is comparable to walking a CA
+(Certificate Authority) hierarchy, but self-managed by the DID Controllers --
+and the issuers that attest to them.
 
 The following is a use case for the `/whois` capability. Consider an example of
 the `did:tdw` controller being a mining company that has exported a shipment and

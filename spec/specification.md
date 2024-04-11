@@ -306,7 +306,7 @@ DID](#publishing-a-parallel-didweb-did) section of this specification.
 To deactivate the DID, the [[ref: DID Controller]] **SHOULD** add to the [[ref:
 DID log entry]] [[ref: parameters]] the item `"deactivated": true`. A [[ref: DID
 Controller]] **MAY** update the DIDDoc further to indicate the deactivation of
-the DID, such as removing the `authorization` key type entries, preventing
+the DID, such as removing the `authentication` key type entries, preventing
 further updates to the DID/DIDDoc.
 
 A resolver encountering in the [[ref: DID log entry]] [[ref: parameters]] the
@@ -356,10 +356,10 @@ items are defined below.
   - By default, the value is initialized to `sha256`.
   - Acceptable values:
     - `sha256`: Use the `SHA-256` algorithm from [[spec:rfc4634]].
-- `cryptosuite`: The Data Integrity cryptosuite to use when generating and verifying the authorization proofs on the [[ref: DID log entries]].
+- `cryptosuite`: The Data Integrity cryptosuite to use when generating and verifying the authentication proofs on the [[ref: DID log entries]].
   - By default, the value is initialized to `eddsa-2022`
   - Acceptable values:
-    - `eddsa-2022`: Use the [EDDSA 2022](https://github.com/digitalbazaar/eddsa-2022-cryptosuite) cryptosuite.
+    - `eddsa-jcs-2022`: Use the [eddsa-jcs-2022](https://www.w3.org/TR/vc-di-eddsa/#eddsa-jcs-2022) cryptosuite.
 - `prerotation`: A boolean value indicating that subsequent authentication keys
   added to the DIDDoc (after this version) **MUST** have their hash included in
   a `nextKeys` parameter item.
@@ -393,7 +393,7 @@ items are defined below.
     repeated calls to get all of the previous versions of the DIDDoc. By caching
     the DIDDoc state, the resolver would not have to retrieve and process the
     [[ref: DID Log]] on every call.
-  - A Web Server handling one or more `did.jsonl` file **MAY** be configured to
+  - A Web Server handling one or more `did.jsonl` files **MAY** be configured to
    use a comparable HTTP TTL per [[spec-inform:rfc9111]].
 
 #### SCID Generation and Validation

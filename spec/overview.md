@@ -43,9 +43,9 @@ features listed in the [Abstract](#abstract).
 The following is a `tl;dr` summary of how `did:tdw` works.
 
 1. In the same path as where DID resolvers find a `did:web`'s `did.json`,
-  `did:tdw`'s `didlog.txt` file is found. The same `did:web` DID-to-HTTPS
+  `did:tdw`'s `did.jsonl` ([[ref: JSON Lines]]) file is found. The same `did:web` DID-to-HTTPS
   transformation is used.
-2. The `didlog.txt` is a list of JSON [[ref: DID log entries]], one per line,
+2. The `did.jsonl` is a list of JSON [[ref: DID log entries]], one per line,
   whitespace removed, each of which contains the information needed to derive a
   version of the DIDDoc from its preceding version.
 3. Each entry includes six JSON entries:
@@ -69,14 +69,14 @@ The following is a `tl;dr` summary of how `did:tdw` works.
   available at the appropriate location on the web, based on the identifier of the
   DID.
 6. Given a `did:tdw` DID, a resolver converts the DID to an HTTPS URL,
-  retrieves, and processes the log file `didlog.txt`, generating and verifying
+  retrieves, and processes the log file `did.jsonl`, generating and verifying
   each log entry as per the requirements outlined in this specification.
     - In the process, the resolvers may collect all the DIDDoc versions and public
       keys (by reference) used by the DID currently, or in the past. This enables
       resolving both current and past DID URLs.
 7. `did:tdw` DID URLs with paths and `/whois` are resolved to documents
   published by the DID Controller that are by default in the web location relative to the
-  `didlog.txt` file. See the [note below](#the-whois-use-case) about the
+  `did.jsonl` file. See the [note below](#the-whois-use-case) about the
    powerful capability enabled by the `/whois` DID URL path.
 8. Optionally, a DID Controller can generate and publish a `did:web` DIDDoc
   from the latest `did:tdw` DIDDoc by changing the `id` to the `did:web` DID,

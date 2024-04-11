@@ -47,7 +47,7 @@ tdw-did = "did:tdw:" *( domain-segment “.” ) scid 1*( “.” domain-segment
 tdw-did = "did:tdw:" 2*( domain-segment “.” ) *( ":" path-segment ) (":" scid ) *( ":" path-segment )
 domain-segment = ; A part of a domain name as defined in RFC3986, such as "example" and "com" in "example.com"
 path-segment= ; A part of a URL path as defined in RFC3986, such as "path", "to", "folder" in "path/to/folder"
-scid = 24( lower-base32 )
+scid = 28+( lower-base32 )
 lower-base32 = [2-7a-z]
 ```
 
@@ -63,25 +63,25 @@ subdomain
 
 `did:tdw:{SCID}.example.com` -->
 
-`https://{SCID}.example.com/.well-known/didlog.txt`
+`https://{SCID}.example.com/.well-known/did.jsonl`
 
 path
 
 `did:tdw:example.com:dids:{SCID}` -->
 
-`https://example.com/dids/{SCID}/didlog.txt`
+`https://example.com/dids/{SCID}/did.jsonl`
 
 path w/ port
 
 `did:tdw:example.com%3A3000:dids:{SCID}` -->
 
-`https://example.com:3000/dids/{SCID}/didlog.txt`
+`https://example.com:3000/dids/{SCID}/did.jsonl`
 
 :::
 
-The location of the `did:tdw` `didlog.txt` file is the same as where the
-comparable `did:web` `did.json` file is published. A [[ref: DID Controller]]
-**MAY** choose to publish both DIDs and so both files.
+The location of the `did:tdw` `did.jsonl` [[ref:DID Log]] file is the same as
+where the comparable `did:web` `did.json` file is published. A [[ref: DID
+Controller]] **MAY** choose to publish both DIDs and so both files.
 
 ### DID Method Operations
 
@@ -90,7 +90,7 @@ comparable `did:web` `did.json` file is published. A [[ref: DID Controller]]
 Creating a `did:tdw` DID is done by carrying out the following steps.
 
 1. Define the DID string, and hence, the web location at which the DID Log
-   (`didlog.txt`) will be published. Identify (using the placeholder `{SCID}`)
+   (`did.jsonl`) will be published. Identify (using the placeholder `{SCID}`)
    where the required [[ref: SCID]] will be placed in the DID string (ie.
    `did:tdw:example.com:{SCID}`).
 2. Create the initial DIDDoc (`did.json`) file for the DID, with whatever
@@ -131,9 +131,9 @@ Creating a `did:tdw` DID is done by carrying out the following steps.
       [Authorized Keys](#authorized-keys) section of this specification. The
       proof becomes the sixth and last JSON item in the DID log entry.
    7. Put the resulting entry, with extraneous white space removed as the
-      contents of a file `didlog.txt` and publish the file at the appropriate
+      contents of a file `did.jsonl` and publish the file at the appropriate
       location defined by the `did:tdw` value.
-      - This is a logical operation -- how a deployment serves the `didlog.txt`
+      - This is a logical operation -- how a deployment serves the `did.jsonl`
         content is not constrained.
 
 A controller **MAY** generate an equivalent `did:web` DIDDoc and publish it as
@@ -154,7 +154,7 @@ The following steps MUST be executed to resolve the DIDDoc for a `did:tdw` DID:
 3. Generate an HTTPS URL to the expected location of the DIDDoc by prepending
    `https://`.
 4. If no path has been specified in the URL, append `/.well-known`.
-5. Append `/didlog.txt` to complete the URL.
+5. Append `/did.jsonl` to complete the URL.
 6. Perform an HTTP GET request to the URL using an agent that can successfully
    negotiate a secure HTTPS connection, which enforces the security requirements
    as described in [Security and privacy
@@ -190,20 +190,22 @@ the following steps:
       [Entry Hash Generation and
       Verification](#entry-hash-generation-and-validation) section of this
       specification.
-   4. For the initial version of the DIDDoc (`1`) verify that the [[ref: SCID]]
+   4. Verify that the first log entry's `versionId` is `1`, and that the `versionId` is incremented by one for each subsequent log entry.
+   5. Verify that the `versionTime` for each log entry is greater than the previous entry, and that the `versionTime` values are all earlier than the current time.
+   6. For the initial version of the DIDDoc (`1`) verify that the [[ref: SCID]]
       (defined in the [[ref: parameters]]) is being used in the DID, and
       verifies according to the [SCID Generation and
       Verification](#scid-generation-and-validation) section of this
       specification.
-   5. Generate the version of the DIDDoc for the entry by using the JSON value
+   7. Generate the version of the DIDDoc for the entry by using the JSON value
       of the `value` item, or by using [[ref: JSON Patch]] to apply the JSON
       value of the `patch` entry item to the previous version of the DIDDoc.
-   6. If [[ref: Key Pre-Rotation]] is being used, verify that any added keys in
+   8. If [[ref: Key Pre-Rotation]] is being used, verify that any added keys in
       the DIDDoc have a valid pre-rotation entry as defined in the [Key
       Pre-Rotation Hash Generation and
       Verification](#pre-rotation-key-hash-generation-and-validation) section of
       this specification.
-   7. Once each log entry has been processed, collect the following information
+   9. Once each log entry has been processed, collect the following information
       about each version:
       1. DIDDocument
       2. `versionId`
@@ -221,7 +223,7 @@ Document the full list of error codes that can be generated in resolving a DID.
 
 :::
 
-- Code 404: The `did:tdw` DID Log file `didlog.txt` was not found.
+- Code 404: The `did:tdw` DID Log file `did.jsonl` was not found.
 
 ##### Reading did:tdw DID URLs
 
@@ -239,7 +241,7 @@ Path resolution.
 #### Update (Rotate)
 
 To update a DID a new, verifiable [[ref: DID Log Entry]] must be generated,
-appended to the existing [[ref: DID Log]] (`didlog.txt`) and published to the
+appended to the existing [[ref: DID Log]] (`did.jsonl`) and published to the
 web location defined by the DID. The process to generate a verifiable [[ref: DID
 Log Entry]] follows a similar process to the [Create](#create-register) process,
 as follows:
@@ -289,10 +291,10 @@ as follows:
       [Authorized Keys](#authorized-keys) section of this specification. The
       proof becomes the last JSON item in the entry.
    5. Append the resulting entry to the existing contents of the [[ref: DID
-      Log]] file `didlog.txt` on a new line.
+      Log]] file `did.jsonl` on a new line.
 4. Update the [[ref: DID Log]] file at the appropriate location defined by the
       `did:tdw` identifier.
-      - This is a logical operation -- how a deployment serves the `didlog.txt`
+      - This is a logical operation -- how a deployment serves the `did.jsonl`
       content is not constrained.
 
 A controller **MAY** generate an equivalent, updated `did:web` DIDDoc and
@@ -301,11 +303,15 @@ DID](#publishing-a-parallel-didweb-did) section of this specification.
 
 #### Deactivate (Revoke)
 
-To deactivate the DID, the [[ref: DID Controller]] **SHOULD** update the DIDDoc
-to include the item `"deactivated": true`, as defined in the [[spec:DID-CORE]]
-specification. When doing that, the [[ref: DID Controller]] might also remove
-all keys from the DIDDoc, and set the top level `controller` item to `""` to
-prevent further updates to the DID.
+To deactivate the DID, the [[ref: DID Controller]] **SHOULD** add to the [[ref:
+DID log entry]] [[ref: parameters]] the item `"deactivated": true`. A [[ref: DID
+Controller]] **MAY** update the DIDDoc further to indicate the deactivation of
+the DID, such as removing the `authorization` key type entries, preventing
+further updates to the DID/DIDDoc.
+
+A resolver encountering in the [[ref: DID log entry]] [[ref: parameters]] the
+item `"deactivated": true` should return in the DIDDoc Metadata the JSON item
+`"deactivated": true`, as per the [[spec:DID-CORE]] specification.
 
 ### DID Method Processes
 
@@ -350,6 +356,10 @@ items are defined below.
   - By default, the value is initialized to `sha256`.
   - Acceptable values:
     - `sha256`: Use the `SHA-256` algorithm from [[spec:rfc4634]].
+- `cryptosuite`: The Data Integrity cryptosuite to use when generating and verifying the authorization proofs on the [[ref: DID log entries]].
+  - By default, the value is initialized to `eddsa-2022`
+  - Acceptable values:
+    - `eddsa-2022`: Use the [EDDSA 2022](https://github.com/digitalbazaar/eddsa-2022-cryptosuite) cryptosuite.
 - `prerotation`: A boolean value indicating that subsequent authentication keys
   added to the DIDDoc (after this version) **MUST** have their hash included in
   a `nextKeys` parameter item.
@@ -369,6 +379,22 @@ items are defined below.
   - See the section of this specification [Using Pre-Rotation
     Keys](#using-pre-rotation-keys) for non-normative guidance in using
     pre-rotation keys.
+- `deactivated`: A JSON boolean that should be set to `true` when the DID is to
+  be deactivated. See the [deactivate (revoke)](#deactivate-revoke) section of
+  this specification for more details.
+- `ttl`: A number, the number of seconds that a cache entry for a resolved
+  `did:tdw` DID should last, as recommended by the [[ref: DID Controller]]. A
+  resolver can use this value in deciding whether to retrieve a new version of
+  the DID's `did.jsonl` file. If not specified, resolvers may set a default
+  based on the business needs of the resolver clients.
+  - Caching of a `did:tdw` can be valuable in places where the business rules
+    require resolving a number of DID URLs for the same DID. For example, a
+    client might want call the resolver to the current DIDDoc, and then make
+    repeated calls to get all of the previous versions of the DIDDoc. By caching
+    the DIDDoc state, the resolver would not have to retrieve and process the
+    [[ref: DID Log]] on every call.
+  - A Web Server handling one or more `did.jsonl` file **MAY** be configured to
+   use a comparable HTTP TTL per [[spec-inform:rfc9111]].
 
 #### SCID Generation and Validation
 
@@ -397,7 +423,7 @@ Where:
 4. `base32_lower` as defined by the [[ref: base32_lower]] function. Its output
    is the lower case of the Base32 encoded string of its input.
 5. `left` extracts the `<length>` number of characters from the string input.
-   1. `<length>` **MUST** be at least 24 characters.
+   1. `<length>` **MUST** be at least 28 characters.
 
 ##### Verify SCID
 
@@ -406,8 +432,8 @@ To verify the [[ref: SCID]] of a `did:tdw` DID being resolved, the resolver
 
 1. Extract from the [[ref: parameters]] in the first [[ref: DID log entry]] for
    the DID the `scid` item's value.
-2. Verify that the length of the `scid` is at least 24 characters.
-   1. If less than 24 characters, terminate the resolution process with an
+2. Verify that the length of the `scid` is at least 28 characters.
+   1. If less than 28 characters, terminate the resolution process with an
       error.
 3. Extract from the first [[ref: DID log entry]] the `value` item's value, which
    is the initial DIDDoc.
@@ -661,15 +687,15 @@ with the semantic simplicity of using them in a web-based DID method.
 Specifically, a `did:tdw` implementation **MUST**:
 
 - Resolve the `/whois` DID URL path using a [[spec:LINKED-VP]] service, whether
-  or not it exists in the `did:tdw` DIDDoc, returning a `Verifiable
-  Presentation`, if published by the [[ref: DID Controller]], found at the same
-  path as the `didlog.txt` file is found with `/whois` appended to it.
+  or not it exists in the `did:tdw` DIDDoc, returning a [[ref: Verifiable
+  Presentation]], if published by the [[ref: DID Controller]], found at the same
+  path as the `did.jsonl` file is found with `/whois.json` appended to it.
   - For example, `did:tdw:{SCID}.example.com/whois` returns the verifiable
-    presentation from `https://{SCID}.example.com/.well-known/whois`.
+    presentation from `https://{SCID}.example.com/.well-known/whois.json`.
 - Resolve any `did:tdw` DID URL using a [[spec:DID-CORE]] `relativeRef` DID
   parameter, whether or not a supporting service exists in the `did:tdw` DIDDoc,
   returning the file, found at the web location relative to where the
-  `didlog.txt` file is found.
+  `did.jsonl` file is found.
   - For example, `did:tdw:{SCID}.example.com/governance/issuers.json` returns
     the file `https://{SCID}.example.com/.well-known/governance/issuer.json`
 
@@ -683,14 +709,16 @@ how a [[ref: DID Controller]] can override them.
 #### whois LinkedVP Service
 
 The `#whois` service enables those that receive a `did:tdw` DID to retrieve and
-a [[ref: Verifiable Presentation]] (and embedded [[ref: Verifiable Credentials]])
-the [[ref: DID Controller]] has decided to publish about itself. The intention
-is that anyone interested in a particular `did:tdw` DID can resolve the
-`<did>/whois` DID URL, to retrieve any useful (to the resolver) Verifiable
-Credentials that might help in learning more about who is the controller of the
-DID and if they should be trusted. It is up to the [[ref: DID Controller]] to
-decide to publish a `whois` verifiable presentation, along with which verifiable
-credentials to put into the verifiable presentation.
+a [[ref: Verifiable Presentation]] (and embedded [[ref: Verifiable
+Credentials]]) the [[ref: DID Controller]] has decided to publish about itself.
+The intention is that anyone interested in a particular `did:tdw` DID can
+resolve the `<did>/whois` DID URL, to retrieve a [[ref: Verifiable
+Presentation]] published by the [[ref: DID Controller]] that contains [[ref:
+Verifiable Credentials] about the DID that might be useful to the resolver in
+learning more about who is the controller of the DID and if they should be
+trusted. It is up to the [[ref: DID Controller]] to decide to publish a `whois`
+verifiable presentation, along with which verifiable credentials to put into the
+verifiable presentation.
 
 See the [The `/whois` Use Case](#the-whois-use-case) in this specification for
 the background about why this capability is so useful, particularly for a
@@ -699,20 +727,28 @@ web-based DID Method like `did:tdw`.
 `did:tdw` DIDs **automatically** supports a `#whois` service endpoint with the
 following definition based on the [[ref: Linked VP]] specification, with the
 `serviceEndpoint` matching the `did:tdw` DID-to-HTTPS DIDDoc transformation and
-`didlog.txt` changed to `whois`.
+`did.jsonl` changed to `whois.json`.
 
 ```json
 {
    "@context": "https://identity.foundation/linked-vp/contexts/v1",
    "id": "#whois",
    "type": "LinkedVerifiablePresentation",
-   "serviceEndpoint": "https://example.com/dids/<scid>/whois"
+   "serviceEndpoint": "https://example.com/dids/<scid>/whois.json"
 }
 ```
 
+The returned `whois.json` **MUST** contain a [[ref: W3C VCDM]] [[ref: verifiable
+presentation]] signed by the DID and containing [[ref: verifiable credentials]]
+with the DID as the `credentialSubject`.
+
 A [[ref: DID Controller]] **MAY** explicitly add to their DIDDoc a `did:tdw`
 service with the `"id": "#whois"`. Such an entry **MUST** override the implicit
-`service` above.
+`service` above. If the [[ref: DID Controller]] wants to publish the `/whois`
+[[ref: verifiable presentation]] in a different format than the [[ref: W3C
+VCDM]] format, they **MUST** explicitly add to their DIDDoc a service with the
+`"id": "#whois"` to specify the name and implied format of the [[ref: verifiable
+presentation]].
 
 To resolve the DID URL `<did:tdw DID>/whois`, the resolver **MUST**:
 
@@ -727,8 +763,6 @@ To resolve the DID URL `<did:tdw DID>/whois`, the resolver **MUST**:
       YYY` **MUST** be returned.
    2. If the file at the defined `serviceEndpoint` is not found, `Error
       404: Not Found` **MUST** be returned.
-4. The web server handling the HTTPS get for the `/whois` endpoint **SHOULD**
-   include an HTTP Header parameter with the MIME Type of the `whois` file.
 
 #### DID URL Path Resolution Service
 
@@ -744,7 +778,7 @@ The automatic resolution of `did:tdw` DID URL paths follows the
   `relativeRef`.
   - For `did:tdw`, that service is implicitly defined, with the
     `serviceEndpoint` matching the `did:tdw` DID-to-HTTPS DIDDoc transformation
-    and `didlog.txt` replaced by the DID URL Path.
+    and `did.jsonl` replaced by the DID URL Path.
 
 Thus, the implicit service for DID `did:tdw:example.com:dids:<scid>` is:
 

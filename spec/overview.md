@@ -37,30 +37,10 @@ cryptographic key publishing and management.
 For backwards compatibility, and for verifiers that "trust" `did:web`, a
 `did:tdw` can be trivially modified and published in parallel to a `did:web`
 DID. For resolvers that want more assurance, `did:tdw` provides a way to "trust
-did:web" (or to enable a "trusted web" if you say it fast), by supporting these
-features:
+did:web" (or to enable a "trusted web" if you say it fast) enabled by the
+features listed in the [Abstract](#abstract).
 
-- Ongoing publishing of all DID Document (DIDDoc) versions for a DID instead of,
-  or alongside a `did:web` DID.
-- Uses the same DID-to-HTTPS transformations as `did:web`.
-- Provides resolvers the full history of the DID using a verifiable chain of
-  updates to the DIDDoc from genesis to deactivation.
-- A [[def: self-certifying identifier]] (SCID) for the DID that is globally
-  unique and derived from the initial DIDDoc, enabling verifiable "alsoKnownAs"
-  DIDs.
-- DIDDoc updates include a proof signed by the DID Controller(s) authorized to
-  update the DID.
-- An optional mechanism for publishing "pre-rotation" keys to prevent loss of
-  control of the DID in cases where an active private key is compromised.
-- DID URL path handling that defaults to automatically resolving a
-  `<did>/path/to/file` being retrieved through using a comparable DID-to-HTTPS
-  translation as for the DIDDoc.
-- A DID URL path `<did>/whois` that defaults to automatically returning a [[ref:
-  Verifiable Presentation]] containing [[ref: Verifiable Credentials]] with the
-  DID as the `credentialSubject`, signed by the DID.
-
-The following is a `tl;dr` summary of the specification summarizing how
-`did:tdw` works.
+The following is a `tl;dr` summary of how `did:tdw` works.
 
 1. In the same path as where DID resolvers find a `did:web`'s `did.json`,
   `did:tdw`'s `did.jsonl` ([[ref: JSON Lines]]) file is found. The same `did:web` DID-to-HTTPS
@@ -104,8 +84,8 @@ The following is a `tl;dr` summary of the specification summarizing how
   they can verify the DIDDoc, if wanted).
 
   ::: warning
-    A resolver settling for just the `did:web` version of the DID does not get the verifiability
-    of the `did:tdw` log.
+    A resolver settling for just the `did:web` version of the DID does not get the
+    verifiability of the `did:tdw` log.
   :::
 
 An example of a `did:tdw` evolving through a series of versions can be seen in
@@ -113,18 +93,70 @@ the [did:tdw Examples](#didtdw-example) of this specification.
 
 ### The `/whois` Use Case
 
-This DID Method introduces what we hope will be a widely embraced convention for all DID Methods -- the `/whois` path. This feature harkens back to the `WHOIS` protocol that was created in the 1970s to provide a directory about people and entities in the early days of ARPANET. In the 80's, `whois` evolved into a [[spec-inform:rfc920]] that has expanded into the [global whois](https://en.wikipedia.org/wiki/WHOIS) feature we know today as [[spec-inform:rfc3912]]. Submit a `whois` request about a domain name, and get back the information published about that domain.
+This DID Method introduces what we hope will be a widely embraced convention for
+all DID Methods -- the `/whois` path. This feature harkens back to the `WHOIS`
+protocol that was created in the 1970s to provide a directory about people and
+entities in the early days of ARPANET. In the 80's, `whois` evolved into
+[[spec-inform:rfc920]] that has expanded into the [global
+whois](https://en.wikipedia.org/wiki/WHOIS) feature we know today as
+[[spec-inform:rfc3912]]. Submit a `whois` request about a domain name, and get
+back the information published about that domain.
 
-We propose that the `/whois` path for a DID enable a comparable, decentralized, version of the `WHOIS` protocol for DIDs. Notably, when `<did>/whois` is resolved (using a standard DID `service` that follows the [[ref: Linked-VP]] specification), a [[ref: Verifiable Presentation]] (VP) may be returned (if published by the DID Controller) containing [[ref: Verifiable Credentials]] with the DID as the `credentialSubject`, and the VP signed by the DID. Given a DID, one can find out who controls that DID by calling `<did>/whois` and processing the returned VP. That's powerful -- a decentralized trust registry. For `did:tdw`, the approach is very simple -- transform the DID to its HTTPS equivalent, and `GET <https>/whois.json`. Need to know who issued the VCs in the VP? Get the issuer DIDs from the VCs, and resolve `<issuer did>/whois`. This is comparable to walking a CA (Certificate Authority) hierarchy, but self-managed by the DID Controllers -- and the issuers that attest to them.
+We propose that the `/whois` path for a DID enable a comparable, decentralized,
+version of the `WHOIS` protocol for DIDs. Notably, when `<did>/whois` is
+resolved (using a standard DID `service` that follows the [[ref: Linked-VP]]
+specification), a [[ref: Verifiable Presentation]] (VP) may be returned (if
+published by the DID Controller) containing [[ref: Verifiable Credentials]] with
+the DID as the `credentialSubject`, and the VP signed by the DID. Given a DID,
+one can find out who controls that DID by calling `<did>/whois` and processing
+the returned VP. That's powerful -- a decentralized trust registry. For
+`did:tdw`, the approach is very simple -- transform the DID to its HTTPS
+equivalent, and `GET <https>/whois`. Need to know who issued the VCs in the VP?
+Get the issuer DIDs from the VCs, and resolve `<issuer did>/whois`. This is
+comparable to walking a CA (Certificate Authority) hierarchy, but self-managed
+by the DID Controllers -- and the issuers that attest to them.
 
-The following is a use case for the `/whois` capability. Consider an example of the `did:tdw` controller being a mining company that has exported a shipment and created a "Product Passport" Verifiable Credential with information about the shipment. A country importing the shipment (the Importer) might want to know more about the issuer of the VC, and hence, the details of the shipment. They resolve the `<did>/whois` of the entity and get back a Verifiable Presentation about that DID. It might contain:
+The following is a use case for the `/whois` capability. Consider an example of
+the `did:tdw` controller being a mining company that has exported a shipment and
+created a "Product Passport" Verifiable Credential with information about the
+shipment. A country importing the shipment (the Importer) might want to know
+more about the issuer of the VC, and hence, the details of the shipment. They
+resolve the `<did>/whois` of the entity and get back a Verifiable Presentation
+about that DID. It might contain:
 
-- A verifiable credential issued by the Legal Entity Registrar for the jurisdiction in which the mining company is headquartered.
-  - Since the Importer knows about the Legal Entity Registrar, they can automate this lookup to get more information about the company from the VC -- its legal name, when it was registered, contact information, etc.
-- A verifiable credential for a "Mining Permit" issued by the mining authority for the jurisdiction in which the company operates.
-  - Perhaps the Importer does not know about the mining authority for that jurisdiction. The Importer can repeat the `/whois` resolution process for the issuer of _that_ credential. The Importer might (for example), resolve and verify the `did:tdw` DID for the Authority, and then resolve the `/whois` DID URL to find a verifiable credential issued by the government of the jurisdiction. The Importer recognizes and trusts that government's authority, and so can decide to recognize and trust the mining permit authority.
-- A verifiable credential about the auditing of the mining practices of the mining company. Again, the Importer doesn't know about the issuer of the audit VC, so they resolve the `/whois` for the DID of the issuer, get its VP and find that it is accredited to audit mining companies by the [London Metal Exchange](https://www.lme.com/en/) according to one of its mining standards. As the Importer knows about both the London Metal Exchange and the standard, it can make a trust decision about the original Product Passport Verifiable Credential.
+- A verifiable credential issued by the Legal Entity Registrar for the
+  jurisdiction in which the mining company is headquartered.
+  - Since the Importer knows about the Legal Entity Registrar, they can automate
+    this lookup to get more information about the company from the VC -- its
+    legal name, when it was registered, contact information, etc.
+- A verifiable credential for a "Mining Permit" issued by the mining authority
+  for the jurisdiction in which the company operates.
+  - Perhaps the Importer does not know about the mining authority for that
+    jurisdiction. The Importer can repeat the `/whois` resolution process for
+    the issuer of _that_ credential. The Importer might (for example), resolve
+    and verify the `did:tdw` DID for the Authority, and then resolve the
+    `/whois` DID URL to find a verifiable credential issued by the government of
+    the jurisdiction. The Importer recognizes and trusts that government's
+    authority, and so can decide to recognize and trust the mining permit
+    authority.
+- A verifiable credential about the auditing of the mining practices of the
+  mining company. Again, the Importer doesn't know about the issuer of the audit
+  VC, so they resolve the `/whois` for the DID of the issuer, get its VP and
+  find that it is accredited to audit mining companies by the [London Metal
+  Exchange](https://www.lme.com/en/) according to one of its mining standards.
+  As the Importer knows about both the London Metal Exchange and the standard,
+  it can make a trust decision about the original Product Passport Verifiable
+  Credential.
 
-Such checks can all be done with a handful of HTTPS requests and the processing of the DIDs and verifiable presentations. If the system cannot automatically make a trust decision, lots of information has been quickly collected that can be passed to a person to make such a decision.
+Such checks can all be done with a handful of HTTPS requests and the processing
+of the DIDs and verifiable presentations. If the system cannot automatically
+make a trust decision, lots of information has been quickly collected that can
+be passed to a person to make such a decision.
 
-The result is an efficient, verifiable, credential-based, decentralized, multi-domain trust registry, empowering individuals and organizations to verify the authenticity and legitimacy of DIDs. The convention promotes a decentralized trust model where trust is established through cryptographic verification rather than reliance on centralized authorities. By enabling anyone to access and validate the information associated with a DID, the "/whois" path contributes to the overall security and integrity of decentralized networks.
+The result is an efficient, verifiable, credential-based, decentralized,
+multi-domain trust registry, empowering individuals and organizations to verify
+the authenticity and legitimacy of DIDs. The convention promotes a decentralized
+trust model where trust is established through cryptographic verification rather
+than reliance on centralized authorities. By enabling anyone to access and
+validate the information associated with a DID, the "/whois" path contributes to
+the overall security and integrity of decentralized networks.

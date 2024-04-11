@@ -25,7 +25,7 @@ of `did:web`. It's features include the following.
   [[ref: Verifiable Credentials]] with the DID as the `credentialSubject`,
   signed by the DID.
 
-Combined, the additional feature enable greater trust and security without
+Combined, the additional features enable greater trust and security without
 compromising the simplicity of `did:web`. The incorporation of the DID Core
 compatible "/whois" path, drawing inspiration from the traditional WHOIS
 protocol [[spec:rfc3912]], offers an easy to use, decentralized, trust registry.

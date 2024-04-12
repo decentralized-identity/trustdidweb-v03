@@ -4,7 +4,7 @@ The evolution of [[ref: Decentralized Identifiers]] ([[ref: DID]]) continues to
 be a dynamic area of development in the quest for secure and private digital
 identity management. The `did:web` method, praised for its simplicity and ease
 of deployment, allows for DIDs to be associated with a domain's reputation or
-published on platforms like GitHub. However, it is not without its challenges
+published on platforms such as GitHub. However, it is not without its challenges--
 from trust layers inherited from the web and the absence of a verifiable history
 for the DID. Addressing these concerns, the proposed `did:tdw` (Trust DID Web)
 method aims to enhance `did:web` by introducing a verifiable history feature,
@@ -40,14 +40,15 @@ DID. For resolvers that want more assurance, `did:tdw` provides a way to "trust
 did:web" (or to enable a "trusted web" if you say it fast) enabled by the
 features listed in the [Abstract](#abstract).
 
-The following is a `tl;dr` summary of how `did:tdw` works.
+The following is a `tl;dr` summary of how `did:tdw` works:
 
-1. In the same path as where DID resolvers find a `did:web`'s `did.json`,
-  `did:tdw`'s `did.jsonl` ([[ref: JSON Lines]]) file is found. The same `did:web` DID-to-HTTPS
-  transformation is used.
+1. `did.tdw` uses the same DID-to-HTTPS tranformation as `did:web`, so
+   `did:tdw`'s  `did.jsonl` ([[ref: JSON Lines]]) file is found in the same
+   location as `did:web`'s `did.json` file.
 2. The `did.jsonl` is a list of JSON [[ref: DID log entries]], one per line,
-  whitespace removed, each of which contains the information needed to derive a
-  version of the DIDDoc from its preceding version.
+  whitespace removed (per [[ref: JSON Lines]]), each of which contains the
+  information needed to derive a version of the DIDDoc from its preceding
+  version.
 3. Each entry includes six JSON entries:
     1. A hash of the entry.
     2. The `versionId` of the DIDDoc, starting from 1 and incrementing.
@@ -91,12 +92,12 @@ The following is a `tl;dr` summary of how `did:tdw` works.
 An example of a `did:tdw` evolving through a series of versions can be seen in
 the [did:tdw Examples](#didtdw-example) of this specification.
 
-This draft specification was developed in parallel with the development of two proof
-of concept implementations. The specification/implementation interplay helped
-immensely in defining a practical, easy to use, easy to understand, DID method.
-The existing proof of concept implementations of the `did:tdw` DID Method are
-listed in the [Implementors Guide](#Implementations). The current Typescript
-implementation is less than 1000 lines of Typescript code.
+This draft specification was developed in parallel with the development of two
+proof of concept implementations. The specification/implementation interplay
+helped immensely in defining a practical, intuitive, straightforward, DID
+method. The existing proof of concept implementations of the `did:tdw` DID
+Method are listed in the [Implementors Guide](#Implementations). The current
+Typescript implementation is less than 1000 lines of Typescript code.
 
 ### The `/whois` Use Case
 

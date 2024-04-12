@@ -42,7 +42,7 @@ features listed in the [Abstract](#abstract).
 
 The following is a `tl;dr` summary of how `did:tdw` works:
 
-1. `did.tdw` uses the same DID-to-HTTPS tranformation as `did:web`, so
+1. `did:tdw` uses the same DID-to-HTTPS tranformation as `did:web`, so
    `did:tdw`'s  `did.jsonl` ([[ref: JSON Lines]]) file is found in the same
    location as `did:web`'s `did.json` file.
 2. The `did.jsonl` is a list of JSON [[ref: DID log entries]], one per line,

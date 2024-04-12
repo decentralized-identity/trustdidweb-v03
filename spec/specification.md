@@ -301,6 +301,14 @@ A controller **MAY** generate an equivalent, updated `did:web` DIDDoc and
 publish it as defined in the [Publishing a Parallel `did:web`
 DID](#publishing-a-parallel-didweb-did) section of this specification.
 
+A controller may use the `move` [[ref: DID log entry]] [[ref: parameter]] to
+change the DID string. That effectively creates a new DID, but a DID that
+retains the [[ref: SCID]] and verifiable history of the original DID. A [[ref:
+DID Controller]] may do that when forced (for example, loss of domain name) or
+by choice (moving from a DID hosting provider to another) without losing the
+history and reputation of the DID. See the [Moving a DID](#moving-a-did) section
+of the Implementers Guide for a discussion of moving a `did:tdw` DID.
+
 #### Deactivate (Revoke)
 
 To deactivate the DID, the [[ref: DID Controller]] **SHOULD** add to the [[ref:
@@ -319,7 +327,7 @@ The [DID Method Operations](#did-method-operations) reference several processes
 that are executed during DIDDoc generation and DID resolution verification. Each
 of those processes is specified in the following sections.
 
-#### did:tdw DID Method Parameters
+#### `did:tdw` DID Method Parameters
 
 Entries in the `did:tdw` [[ref: DID Log]] file contain, as the 4th item, a JSON
 object that define the DID processing parameters being used by the [[ref: DID
@@ -379,6 +387,12 @@ items are defined below.
   - See the section of this specification [Using Pre-Rotation
     Keys](#using-pre-rotation-keys) for non-normative guidance in using
     pre-rotation keys.
+- `moved`: A string that is a new `did:tdw` DID string. The new `did:tdw`:
+  - **MUST** contain the same [[ref: SCID]].
+  - The accompanying DIDDoc **MUST** have the new DID as the value of the
+    top-level `id`.
+  - The accompanying DIDDoc **MUST** have an `alsoKnownAs` array with all
+    previous DID strings as entries in the array.
 - `deactivated`: A JSON boolean that should be set to `true` when the DID is to
   be deactivated. See the [deactivate (revoke)](#deactivate-revoke) section of
   this specification for more details.

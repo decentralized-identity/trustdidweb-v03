@@ -10,9 +10,10 @@ of `did:web`. It's features include the following.
 - Provides resolvers the full history of the DID using a verifiable chain of
   updates to the DIDDoc from genesis to deactivation.
 - A [[def: self-certifying identifier]] (SCID) for the DID that is globally
-  unique and derived from the initial DIDDoc that enables DID portability, such
-  as moving the DIDs web location (and so the DID string itself) while retaining
-  the DID's history.
+  unique, embedded in the DID, and derived from the initial DIDDoc. The SCID
+  replacement DID attacks and enables [[ref: DID portability]], such as moving the DIDs
+  web location (and so the DID string itself) while retaining the DID's
+  verifiable history.
 - DIDDoc updates include a proof signed by the DID Controller(s) *authorized* to
   update the DID.
 - An optional mechanism for publishing "pre-rotation" keys to prevent loss of

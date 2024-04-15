@@ -43,7 +43,7 @@ segment in the (optional) URL path. See examples below. The `domain-segment` and
 would inevitably be wrong.
 
 ```abnf
-tdw-did = "did:tdw:" *( domain-segment “.” ) scid 1*( “.” domain-segment ) ( “.” domain-segment ) *( ":" path-segment )
+tdw-did = "did:tdw:" *( domain-segment “.” ) scid 2*( “.” domain-segment ) *( ":" path-segment )
 tdw-did = "did:tdw:" 2*( domain-segment “.” ) *( ":" path-segment ) (":" scid ) *( ":" path-segment )
 domain-segment = ; A part of a domain name as defined in RFC3986, such as "example" and "com" in "example.com"
 path-segment= ; A part of a URL path as defined in RFC3986, such as "path", "to", "folder" in "path/to/folder"

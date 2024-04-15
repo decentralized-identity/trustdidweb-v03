@@ -112,13 +112,13 @@ Creating a `did:tdw` DID is done by carrying out the following steps.
       the calculated `SCID`.
    3. Generate a DID Entry as a JSON array with the following five JSON items:
       1. The [[ref: SCID]] as the `entryHash` value:
-         `"ke465curdwjzrrp5x5ut92te"`
+         `"4c99uuenu8gk6n3bgf09fuf350gx"`
       2. An integer, `1`, that is the versionId for this first version of the
          DIDDoc: `1`
       3. A string that is the current time in [[ref: ISO8601]] format:
          `"2024-04-04T07:32:58Z"`
       4. The [[ref: parameters]] passed in as a JSON dict:
-         `{"method":"did:tdw:1","scid":"en6dfezxz8yvudnyb5pq9a6g"}`
+         `{"method":"did:tdw:1","scid":"4c99uuenu8gk6n3bgf09fuf350gx"}`
       5. The contents of the initial DIDDoc, in the form: `{"value": <DIDDoc>}`
    4. Calculate the [[ref: Entry Hash]] (`entryHash`) of the DID Entry as
       defined in the [Entry Hash Generation and
@@ -332,7 +332,7 @@ specification.
 
 An example of the parameters item in the first DID Log entry for a DID:
 
-`{"method":"did:tdw:1","scid":"ke465curdwjzrrp5x5ut92te"}`
+`{"method":"did:tdw:1","scid":"4c99uuenu8gk6n3bgf09fuf350gx"}`
 
 :::
 
@@ -478,10 +478,10 @@ Example of a [[ref:DID log entry]] that is processed in step 3 to produce a hash
 this is a first entry in a DID Log, the `entryHash` is the SCID of the DID.
 
 ```json
-["ke465curdwjzrrp5x5ut92te",1,"2024-04-03T03:47:51Z",{"method":"did:tdw:1","scid":"ke465curdwjzrrp5x5ut92te"},{"value":{"@context":["https://www.w3.org/ns/did/v1","https://w3id.org/security/multikey/v1"],"id":"did:tdw:example.com:ke465curdwjzrrp5x5ut92te","controller":"did:tdw:example.com:ke465curdwjzrrp5x5ut92te","authentication":["did:tdw:example.com:ke465curdwjzrrp5x5ut92te#FFhXVfsx"],"assertionMethod":["did:tdw:example.com:ke465curdwjzrrp5x5ut92te#CPixwJ8x"],"verificationMethod":[{"id":"did:tdw:example.com:ke465curdwjzrrp5x5ut92te#FFhXVfsx","controller":"did:tdw:example.com:ke465curdwjzrrp5x5ut92te","type":"Multikey","publicKeyMultibase":"z6MkkXKMSiE7mXvGcR2KUpeJXwT7MPXZSBC6HZw9FFhXVfsx"},{"id":"did:tdw:example.com:ke465curdwjzrrp5x5ut92te#CPixwJ8x","controller":"did:tdw:example.com:ke465curdwjzrrp5x5ut92te","type":"Multikey","publicKeyMultibase":"z6Mkg8FdKNRt4NLXm5YSUZVGWzK8vvS3DJByxAqHCPixwJ8x"}]}}]
+["4c99uuenu8gk6n3bgf09fuf350gx",1,"2024-04-15T19:56:18Z",{"method": "did:tdw:1","scid": "4c99uuenu8gk6n3bgf09fuf350gx"},{"value": {"@context": ["https://www.w3.org/ns/did/v1","https://w3id.org/security/multikey/v1"],"id": "did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx","controller": "did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx","authentication": ["did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx#y4SDXopT"],"assertionMethod": ["did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx#5b48Zj6B"],"verificationMethod": [{"id": "did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx#y4SDXopT","controller": "did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx","type": "Multikey","publicKeyMultibase": "z6Mksta2t7db1WSx2JBorfYFcJnaJMBKUyupD2qPy4SDXopT"},{"id": "did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx#5b48Zj6B","controller": "did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx","type": "Multikey","publicKeyMultibase": "z6Mkw1KSvGWNAwSwWbcpwPgFARX4vKPa1xvcDMsJ5b48Zj6B"}]}}]
 ```
 
-Resulting entry hash: `xkuu1nwynw5ymfv4f1np2xbmg21k4vn1rrvg3ngpdmx482c2ce20`
+Resulting entry hash: `4fbja27mgf0bumtbg2b4hbzqc2ux9a9crrqx7w6cfnd97k9u7k5g`
 
 ##### Verify Entry Hash
 

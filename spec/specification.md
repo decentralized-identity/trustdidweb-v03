@@ -365,7 +365,7 @@ items are defined below.
   - Acceptable values:
     - `sha256`: Use the `SHA-256` algorithm from [[spec:rfc4634]].
 - `cryptosuite`: The Data Integrity cryptosuite to use when generating and verifying the authentication proofs on the [[ref: DID log entries]].
-  - By default, the value is initialized to `eddsa-2022`
+  - By default, the value is initialized to `eddsa-jcs-2022`
   - Acceptable values:
     - `eddsa-jcs-2022`: Use the [eddsa-jcs-2022](https://www.w3.org/TR/vc-di-eddsa/#eddsa-jcs-2022) cryptosuite.
 - `prerotation`: A boolean value indicating that subsequent authentication keys

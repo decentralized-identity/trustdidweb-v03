@@ -13,12 +13,19 @@ The Typescript implementation is currently less than 1000 lines of Typescript co
 
 ### Using Pre-Rotation Keys
 
-The purpose of using pre-rotation keys is to prevent the loss of control over a
-DID in the face of a compromised private key used to control the DID. The cost
-is a much more complicated process to update the keys of a DID. The following
-are some considerations we have come across in considering how to use the
-pre-rotation feature. The feature definitely adds a layer of key management
-complexity in return for the benefit.
+In an effort to prevent the loss of control over a decentralized identifier (DID) due to a compromised private key, [[ref: pre-rotation keys]] are introduced. These commitments, made by the DID Controller, are declarations about the keys that will be published in future versions of the DID document, without revealing the keys themselves.
+
+The primary goal of pre-rotation keys is to ensure that even if an attacker
+gains access to the current active key, they will not be able to take control of
+the DID. This safeguard is achieved because the attacker could simply rotate to
+a key they generate and control. Rather, they would need to have also
+compromised the unpublished (and presumably securely stored) pre-rotation key in
+order to rotate the DID keys.
+
+The cost of having pre-rotation protection is a much more complicated process to update
+the keys of a DID. The following are some considerations we have come across in
+considering how to use the pre-rotation feature. The feature definitely adds a
+layer of key management complexity in return for the benefit.
 
 #### Key Rotation with Pre-Rotation
 
@@ -33,21 +40,21 @@ private keys both DID control keys would be lost. Thus, we expect the feature to
   service the hash of the "next key" as defined in this specification. For
   example, an entity might have the "active" DID/key hosted by one Cloud
   Provider, and the "next key" by another, on the theory that an attacker might
-  get into one environment or another or not both.
+  get into one environment or another but not both.
 - When a key rotation is to be done, two entries are put in the log, using the following steps by the [[ref: DID Controller]]:
   1. Get the full key reference entry from the isolated service for the pre-rotation "nextKey".
   2. Locally generate a pre-rotation key hash for a new key that will soon become the "active" key.
   3. Add a [[ref: DID log]] entry that includes the items from the previous two steps, and signs the proof using an authorized key (that presumably it controls, though not required).
-    1. Although the [[ref: DID log]] could be published now, probably best to hold off and publish it after adding another entry.
-  4. Get a new pre-rotation from the isolated service.
+    1. Although the [[ref: DID log]] could be published now, it is probably best to hold off and publish it after adding a second, as described by the rest of the steps.
+  4. Get a new pre-rotation hash from the isolated service.
   5. Get the full key-rotation key reference for the pre-rotation hash created for the last [[ref: DID log entry]].
   6. Add a [[ref: DID Log]] entry that includes the items from the previous two step
-  7. If they key rotated in the previous [[ref: DID log entry]] was a/the
-     authorized to make updates to the DID, call the isolated service to produce
-     the [[ref: Data Integrity]] proof over the entry using the key that
-     services controls.
+  7. If the key rotated in the previous [[ref: DID log entry]] was a/the
+     authorized key to make updates to the DID, call the isolated service to produce
+     the [[ref: Data Integrity]] proof over the entry using the key the isolated
+     service controls.
      1. This step is not needed if the active service has a key authorized to sign the DIDDoc update.
-  8. Publish the new [[ref: DID log]] with the two new entries.
+  8. Publish the new [[ref: DID log]] containing the two new entries.
 
 #### Post Quantum Attacks
 
@@ -80,7 +87,7 @@ As noted in the [`did:tdw` DID Method Parameters](#didtdw-did-method-parameters)
 a `did:tdw` DID can be "moved" by changing the DID string to one that resolves to a different HTTPS URL, as
 long as:
 
-- the [[ref: SCID]] stays in the same in the new DID,
+- the [[ref: SCID]] stays the same in the new DID,
 - the DIDDoc is updated at the same time to have the new DID as the top-level `id`, and
 - the DIDDoc is updated at the same time to have the old DID string(s) as `alsoKnownAs` entries.
 
@@ -107,9 +114,10 @@ SCID and retain the full history can be preserved.
 
 Consider being able to replace the current identifiers we are given (email
 addresses, phone numbers) with `did:tdw` DIDs. Comparable hosting platforms
-might publish our DIDs for us (ideally us still hosting own private keys...).
-Those DIDs, with the inherent public keys can be used for many purposes --
-encrypted email (hello PGP!), messaging, secure file sharing, and more.
+might publish our DIDs for us (ideally, with us in custody of our own private
+keys...). Those DIDs, with the inherent public keys can be used for many
+purposes -- encrypted email (hello PGP!), messaging, secure file sharing, and
+more.
 
 From time to time in that imagined future, we will may want to move our DIDs
 from one hosting service to another, just as we move from one email or cell
@@ -119,15 +127,16 @@ of the DID remains.
 
 #### Challenges in Moving a DID
 
-While we see great value (and even a hard requirement) in being able to move a
+While we see great value (and even a hard requirement) for being able to move a
 DID's web location, it does create challenges in aligning with the
-[[spec:DID-CORE]] specification. These are listed below.
+[[spec:DID-CORE]] specification. These challenges are listed below.
 
 Moving a `did:tdw` is actually the (partial or complete) deactivation of the old
-DID and the creation of the new DID. The use of the [[ref: SCID]] and the way it is generated
-is designed to prevent an attacker creating a DID with the same SCID. Thus, "finding" a `did:tdw`
-with the same SCID implies the DIDs are the same. That can be verified by processing the
-[[ref: DID Log]].
+DID and the creation of a new DID. The use of the [[ref: SCID]] and the way it
+is generated is designed to prevent an attacker from being able to create a DID
+they control but with the same SCID as existing DID. Thus, "finding" a `did:tdw`
+with the same SCID implies the DIDs are the same. That can be verified by
+processing the [[ref: DID Log]].
 
 By retaining the incrementing of the `versionId` after a move, the "new" DID
 does not start at `versionId` of `1`. Further, resolving `<new-did>?versionId=1`

@@ -19,33 +19,33 @@ This is the version of the DIDDoc that the [[ref: DID Controller]] constructs
 
 ```json
 {
-      "@context": [
-        "https://www.w3.org/ns/did/v1",
-        "https://w3id.org/security/multikey/v1"
-      ],
-      "id": "did:web:example.com:{SCID}",
-      "controller": "did:web:example.com:{SCID}",
-      "authentication": [
-        "did:web:example.com:{SCID}#FFhXVfsx"
-      ],
-      "assertionMethod": [
-        "did:web:example.com:{SCID}#CPixwJ8x"
-      ],
-      "verificationMethod": [
-        {
-          "id": "did:web:example.com:{SCID}#FFhXVfsx",
-          "controller": "did:web:example.com:{SCID}",
-          "type": "Multikey",
-          "publicKeyMultibase": "z6MkkXKMSiE7mXvGcR2KUpeJXwT7MPXZSBC6HZw9FFhXVfsx"
-        },
-        {
-          "id": "did:web:example.com:{SCID}#CPixwJ8x",
-          "controller": "did:web:example.com:{SCID}",
-          "type": "Multikey",
-          "publicKeyMultibase": "z6Mkg8FdKNRt4NLXm5YSUZVGWzK8vvS3DJByxAqHCPixwJ8x"
-        }
-      ]
+  "@context": [
+    "https://www.w3.org/ns/did/v1",
+    "https://w3id.org/security/multikey/v1"
+  ],
+  "id": "did:tdw:example.com:{SCID}",
+  "controller": "did:tdw:example.com:{SCID}",
+  "authentication": [
+    "did:tdw:example.com:{SCID}#y4SDXopT"
+  ],
+  "assertionMethod": [
+    "did:tdw:example.com:{SCID}#5b48Zj6B"
+  ],
+  "verificationMethod": [
+    {
+      "id": "did:tdw:example.com:{SCID}#y4SDXopT",
+      "controller": "did:tdw:example.com:{SCID}",
+      "type": "Multikey",
+      "publicKeyMultibase": "z6Mksta2t7db1WSx2JBorfYFcJnaJMBKUyupD2qPy4SDXopT"
+    },
+    {
+      "id": "did:tdw:example.com:{SCID}#5b48Zj6B",
+      "controller": "did:tdw:example.com:{SCID}",
+      "type": "Multikey",
+      "publicKeyMultibase": "z6Mkw1KSvGWNAwSwWbcpwPgFARX4vKPa1xvcDMsJ5b48Zj6B"
     }
+  ]
+}
 ```
 
 #### DIDDoc with SCID In Place
@@ -58,26 +58,26 @@ After the SCID is generated, the `{SCID}` placeholders are replaced by the gener
     "https://www.w3.org/ns/did/v1",
     "https://w3id.org/security/multikey/v1"
   ],
-  "id": "did:tdw:example.com:ke465curdwjzrrp5x5ut92te",
-  "controller": "did:tdw:example.com:ke465curdwjzrrp5x5ut92te",
+  "id": "did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx",
+  "controller": "did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx",
   "authentication": [
-    "did:tdw:example.com:ke465curdwjzrrp5x5ut92te#FFhXVfsx"
+    "did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx#y4SDXopT"
   ],
   "assertionMethod": [
-    "did:tdw:example.com:ke465curdwjzrrp5x5ut92te#CPixwJ8x"
+    "did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx#5b48Zj6B"
   ],
   "verificationMethod": [
     {
-      "id": "did:tdw:example.com:ke465curdwjzrrp5x5ut92te#FFhXVfsx",
-      "controller": "did:tdw:example.com:ke465curdwjzrrp5x5ut92te",
+      "id": "did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx#y4SDXopT",
+      "controller": "did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx",
       "type": "Multikey",
-      "publicKeyMultibase": "z6MkkXKMSiE7mXvGcR2KUpeJXwT7MPXZSBC6HZw9FFhXVfsx"
+      "publicKeyMultibase": "z6Mksta2t7db1WSx2JBorfYFcJnaJMBKUyupD2qPy4SDXopT"
     },
     {
-      "id": "did:tdw:example.com:ke465curdwjzrrp5x5ut92te#CPixwJ8x",
-      "controller": "did:tdw:example.com:ke465curdwjzrrp5x5ut92te",
+      "id": "did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx#5b48Zj6B",
+      "controller": "did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx",
       "type": "Multikey",
-      "publicKeyMultibase": "z6Mkg8FdKNRt4NLXm5YSUZVGWzK8vvS3DJByxAqHCPixwJ8x"
+      "publicKeyMultibase": "z6Mkw1KSvGWNAwSwWbcpwPgFARX4vKPa1xvcDMsJ5b48Zj6B"
     }
   ]
 }
@@ -91,12 +91,12 @@ DIDDoc (as indicated by the `value` item).
 
 ```json
 [
-  "ke465curdwjzrrp5x5ut92te",
+  "4c99uuenu8gk6n3bgf09fuf350gx",
   1,
-  "2024-04-03T03:47:51Z",
+  "2024-04-15T19:56:18Z",
   {
     "method": "did:tdw:1",
-    "scid": "ke465curdwjzrrp5x5ut92te"
+    "scid": "4c99uuenu8gk6n3bgf09fuf350gx"
   },
   {
     "value": {
@@ -104,26 +104,26 @@ DIDDoc (as indicated by the `value` item).
         "https://www.w3.org/ns/did/v1",
         "https://w3id.org/security/multikey/v1"
       ],
-      "id": "did:tdw:example.com:ke465curdwjzrrp5x5ut92te",
-      "controller": "did:tdw:example.com:ke465curdwjzrrp5x5ut92te",
+      "id": "did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx",
+      "controller": "did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx",
       "authentication": [
-        "did:tdw:example.com:ke465curdwjzrrp5x5ut92te#FFhXVfsx"
+        "did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx#y4SDXopT"
       ],
       "assertionMethod": [
-        "did:tdw:example.com:ke465curdwjzrrp5x5ut92te#CPixwJ8x"
+        "did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx#5b48Zj6B"
       ],
       "verificationMethod": [
         {
-          "id": "did:tdw:example.com:ke465curdwjzrrp5x5ut92te#FFhXVfsx",
-          "controller": "did:tdw:example.com:ke465curdwjzrrp5x5ut92te",
+          "id": "did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx#y4SDXopT",
+          "controller": "did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx",
           "type": "Multikey",
-          "publicKeyMultibase": "z6MkkXKMSiE7mXvGcR2KUpeJXwT7MPXZSBC6HZw9FFhXVfsx"
+          "publicKeyMultibase": "z6Mksta2t7db1WSx2JBorfYFcJnaJMBKUyupD2qPy4SDXopT"
         },
         {
-          "id": "did:tdw:example.com:ke465curdwjzrrp5x5ut92te#CPixwJ8x",
-          "controller": "did:tdw:example.com:ke465curdwjzrrp5x5ut92te",
+          "id": "did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx#5b48Zj6B",
+          "controller": "did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx",
           "type": "Multikey",
-          "publicKeyMultibase": "z6Mkg8FdKNRt4NLXm5YSUZVGWzK8vvS3DJByxAqHCPixwJ8x"
+          "publicKeyMultibase": "z6Mkw1KSvGWNAwSwWbcpwPgFARX4vKPa1xvcDMsJ5b48Zj6B"
         }
       ]
     }
@@ -139,12 +139,12 @@ shown in the block below the pretty-printed version.
 
 ```json
 [
-  "xkuu1nwynw5ymfv4f1np2xbmg21k4vn1rrvg3ngpdmx482c2ce20",
+  "4fbja27mgf0bumtbg2b4hbzqc2ux9a9crrqx7w6cfnd97k9u7k5g",
   1,
-  "2024-04-03T03:47:51Z",
+  "2024-04-15T19:56:18Z",
   {
     "method": "did:tdw:1",
-    "scid": "ke465curdwjzrrp5x5ut92te"
+    "scid": "4c99uuenu8gk6n3bgf09fuf350gx"
   },
   {
     "value": {
@@ -152,46 +152,48 @@ shown in the block below the pretty-printed version.
         "https://www.w3.org/ns/did/v1",
         "https://w3id.org/security/multikey/v1"
       ],
-      "id": "did:tdw:example.com:ke465curdwjzrrp5x5ut92te",
-      "controller": "did:tdw:example.com:ke465curdwjzrrp5x5ut92te",
+      "id": "did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx",
+      "controller": "did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx",
       "authentication": [
-        "did:tdw:example.com:ke465curdwjzrrp5x5ut92te#FFhXVfsx"
+        "did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx#y4SDXopT"
       ],
       "assertionMethod": [
-        "did:tdw:example.com:ke465curdwjzrrp5x5ut92te#CPixwJ8x"
+        "did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx#5b48Zj6B"
       ],
       "verificationMethod": [
         {
-          "id": "did:tdw:example.com:ke465curdwjzrrp5x5ut92te#FFhXVfsx",
-          "controller": "did:tdw:example.com:ke465curdwjzrrp5x5ut92te",
+          "id": "did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx#y4SDXopT",
+          "controller": "did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx",
           "type": "Multikey",
-          "publicKeyMultibase": "z6MkkXKMSiE7mXvGcR2KUpeJXwT7MPXZSBC6HZw9FFhXVfsx"
+          "publicKeyMultibase": "z6Mksta2t7db1WSx2JBorfYFcJnaJMBKUyupD2qPy4SDXopT"
         },
         {
-          "id": "did:tdw:example.com:ke465curdwjzrrp5x5ut92te#CPixwJ8x",
-          "controller": "did:tdw:example.com:ke465curdwjzrrp5x5ut92te",
+          "id": "did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx#5b48Zj6B",
+          "controller": "did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx",
           "type": "Multikey",
-          "publicKeyMultibase": "z6Mkg8FdKNRt4NLXm5YSUZVGWzK8vvS3DJByxAqHCPixwJ8x"
+          "publicKeyMultibase": "z6Mkw1KSvGWNAwSwWbcpwPgFARX4vKPa1xvcDMsJ5b48Zj6B"
         }
       ]
     }
   },
-  {
-    "type": "DataIntegrityProof",
-    "created": "2024-04-03T03:47:51Z",
-    "verificationMethod": "did:tdw:example.com:ke465curdwjzrrp5x5ut92te#FFhXVfsx",
-    "cryptosuite": "eddsa-2022",
-    "proofPurpose": "authentication",
-    "challenge": "xkuu1nwynw5ymfv4f1np2xbmg21k4vn1rrvg3ngpdmx482c2ce20",
-    "proofValue": "zK7pASjX3ou7t2bDuU43sWzG4E8B3TTDFgmY8AiFLahPaLzXn4fGrXksKbWr6o2RLr7rCTT2VRAgc8F9LQKLEJkg"
-  }
+  [
+    {
+      "type": "DataIntegrityProof",
+      "cryptosuite": "eddsa-jcs-2022",
+      "verificationMethod": "did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx#y4SDXopT",
+      "created": "2024-04-15T19:56:18Z",
+      "proofPurpose": "authentication",
+      "challenge": "4fbja27mgf0bumtbg2b4hbzqc2ux9a9crrqx7w6cfnd97k9u7k5g",
+      "proofValue": "z4vP3KptRsxFcjpatqHNpywvwV5AfmAYhkHsMbF8K1gKqRA7WZuoyLheF9tabMu2HCXPnvNEKijfMqpRqkfKZRAHi"
+    }
+  ]
 ]
 ```
 
 The same content as it is found in the `did.jsonl` file:
 
 ```json
-["xkuu1nwynw5ymfv4f1np2xbmg21k4vn1rrvg3ngpdmx482c2ce20",1,"2024-04-03T03:47:51Z",{"method":"did:tdw:1","scid":"ke465curdwjzrrp5x5ut92te"},{"value":{"@context":["https://www.w3.org/ns/did/v1","https://w3id.org/security/multikey/v1"],"id":"did:tdw:example.com:ke465curdwjzrrp5x5ut92te","controller":"did:tdw:example.com:ke465curdwjzrrp5x5ut92te","authentication":["did:tdw:example.com:ke465curdwjzrrp5x5ut92te#FFhXVfsx"],"assertionMethod":["did:tdw:example.com:ke465curdwjzrrp5x5ut92te#CPixwJ8x"],"verificationMethod":[{"id":"did:tdw:example.com:ke465curdwjzrrp5x5ut92te#FFhXVfsx","controller":"did:tdw:example.com:ke465curdwjzrrp5x5ut92te","type":"Multikey","publicKeyMultibase":"z6MkkXKMSiE7mXvGcR2KUpeJXwT7MPXZSBC6HZw9FFhXVfsx"},{"id":"did:tdw:example.com:ke465curdwjzrrp5x5ut92te#CPixwJ8x","controller":"did:tdw:example.com:ke465curdwjzrrp5x5ut92te","type":"Multikey","publicKeyMultibase":"z6Mkg8FdKNRt4NLXm5YSUZVGWzK8vvS3DJByxAqHCPixwJ8x"}]}},{"type":"DataIntegrityProof","created":"2024-04-03T03:47:51Z","verificationMethod":"did:tdw:example.com:ke465curdwjzrrp5x5ut92te#FFhXVfsx","cryptosuite":"eddsa-2022","proofPurpose":"authentication","challenge":"xkuu1nwynw5ymfv4f1np2xbmg21k4vn1rrvg3ngpdmx482c2ce20","proofValue":"zK7pASjX3ou7t2bDuU43sWzG4E8B3TTDFgmY8AiFLahPaLzXn4fGrXksKbWr6o2RLr7rCTT2VRAgc8F9LQKLEJkg"}]
+["4fbja27mgf0bumtbg2b4hbzqc2ux9a9crrqx7w6cfnd97k9u7k5g",1,"2024-04-15T19:56:18Z",{"method":"did:tdw:1","scid":"4c99uuenu8gk6n3bgf09fuf350gx"},{"value":{"@context":["https://www.w3.org/ns/did/v1","https://w3id.org/security/multikey/v1"],"id":"did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx","controller":"did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx","authentication":["did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx#y4SDXopT"],"assertionMethod":["did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx#5b48Zj6B"],"verificationMethod":[{"id":"did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx#y4SDXopT","controller":"did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx","type":"Multikey","publicKeyMultibase":"z6Mksta2t7db1WSx2JBorfYFcJnaJMBKUyupD2qPy4SDXopT"},{"id":"did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx#5b48Zj6B","controller":"did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx","type":"Multikey","publicKeyMultibase":"z6Mkw1KSvGWNAwSwWbcpwPgFARX4vKPa1xvcDMsJ5b48Zj6B"}]}},[{"type":"DataIntegrityProof","cryptosuite":"eddsa-jcs-2022","verificationMethod":"did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx#y4SDXopT","created":"2024-04-15T19:56:18Z","proofPurpose":"authentication","challenge":"4fbja27mgf0bumtbg2b4hbzqc2ux9a9crrqx7w6cfnd97k9u7k5g","proofValue":"z4vP3KptRsxFcjpatqHNpywvwV5AfmAYhkHsMbF8K1gKqRA7WZuoyLheF9tabMu2HCXPnvNEKijfMqpRqkfKZRAHi"}]]
 ```
 
 #### `did:web` Version of DIDDoc
@@ -206,27 +208,27 @@ what the `did:web` DIDDoc looks like for the `did:tdw` above.
     "https://www.w3.org/ns/did/v1",
     "https://w3id.org/security/multikey/v1"
   ],
-  "id": "did:web:example.com:ke465curdwjzrrp5x5ut92te",
-  "alsoKnownAs": ["did:tdw:example.com:ke465curdwjzrrp5x5ut92te"],
-  "controller": "did:web:example.com:ke465curdwjzrrp5x5ut92te",
+  "id": "did:web:example.com:4c99uuenu8gk6n3bgf09fuf350gx",
+  "controller": "did:web:example.com:4c99uuenu8gk6n3bgf09fuf350gx",
+  "alsoKnownAs": ["did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx"],
   "authentication": [
-    "did:web:example.com:ke465curdwjzrrp5x5ut92te#FFhXVfsx"
+    "did:web:example.com:4c99uuenu8gk6n3bgf09fuf350gx#y4SDXopT"
   ],
   "assertionMethod": [
-    "did:web:example.com:ke465curdwjzrrp5x5ut92te#CPixwJ8x"
+    "did:web:example.com:4c99uuenu8gk6n3bgf09fuf350gx#5b48Zj6B"
   ],
   "verificationMethod": [
     {
-      "id": "did:web:example.com:ke465curdwjzrrp5x5ut92te#FFhXVfsx",
-      "controller": "did:web:example.com:ke465curdwjzrrp5x5ut92te",
+      "id": "did:web:example.com:4c99uuenu8gk6n3bgf09fuf350gx#y4SDXopT",
+      "controller": "did:web:example.com:4c99uuenu8gk6n3bgf09fuf350gx",
       "type": "Multikey",
-      "publicKeyMultibase": "z6MkkXKMSiE7mXvGcR2KUpeJXwT7MPXZSBC6HZw9FFhXVfsx"
+      "publicKeyMultibase": "z6Mksta2t7db1WSx2JBorfYFcJnaJMBKUyupD2qPy4SDXopT"
     },
     {
-      "id": "did:web:example.com:ke465curdwjzrrp5x5ut92te#CPixwJ8x",
-      "controller": "did:web:example.com:ke465curdwjzrrp5x5ut92te",
+      "id": "did:web:example.com:4c99uuenu8gk6n3bgf09fuf350gx#5b48Zj6B",
+      "controller": "did:web:example.com:4c99uuenu8gk6n3bgf09fuf350gx",
       "type": "Multikey",
-      "publicKeyMultibase": "z6Mkg8FdKNRt4NLXm5YSUZVGWzK8vvS3DJByxAqHCPixwJ8x"
+      "publicKeyMultibase": "z6Mkw1KSvGWNAwSwWbcpwPgFARX4vKPa1xvcDMsJ5b48Zj6B"
     }
   ]
 }
@@ -250,36 +252,36 @@ DID.
     "https://w3id.org/security/multikey/v1",
     "https://identity.foundation/linked-vp/contexts/v1"
   ],
-  "id": "did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te",
+  "id": "did:tdw:migrated.example.com:4c99uuenu8gk6n3bgf09fuf350gx",
   "controller": [
-    "did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te"
+    "did:tdw:migrated.example.com:4c99uuenu8gk6n3bgf09fuf350gx"
   ],
   "authentication": [
-    "did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te#5b48Zj6B"
+    "did:tdw:migrated.example.com:4c99uuenu8gk6n3bgf09fuf350gx#CpsUrTh3"
   ],
   "assertionMethod": [
-    "did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te#CpsUrTh3"
+    "did:tdw:migrated.example.com:4c99uuenu8gk6n3bgf09fuf350gx#gJqvqaYD"
   ],
   "verificationMethod": [
     {
-      "id": "did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te#5b48Zj6B",
-      "controller": "did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te",
-      "type": "Multikey",
-      "publicKeyMultibase": "z6Mkw1KSvGWNAwSwWbcpwPgFARX4vKPa1xvcDMsJ5b48Zj6B"
-    },
-    {
-      "id": "did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te#CpsUrTh3",
-      "controller": "did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te",
+      "id": "did:tdw:migrated.example.com:4c99uuenu8gk6n3bgf09fuf350gx#CpsUrTh3",
+      "controller": "did:tdw:migrated.example.com:4c99uuenu8gk6n3bgf09fuf350gx",
       "type": "Multikey",
       "publicKeyMultibase": "z6MkuocstfAaHsJgRnQgfQdtJiECuWEMDAbQV61aCpsUrTh3"
+    },
+    {
+      "id": "did:tdw:migrated.example.com:4c99uuenu8gk6n3bgf09fuf350gx#gJqvqaYD",
+      "controller": "did:tdw:migrated.example.com:4c99uuenu8gk6n3bgf09fuf350gx",
+      "type": "Multikey",
+      "publicKeyMultibase": "z6MksNvDtgMutKMzjezRqj8JbYuCHNjHR5HBaF2ogJqvqaYD"
     }
   ],
   "service": [
     {
-      "id": "did:tdw:example.com:ke465curdwjzrrp5x5ut92te#whois",
+      "id": "did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx#whois",
       "type": "LinkedVerifiablePresentation",
       "serviceEndpoint": [
-        "https://example.com/docs/ke465curdwjzrrp5x5ut92te/whois.json"
+        "https://example.com/docs/4c99uuenu8gk6n3bgf09fuf350gx/whois.json"
       ]
     }
   ]
@@ -296,63 +298,63 @@ DIDDoc from version 1 to this new version 2 DIDDoc.
 
 ```json
 [
-  "xkuu1nwynw5ymfv4f1np2xbmg21k4vn1rrvg3ngpdmx482c2ce20",
+  "53vtcxfvmvwfzyfw4b9cjeygccwbhm8j1v90by5k66jt4ahbhu50",
   2,
-  "2024-04-03T03:47:51Z",
+  "2024-04-15T19:56:18Z",
   {},
   {
     "patch": [
       {
         "op": "replace",
         "path": "/verificationMethod/1/publicKeyMultibase",
-        "value": "z6MkuocstfAaHsJgRnQgfQdtJiECuWEMDAbQV61aCpsUrTh3"
+        "value": "z6MksNvDtgMutKMzjezRqj8JbYuCHNjHR5HBaF2ogJqvqaYD"
       },
       {
         "op": "replace",
         "path": "/verificationMethod/1/controller",
-        "value": "did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te"
+        "value": "did:tdw:migrated.example.com:4c99uuenu8gk6n3bgf09fuf350gx"
       },
       {
         "op": "replace",
         "path": "/verificationMethod/1/id",
-        "value": "did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te#CpsUrTh3"
+        "value": "did:tdw:migrated.example.com:4c99uuenu8gk6n3bgf09fuf350gx#gJqvqaYD"
       },
       {
         "op": "replace",
         "path": "/verificationMethod/0/publicKeyMultibase",
-        "value": "z6Mkw1KSvGWNAwSwWbcpwPgFARX4vKPa1xvcDMsJ5b48Zj6B"
+        "value": "z6MkuocstfAaHsJgRnQgfQdtJiECuWEMDAbQV61aCpsUrTh3"
       },
       {
         "op": "replace",
         "path": "/verificationMethod/0/controller",
-        "value": "did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te"
+        "value": "did:tdw:migrated.example.com:4c99uuenu8gk6n3bgf09fuf350gx"
       },
       {
         "op": "replace",
         "path": "/verificationMethod/0/id",
-        "value": "did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te#5b48Zj6B"
+        "value": "did:tdw:migrated.example.com:4c99uuenu8gk6n3bgf09fuf350gx#CpsUrTh3"
       },
       {
         "op": "replace",
         "path": "/assertionMethod/0",
-        "value": "did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te#CpsUrTh3"
+        "value": "did:tdw:migrated.example.com:4c99uuenu8gk6n3bgf09fuf350gx#gJqvqaYD"
       },
       {
         "op": "replace",
         "path": "/authentication/0",
-        "value": "did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te#5b48Zj6B"
+        "value": "did:tdw:migrated.example.com:4c99uuenu8gk6n3bgf09fuf350gx#CpsUrTh3"
       },
       {
         "op": "replace",
         "path": "/controller",
         "value": [
-          "did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te"
+          "did:tdw:migrated.example.com:4c99uuenu8gk6n3bgf09fuf350gx"
         ]
       },
       {
         "op": "replace",
         "path": "/id",
-        "value": "did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te"
+        "value": "did:tdw:migrated.example.com:4c99uuenu8gk6n3bgf09fuf350gx"
       },
       {
         "op": "add",
@@ -364,10 +366,10 @@ DIDDoc from version 1 to this new version 2 DIDDoc.
         "path": "/service",
         "value": [
           {
-            "id": "did:tdw:example.com:ke465curdwjzrrp5x5ut92te#whois",
+            "id": "did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx#whois",
             "type": "LinkedVerifiablePresentation",
             "serviceEndpoint": [
-              "https://example.com/docs/ke465curdwjzrrp5x5ut92te/whois.json"
+              "https://example.com/docs/4c99uuenu8gk6n3bgf09fuf350gx/whois.json"
             ]
           }
         ]
@@ -384,8 +386,8 @@ of the DIDDoc. The data integrity proof on the version 2 entry **MUST** be from
 an `authentication` key from the version 1 DIDDoc.
 
 ```json
-["xkuu1nwynw5ymfv4f1np2xbmg21k4vn1rrvg3ngpdmx482c2ce20",1,"2024-04-03T03:47:51Z",{"method":"did:tdw:1","scid":"ke465curdwjzrrp5x5ut92te"},{"value":{"@context":["https://www.w3.org/ns/did/v1","https://w3id.org/security/multikey/v1"],"id":"did:tdw:example.com:ke465curdwjzrrp5x5ut92te","controller":"did:tdw:example.com:ke465curdwjzrrp5x5ut92te","authentication":["did:tdw:example.com:ke465curdwjzrrp5x5ut92te#FFhXVfsx"],"assertionMethod":["did:tdw:example.com:ke465curdwjzrrp5x5ut92te#CPixwJ8x"],"verificationMethod":[{"id":"did:tdw:example.com:ke465curdwjzrrp5x5ut92te#FFhXVfsx","controller":"did:tdw:example.com:ke465curdwjzrrp5x5ut92te","type":"Multikey","publicKeyMultibase":"z6MkkXKMSiE7mXvGcR2KUpeJXwT7MPXZSBC6HZw9FFhXVfsx"},{"id":"did:tdw:example.com:ke465curdwjzrrp5x5ut92te#CPixwJ8x","controller":"did:tdw:example.com:ke465curdwjzrrp5x5ut92te","type":"Multikey","publicKeyMultibase":"z6Mkg8FdKNRt4NLXm5YSUZVGWzK8vvS3DJByxAqHCPixwJ8x"}]}},{"type":"DataIntegrityProof","created":"2024-04-03T03:47:51Z","verificationMethod":"did:tdw:example.com:ke465curdwjzrrp5x5ut92te#FFhXVfsx","cryptosuite":"eddsa-2022","proofPurpose":"authentication","challenge":"xkuu1nwynw5ymfv4f1np2xbmg21k4vn1rrvg3ngpdmx482c2ce20","proofValue":"zK7pASjX3ou7t2bDuU43sWzG4E8B3TTDFgmY8AiFLahPaLzXn4fGrXksKbWr6o2RLr7rCTT2VRAgc8F9LQKLEJkg"}]
-["zbuqyfaytakn9bhqhwrn0f3kh3fc5trz5qxmj91ay6rn71qhcnw0",2,"2024-04-03T03:47:51Z",{},{"patch":[{"op":"replace","path":"/verificationMethod/1/publicKeyMultibase","value":"z6MkuocstfAaHsJgRnQgfQdtJiECuWEMDAbQV61aCpsUrTh3"},{"op":"replace","path":"/verificationMethod/1/controller","value":"did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te"},{"op":"replace","path":"/verificationMethod/1/id","value":"did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te#CpsUrTh3"},{"op":"replace","path":"/verificationMethod/0/publicKeyMultibase","value":"z6Mkw1KSvGWNAwSwWbcpwPgFARX4vKPa1xvcDMsJ5b48Zj6B"},{"op":"replace","path":"/verificationMethod/0/controller","value":"did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te"},{"op":"replace","path":"/verificationMethod/0/id","value":"did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te#5b48Zj6B"},{"op":"replace","path":"/assertionMethod/0","value":"did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te#CpsUrTh3"},{"op":"replace","path":"/authentication/0","value":"did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te#5b48Zj6B"},{"op":"replace","path":"/controller","value":["did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te"]},{"op":"replace","path":"/id","value":"did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te"},{"op":"add","path":"/@context/2","value":"https://identity.foundation/linked-vp/contexts/v1"},{"op":"add","path":"/service","value":[{"id":"did:tdw:example.com:ke465curdwjzrrp5x5ut92te#whois","type":"LinkedVerifiablePresentation","serviceEndpoint":["https://example.com/docs/ke465curdwjzrrp5x5ut92te/whois.json"]}]}]},{"type":"DataIntegrityProof","created":"2024-04-03T03:47:51Z","verificationMethod":"did:tdw:example.com:ke465curdwjzrrp5x5ut92te#FFhXVfsx","cryptosuite":"eddsa-2022","proofPurpose":"authentication","challenge":"zbuqyfaytakn9bhqhwrn0f3kh3fc5trz5qxmj91ay6rn71qhcnw0","proofValue":"z4zn3AVWC76rDoDtvNW2ospTPC3vDMfbxcZ383AkDun43KUBhBAv3ZJcE9zRXT8K3pHEDBaYvc19Q1weH5zoMa2Lf"}]
+["4fbja27mgf0bumtbg2b4hbzqc2ux9a9crrqx7w6cfnd97k9u7k5g",1,"2024-04-15T19:56:18Z",{"method":"did:tdw:1","scid":"4c99uuenu8gk6n3bgf09fuf350gx"},{"value":{"@context":["https://www.w3.org/ns/did/v1","https://w3id.org/security/multikey/v1"],"id":"did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx","controller":"did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx","authentication":["did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx#y4SDXopT"],"assertionMethod":["did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx#5b48Zj6B"],"verificationMethod":[{"id":"did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx#y4SDXopT","controller":"did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx","type":"Multikey","publicKeyMultibase":"z6Mksta2t7db1WSx2JBorfYFcJnaJMBKUyupD2qPy4SDXopT"},{"id":"did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx#5b48Zj6B","controller":"did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx","type":"Multikey","publicKeyMultibase":"z6Mkw1KSvGWNAwSwWbcpwPgFARX4vKPa1xvcDMsJ5b48Zj6B"}]}},[{"type":"DataIntegrityProof","cryptosuite":"eddsa-jcs-2022","verificationMethod":"did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx#y4SDXopT","created":"2024-04-15T19:56:18Z","proofPurpose":"authentication","challenge":"4fbja27mgf0bumtbg2b4hbzqc2ux9a9crrqx7w6cfnd97k9u7k5g","proofValue":"z4vP3KptRsxFcjpatqHNpywvwV5AfmAYhkHsMbF8K1gKqRA7WZuoyLheF9tabMu2HCXPnvNEKijfMqpRqkfKZRAHi"}]]
+["53vtcxfvmvwfzyfw4b9cjeygccwbhm8j1v90by5k66jt4ahbhu50",2,"2024-04-15T19:56:18Z",{},{"patch":[{"op":"replace","path":"/verificationMethod/1/publicKeyMultibase","value":"z6MksNvDtgMutKMzjezRqj8JbYuCHNjHR5HBaF2ogJqvqaYD"},{"op":"replace","path":"/verificationMethod/1/controller","value":"did:tdw:migrated.example.com:4c99uuenu8gk6n3bgf09fuf350gx"},{"op":"replace","path":"/verificationMethod/1/id","value":"did:tdw:migrated.example.com:4c99uuenu8gk6n3bgf09fuf350gx#gJqvqaYD"},{"op":"replace","path":"/verificationMethod/0/publicKeyMultibase","value":"z6MkuocstfAaHsJgRnQgfQdtJiECuWEMDAbQV61aCpsUrTh3"},{"op":"replace","path":"/verificationMethod/0/controller","value":"did:tdw:migrated.example.com:4c99uuenu8gk6n3bgf09fuf350gx"},{"op":"replace","path":"/verificationMethod/0/id","value":"did:tdw:migrated.example.com:4c99uuenu8gk6n3bgf09fuf350gx#CpsUrTh3"},{"op":"replace","path":"/assertionMethod/0","value":"did:tdw:migrated.example.com:4c99uuenu8gk6n3bgf09fuf350gx#gJqvqaYD"},{"op":"replace","path":"/authentication/0","value":"did:tdw:migrated.example.com:4c99uuenu8gk6n3bgf09fuf350gx#CpsUrTh3"},{"op":"replace","path":"/controller","value":["did:tdw:migrated.example.com:4c99uuenu8gk6n3bgf09fuf350gx"]},{"op":"replace","path":"/id","value":"did:tdw:migrated.example.com:4c99uuenu8gk6n3bgf09fuf350gx"},{"op":"add","path":"/@context/2","value":"https://identity.foundation/linked-vp/contexts/v1"},{"op":"add","path":"/service","value":[{"id":"did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx#whois","type":"LinkedVerifiablePresentation","serviceEndpoint":["https://example.com/docs/4c99uuenu8gk6n3bgf09fuf350gx/whois.json"]}]}]},[{"type":"DataIntegrityProof","cryptosuite":"eddsa-jcs-2022","verificationMethod":"did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx#y4SDXopT","created":"2024-04-15T19:56:18Z","proofPurpose":"authentication","challenge":"53vtcxfvmvwfzyfw4b9cjeygccwbhm8j1v90by5k66jt4ahbhu50","proofValue":"z47viJruDDnAfpL6Zo3bowUB9Eumx1w7Qa8UwH6K1Df1Db6pExBMRvzdy9YgL452t3v5FmrKAnDGF7aQYgtG7bbga"}]]
 ```
 
 ### Version 3
@@ -402,49 +404,49 @@ Here is the target update for the version 3 DIDDoc, as constructed by the DID Co
     "https://identity.foundation/linked-vp/contexts/v1",
     "https://didcomm.org/messaging/v2"
   ],
-  "id": "did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te",
+  "id": "did:tdw:migrated.example.com:4c99uuenu8gk6n3bgf09fuf350gx",
   "controller": [
-    "did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te"
+    "did:tdw:migrated.example.com:4c99uuenu8gk6n3bgf09fuf350gx"
   ],
   "authentication": [
-    "did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te#gJqvqaYD"
+    "did:tdw:migrated.example.com:4c99uuenu8gk6n3bgf09fuf350gx#CZSeAWLE"
   ],
   "assertionMethod": [
-    "did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te#CZSeAWLE"
+    "did:tdw:migrated.example.com:4c99uuenu8gk6n3bgf09fuf350gx#9vYyiXiJ"
   ],
   "keyAgreement": [
-    "did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te#qnYZ6fWH"
+    "did:tdw:migrated.example.com:4c99uuenu8gk6n3bgf09fuf350gx#qnYZ6fWH"
   ],
   "verificationMethod": [
     {
-      "id": "did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te#gJqvqaYD",
-      "controller": "did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te",
-      "type": "Multikey",
-      "publicKeyMultibase": "z6MksNvDtgMutKMzjezRqj8JbYuCHNjHR5HBaF2ogJqvqaYD"
-    },
-    {
-      "id": "did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te#CZSeAWLE",
-      "controller": "did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te",
+      "id": "did:tdw:migrated.example.com:4c99uuenu8gk6n3bgf09fuf350gx#CZSeAWLE",
+      "controller": "did:tdw:migrated.example.com:4c99uuenu8gk6n3bgf09fuf350gx",
       "type": "Multikey",
       "publicKeyMultibase": "z6Mkq7Qoa2LCvLCUiq9W2J9vXH1ooDqSX2ehWGUzCZSeAWLE"
     },
     {
-      "id": "did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te#qnYZ6fWH",
-      "controller": "did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te",
+      "id": "did:tdw:migrated.example.com:4c99uuenu8gk6n3bgf09fuf350gx#9vYyiXiJ",
+      "controller": "did:tdw:migrated.example.com:4c99uuenu8gk6n3bgf09fuf350gx",
+      "type": "Multikey",
+      "publicKeyMultibase": "z6Mkr2D4ixckmQx8tAVvXEhMuaMhzahxe61qJt7G9vYyiXiJ"
+    },
+    {
+      "id": "did:tdw:migrated.example.com:4c99uuenu8gk6n3bgf09fuf350gx#qnYZ6fWH",
+      "controller": "did:tdw:migrated.example.com:4c99uuenu8gk6n3bgf09fuf350gx",
       "type": "Multikey",
       "publicKeyMultibase": "z6LSdYjdAE7ZY1Gh5VPAxDJdgbg45Lq6im3N9o6HqnYZ6fWH"
     }
   ],
   "service": [
     {
-      "id": "did:tdw:example.com:ke465curdwjzrrp5x5ut92te#whois",
+      "id": "did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx#whois",
       "type": "LinkedVerifiablePresentation",
       "serviceEndpoint": [
-        "https://example.com/docs/ke465curdwjzrrp5x5ut92te/whois.json"
+        "https://example.com/docs/4c99uuenu8gk6n3bgf09fuf350gx/whois.json"
       ]
     },
     {
-      "id": "did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te#didcomm",
+      "id": "did:tdw:migrated.example.com:4c99uuenu8gk6n3bgf09fuf350gx#didcomm",
       "type": "DIDCommMessaging",
       "serviceEndpoint": {
         "uri": "https://example.com/didcomm",
@@ -468,9 +470,9 @@ of the DIDDoc. The data integrity proof on the version 3 entry **MUST** be from
 an `authentication` key from the version 2 DIDDoc.
 
 ```json
-["xkuu1nwynw5ymfv4f1np2xbmg21k4vn1rrvg3ngpdmx482c2ce20",1,"2024-04-03T03:47:51Z",{"method":"did:tdw:1","scid":"ke465curdwjzrrp5x5ut92te"},{"value":{"@context":["https://www.w3.org/ns/did/v1","https://w3id.org/security/multikey/v1"],"id":"did:tdw:example.com:ke465curdwjzrrp5x5ut92te","controller":"did:tdw:example.com:ke465curdwjzrrp5x5ut92te","authentication":["did:tdw:example.com:ke465curdwjzrrp5x5ut92te#FFhXVfsx"],"assertionMethod":["did:tdw:example.com:ke465curdwjzrrp5x5ut92te#CPixwJ8x"],"verificationMethod":[{"id":"did:tdw:example.com:ke465curdwjzrrp5x5ut92te#FFhXVfsx","controller":"did:tdw:example.com:ke465curdwjzrrp5x5ut92te","type":"Multikey","publicKeyMultibase":"z6MkkXKMSiE7mXvGcR2KUpeJXwT7MPXZSBC6HZw9FFhXVfsx"},{"id":"did:tdw:example.com:ke465curdwjzrrp5x5ut92te#CPixwJ8x","controller":"did:tdw:example.com:ke465curdwjzrrp5x5ut92te","type":"Multikey","publicKeyMultibase":"z6Mkg8FdKNRt4NLXm5YSUZVGWzK8vvS3DJByxAqHCPixwJ8x"}]}},{"type":"DataIntegrityProof","created":"2024-04-03T03:47:51Z","verificationMethod":"did:tdw:example.com:ke465curdwjzrrp5x5ut92te#FFhXVfsx","cryptosuite":"eddsa-2022","proofPurpose":"authentication","challenge":"xkuu1nwynw5ymfv4f1np2xbmg21k4vn1rrvg3ngpdmx482c2ce20","proofValue":"zK7pASjX3ou7t2bDuU43sWzG4E8B3TTDFgmY8AiFLahPaLzXn4fGrXksKbWr6o2RLr7rCTT2VRAgc8F9LQKLEJkg"}]
-["zbuqyfaytakn9bhqhwrn0f3kh3fc5trz5qxmj91ay6rn71qhcnw0",2,"2024-04-03T03:47:51Z",{},{"patch":[{"op":"replace","path":"/verificationMethod/1/publicKeyMultibase","value":"z6MkuocstfAaHsJgRnQgfQdtJiECuWEMDAbQV61aCpsUrTh3"},{"op":"replace","path":"/verificationMethod/1/controller","value":"did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te"},{"op":"replace","path":"/verificationMethod/1/id","value":"did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te#CpsUrTh3"},{"op":"replace","path":"/verificationMethod/0/publicKeyMultibase","value":"z6Mkw1KSvGWNAwSwWbcpwPgFARX4vKPa1xvcDMsJ5b48Zj6B"},{"op":"replace","path":"/verificationMethod/0/controller","value":"did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te"},{"op":"replace","path":"/verificationMethod/0/id","value":"did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te#5b48Zj6B"},{"op":"replace","path":"/assertionMethod/0","value":"did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te#CpsUrTh3"},{"op":"replace","path":"/authentication/0","value":"did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te#5b48Zj6B"},{"op":"replace","path":"/controller","value":["did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te"]},{"op":"replace","path":"/id","value":"did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te"},{"op":"add","path":"/@context/2","value":"https://identity.foundation/linked-vp/contexts/v1"},{"op":"add","path":"/service","value":[{"id":"did:tdw:example.com:ke465curdwjzrrp5x5ut92te#whois","type":"LinkedVerifiablePresentation","serviceEndpoint":["https://example.com/docs/ke465curdwjzrrp5x5ut92te/whois.json"]}]}]},{"type":"DataIntegrityProof","created":"2024-04-03T03:47:51Z","verificationMethod":"did:tdw:example.com:ke465curdwjzrrp5x5ut92te#FFhXVfsx","cryptosuite":"eddsa-2022","proofPurpose":"authentication","challenge":"zbuqyfaytakn9bhqhwrn0f3kh3fc5trz5qxmj91ay6rn71qhcnw0","proofValue":"z4zn3AVWC76rDoDtvNW2ospTPC3vDMfbxcZ383AkDun43KUBhBAv3ZJcE9zRXT8K3pHEDBaYvc19Q1weH5zoMa2Lf"}]
-["3856ukdk0tardcm40tg11qe8dche5w38b6z3cchrraabka80ejy0",3,"2024-04-03T03:47:51Z",{},{"patch":[{"op":"add","path":"/service/1","value":{"id":"did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te#didcomm","type":"DIDCommMessaging","serviceEndpoint":{"uri":"https://example.com/didcomm","accept":["didcomm/v2","didcomm/aip2;env=rfc587"],"routingKeys":["did:example:somemediator#somekey"]}}},{"op":"replace","path":"/verificationMethod/1/publicKeyMultibase","value":"z6Mkq7Qoa2LCvLCUiq9W2J9vXH1ooDqSX2ehWGUzCZSeAWLE"},{"op":"replace","path":"/verificationMethod/1/id","value":"did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te#CZSeAWLE"},{"op":"replace","path":"/verificationMethod/0/publicKeyMultibase","value":"z6MksNvDtgMutKMzjezRqj8JbYuCHNjHR5HBaF2ogJqvqaYD"},{"op":"replace","path":"/verificationMethod/0/id","value":"did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te#gJqvqaYD"},{"op":"add","path":"/verificationMethod/2","value":{"id":"did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te#qnYZ6fWH","controller":"did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te","type":"Multikey","publicKeyMultibase":"z6LSdYjdAE7ZY1Gh5VPAxDJdgbg45Lq6im3N9o6HqnYZ6fWH"}},{"op":"replace","path":"/assertionMethod/0","value":"did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te#CZSeAWLE"},{"op":"replace","path":"/authentication/0","value":"did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te#gJqvqaYD"},{"op":"add","path":"/@context/3","value":"https://didcomm.org/messaging/v2"},{"op":"add","path":"/keyAgreement","value":["did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te#qnYZ6fWH"]}]},{"type":"DataIntegrityProof","created":"2024-04-03T03:47:51Z","verificationMethod":"did:tdw:migrated.example.com:ke465curdwjzrrp5x5ut92te#5b48Zj6B","cryptosuite":"eddsa-2022","proofPurpose":"authentication","challenge":"3856ukdk0tardcm40tg11qe8dche5w38b6z3cchrraabka80ejy0","proofValue":"z4e1hqAH9jNmwvfh1HvBDpB69Vq8nAGCdrCKa2ebK2kf7Pd2eNpPznKZRo9vfn72JjYabwe4drhQF9uQFmL4KxuiJ"}]
+["4fbja27mgf0bumtbg2b4hbzqc2ux9a9crrqx7w6cfnd97k9u7k5g",1,"2024-04-15T19:56:18Z",{"method":"did:tdw:1","scid":"4c99uuenu8gk6n3bgf09fuf350gx"},{"value":{"@context":["https://www.w3.org/ns/did/v1","https://w3id.org/security/multikey/v1"],"id":"did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx","controller":"did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx","authentication":["did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx#y4SDXopT"],"assertionMethod":["did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx#5b48Zj6B"],"verificationMethod":[{"id":"did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx#y4SDXopT","controller":"did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx","type":"Multikey","publicKeyMultibase":"z6Mksta2t7db1WSx2JBorfYFcJnaJMBKUyupD2qPy4SDXopT"},{"id":"did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx#5b48Zj6B","controller":"did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx","type":"Multikey","publicKeyMultibase":"z6Mkw1KSvGWNAwSwWbcpwPgFARX4vKPa1xvcDMsJ5b48Zj6B"}]}},[{"type":"DataIntegrityProof","cryptosuite":"eddsa-jcs-2022","verificationMethod":"did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx#y4SDXopT","created":"2024-04-15T19:56:18Z","proofPurpose":"authentication","challenge":"4fbja27mgf0bumtbg2b4hbzqc2ux9a9crrqx7w6cfnd97k9u7k5g","proofValue":"z4vP3KptRsxFcjpatqHNpywvwV5AfmAYhkHsMbF8K1gKqRA7WZuoyLheF9tabMu2HCXPnvNEKijfMqpRqkfKZRAHi"}]]
+["53vtcxfvmvwfzyfw4b9cjeygccwbhm8j1v90by5k66jt4ahbhu50",2,"2024-04-15T19:56:18Z",{},{"patch":[{"op":"replace","path":"/verificationMethod/1/publicKeyMultibase","value":"z6MksNvDtgMutKMzjezRqj8JbYuCHNjHR5HBaF2ogJqvqaYD"},{"op":"replace","path":"/verificationMethod/1/controller","value":"did:tdw:migrated.example.com:4c99uuenu8gk6n3bgf09fuf350gx"},{"op":"replace","path":"/verificationMethod/1/id","value":"did:tdw:migrated.example.com:4c99uuenu8gk6n3bgf09fuf350gx#gJqvqaYD"},{"op":"replace","path":"/verificationMethod/0/publicKeyMultibase","value":"z6MkuocstfAaHsJgRnQgfQdtJiECuWEMDAbQV61aCpsUrTh3"},{"op":"replace","path":"/verificationMethod/0/controller","value":"did:tdw:migrated.example.com:4c99uuenu8gk6n3bgf09fuf350gx"},{"op":"replace","path":"/verificationMethod/0/id","value":"did:tdw:migrated.example.com:4c99uuenu8gk6n3bgf09fuf350gx#CpsUrTh3"},{"op":"replace","path":"/assertionMethod/0","value":"did:tdw:migrated.example.com:4c99uuenu8gk6n3bgf09fuf350gx#gJqvqaYD"},{"op":"replace","path":"/authentication/0","value":"did:tdw:migrated.example.com:4c99uuenu8gk6n3bgf09fuf350gx#CpsUrTh3"},{"op":"replace","path":"/controller","value":["did:tdw:migrated.example.com:4c99uuenu8gk6n3bgf09fuf350gx"]},{"op":"replace","path":"/id","value":"did:tdw:migrated.example.com:4c99uuenu8gk6n3bgf09fuf350gx"},{"op":"add","path":"/@context/2","value":"https://identity.foundation/linked-vp/contexts/v1"},{"op":"add","path":"/service","value":[{"id":"did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx#whois","type":"LinkedVerifiablePresentation","serviceEndpoint":["https://example.com/docs/4c99uuenu8gk6n3bgf09fuf350gx/whois.json"]}]}]},[{"type":"DataIntegrityProof","cryptosuite":"eddsa-jcs-2022","verificationMethod":"did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx#y4SDXopT","created":"2024-04-15T19:56:18Z","proofPurpose":"authentication","challenge":"53vtcxfvmvwfzyfw4b9cjeygccwbhm8j1v90by5k66jt4ahbhu50","proofValue":"z47viJruDDnAfpL6Zo3bowUB9Eumx1w7Qa8UwH6K1Df1Db6pExBMRvzdy9YgL452t3v5FmrKAnDGF7aQYgtG7bbga"}]]
+["3nxcvupjdbetntt80ggnbxurkrz9bhh93nqega3ek5ex8xpfurb0",3,"2024-04-15T19:56:18Z",{},{"patch":[{"op":"add","path":"/service/1","value":{"id":"did:tdw:migrated.example.com:4c99uuenu8gk6n3bgf09fuf350gx#didcomm","type":"DIDCommMessaging","serviceEndpoint":{"uri":"https://example.com/didcomm","accept":["didcomm/v2","didcomm/aip2;env=rfc587"],"routingKeys":["did:example:somemediator#somekey"]}}},{"op":"replace","path":"/verificationMethod/1/publicKeyMultibase","value":"z6Mkr2D4ixckmQx8tAVvXEhMuaMhzahxe61qJt7G9vYyiXiJ"},{"op":"replace","path":"/verificationMethod/1/id","value":"did:tdw:migrated.example.com:4c99uuenu8gk6n3bgf09fuf350gx#9vYyiXiJ"},{"op":"replace","path":"/verificationMethod/0/publicKeyMultibase","value":"z6Mkq7Qoa2LCvLCUiq9W2J9vXH1ooDqSX2ehWGUzCZSeAWLE"},{"op":"replace","path":"/verificationMethod/0/id","value":"did:tdw:migrated.example.com:4c99uuenu8gk6n3bgf09fuf350gx#CZSeAWLE"},{"op":"add","path":"/verificationMethod/2","value":{"id":"did:tdw:migrated.example.com:4c99uuenu8gk6n3bgf09fuf350gx#qnYZ6fWH","controller":"did:tdw:migrated.example.com:4c99uuenu8gk6n3bgf09fuf350gx","type":"Multikey","publicKeyMultibase":"z6LSdYjdAE7ZY1Gh5VPAxDJdgbg45Lq6im3N9o6HqnYZ6fWH"}},{"op":"replace","path":"/assertionMethod/0","value":"did:tdw:migrated.example.com:4c99uuenu8gk6n3bgf09fuf350gx#9vYyiXiJ"},{"op":"replace","path":"/authentication/0","value":"did:tdw:migrated.example.com:4c99uuenu8gk6n3bgf09fuf350gx#CZSeAWLE"},{"op":"add","path":"/@context/3","value":"https://didcomm.org/messaging/v2"},{"op":"add","path":"/keyAgreement","value":["did:tdw:migrated.example.com:4c99uuenu8gk6n3bgf09fuf350gx#qnYZ6fWH"]}]},[{"type":"DataIntegrityProof","cryptosuite":"eddsa-jcs-2022","verificationMethod":"did:tdw:migrated.example.com:4c99uuenu8gk6n3bgf09fuf350gx#CpsUrTh3","created":"2024-04-15T19:56:18Z","proofPurpose":"authentication","challenge":"3nxcvupjdbetntt80ggnbxurkrz9bhh93nqega3ek5ex8xpfurb0","proofValue":"zedM9gUK9KvMLEXLePemFB2W5jBtscHN9WRPcxmkuRanPHsvK76M1mKHUKqJtApcdSsykRZtoHPJLiagJo3KKJsU"}]]
 ```
 
 And so on...

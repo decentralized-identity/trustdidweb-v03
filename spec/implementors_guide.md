@@ -17,7 +17,7 @@ In an effort to prevent the loss of control over a decentralized identifier (DID
 
 The primary goal of pre-rotation keys is to ensure that even if an attacker
 gains access to the current active key, they will not be able to take control of
-the DID. This safeguard is achieved because the attacker could simply rotate to
+the DID. This safeguard is achieved because the attacker could not simply rotate to
 a key they generate and control. Rather, they would need to have also
 compromised the unpublished (and presumably securely stored) pre-rotation key in
 order to rotate the DID keys.
@@ -119,8 +119,8 @@ keys...). Those DIDs, with the inherent public keys can be used for many
 purposes -- encrypted email (hello PGP!), messaging, secure file sharing, and
 more.
 
-From time to time in that imagined future, we will may want to move our DIDs
-from one hosting service to another, just as we move from one email or cell
+From time to time in that imagined future, we may want to move our DIDs
+from one hosting service to another, just as we move from one email or mobile
 provider to another. With DIDs that can move and retain the history, we can make
 such moves smoothly. Contacts will see the change, but also see that the history
 of the DID remains.

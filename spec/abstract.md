@@ -10,16 +10,18 @@ of `did:web`. Its features include:
 - The ability to resolve the full history of the DID using a verifiable chain of
   updates to the DIDDoc from genesis to deactivation.
 - A [[def: self-certifying identifier]] (SCID) for the DID that is globally
-  unique and derived from the initial DIDDoc which enables DID portability, such
-  as moving the DIDs web location (and so the DID string itself) while retaining
-  the DID's history.
-- DIDDoc updates that include a proof signed by the DID Controller(s) *authorized* to
+  unique, embedded in the DID, and derived from the initial DIDDoc. The SCID
+  enables [[ref: DID portability]], such as moving the DID's web location (and
+  so changing the DID string itself) while retaining a connection to the
+  predecessor DID(s) and the DID's verifiable history.
+- DIDDoc updates include a proof signed by the DID Controller(s) *authorized* to
   update the DID.
-- An optional mechanism for publishing "pre-rotation" keys to prevent loss of
-  control of the DID in cases where an active private key is compromised.
+- An optional mechanism for publishing "pre-rotation" keys to prevent the loss of
+  control of a DID in cases where an active private key is compromised.
 - DID URL path handling that defaults (but can be overridden) to automatically
-  resolve `<did>/path/to/file` by the same DID-to-HTTPS translation.
-- A DID URL path `<did>/whois` that defaults to automatically return (if
+  resolving `<did>/path/to/file` by using a comparable DID-to-HTTPS translation
+  as for the DIDDoc.
+- A DID URL path `<did>/whois` that defaults to automatically returning (if
   published by the DID controller) a [[ref: Verifiable Presentation]] containing
   [[ref: Verifiable Credentials]] with the DID as the `credentialSubject`,
   signed by the DID.

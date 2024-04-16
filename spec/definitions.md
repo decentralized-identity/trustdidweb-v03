@@ -70,6 +70,14 @@ able to rotate to a new key the controller does not know.
 transformation of a DIDDoc from one version to the next. The initial entry
 establishes the DID and version 1 of the DIDDoc.
 
+[[def: DID Portability, did:tdw portability, `did:tdw` portability]]
+
+`did:tdw` portability encompasses the ability to change the DID string for the
+DID while retaining the [[ref: SCID]] and the history of the DID. This is useful
+when forced to change (such as when an organization is acquired by another,
+resulting in a change of domain names) and when changing DID hosting service
+providers.
+
 [[def: base32_lower]]
 
 ~ Applies [[spec:rfc4648]] to convert

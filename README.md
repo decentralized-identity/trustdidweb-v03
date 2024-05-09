@@ -7,7 +7,7 @@ Read the spec: [https://bcgov.github.io/trustdidweb/](https://bcgov.github.io/tr
 Implementations available:
 
 - Typescript: [https://github.com/bcgov/trustdidweb-ts](https://github.com/bcgov/trustdidweb-ts)
-- Python: To be added
+- Python: [https://github.com/bcgov/trustdidweb-py](https://github.com/bcgov/trustdidweb-py)
 
 ## Abstract
 

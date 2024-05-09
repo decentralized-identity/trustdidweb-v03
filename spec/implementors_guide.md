@@ -5,11 +5,11 @@
 Proof of concept implementations of `did:tdw` software for [[ref: DID Controllers]] and resolvers can be found here:
 
 - Typescript: [https://github.com/bcgov/trustdidweb-ts](https://github.com/bcgov/trustdidweb-ts)
-- Python: To be added
+- Python: [https://github.com/bcgov/trustdidweb-py](https://github.com/bcgov/trustdidweb-py)
 
 Both currently (as of 2024.04.11) support all of the features of `did:tdw` except for [[ref:  Key Pre-Rotation]] and [[ref: Verifiable Conditions]].
 
-The Typescript implementation is currently less than 1000 lines of Typescript code.
+The Typescript implementation is currently less than 800 lines of Typescript code.
 
 ### Using Pre-Rotation Keys
 

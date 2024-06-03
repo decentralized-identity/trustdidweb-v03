@@ -1,12 +1,13 @@
 ## Abstract
 
-The `did:tdw` (Trust DID Web) method is an enhancement to the
-`did:web` protocol, providing a complementary web-based DID method that addresses limitations
-of `did:web`. Its features include:
+The `did:tdw` (Trust DID Web) is an enhancement to the `did:web` DID method,
+providing a complementary web-based features that address `did:web`'s
+limitations. `did:tdw` features include:
 
 - Ongoing publishing of all DID Document (DIDDoc) versions for a DID instead of,
-  or alongside a `did:web` DID/DIDDoc.
+  or alongside a current `did:web` DID/DIDDoc.
 - The same DID-to-HTTPS transformation as `did:web`.
+- Supports the same [High Assurance DID-to-DNS] mechanism.
 - The ability to resolve the full history of the DID using a verifiable chain of
   updates to the DIDDoc from genesis to deactivation.
 - A [[def: self-certifying identifier]] (SCID) for the DID that is globally
@@ -14,7 +15,7 @@ of `did:web`. Its features include:
   enables [[ref: DID portability]], such as moving the DID's web location (and
   so changing the DID string itself) while retaining a connection to the
   predecessor DID(s) and the DID's verifiable history.
-- DIDDoc updates include a proof signed by the DID Controller(s) *authorized* to
+- DIDDoc updates contain a proof signed by the controller(s) *authorized* to
   update the DID.
 - An optional mechanism for publishing "pre-rotation" keys to prevent the loss of
   control of a DID in cases where an active private key is compromised.
@@ -25,6 +26,8 @@ of `did:web`. Its features include:
   published by the DID controller) a [[ref: Verifiable Presentation]] containing
   [[ref: Verifiable Credentials]] with the DID as the `credentialSubject`,
   signed by the DID.
+
+[DID-to-DNS]: https://datatracker.ietf.org/doc/draft-carter-high-assurance-dids-with-dns/
 
 Combined, the additional features enable greater trust and security without
 compromising the simplicity of `did:web`. The incorporation of the DID Core

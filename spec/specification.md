@@ -109,9 +109,14 @@ Creating a `did:tdw` DID is done by carrying out the following steps.
    defines the permitted [[ref: parameters]]. The authorization [[spec DID KEY]] DIDs
    generated in step 3 **MUST** be included in the [[ref: parameters]] of the
    first version of the DID, in the `updateKeys` item.
-6. Pass the DID string, initial DIDDoc, and [[ref: parameters]] to a `did:tdw`
+6. Pass the initial DIDDoc, and [[ref: parameters]] to a `did:tdw`
    "Create" implementation that **MUST**:
-   1. Calculate the [[ref: SCID]] for the DID as defined in the [SCID Generation
+   1. Extract from the DIDDoc the value of the `id` item, the DID identifier
+      itself, and verify that it is a valid `did:tdw` DID that contains the
+      `{SCID}` placeholder in a allowed location in the DID string as per the
+      ABNF of a `did:tdw` DID as defined in the [Method-Specific
+      Identifier](#method-specific-identifier) section of this specification.
+   2. Calculate the [[ref: SCID]] for the DID as defined in the [SCID Generation
       and Validation](#scid-generation-and-validation) section of this
       specification.
    2. Replace in the DIDDoc the placeholder for the [[ref: SCID]] `{SCID}` with
@@ -134,9 +139,9 @@ Creating a `did:tdw` DID is done by carrying out the following steps.
       The proof becomes the sixth and last JSON item in the DID log entry.
    7. Put the resulting entry, with extraneous white space removed as the
       contents of a file `did.jsonl`.
-	 8. Publish the file at the appropriate location defined by the `did:tdw` DID identifier.
-      - This is a logical operation -- how a deployment serves the `did.jsonl`
-        content is not constrained.
+	8. Publish the file at the appropriate location defined by the `did:tdw` DID identifier.
+        - This is a logical operation -- how a deployment serves the `did.jsonl`
+          content is not constrained.
 
 A controller **MAY** generate an equivalent `did:web` DIDDoc and publish it as
 defined in the [Publishing a Parallel `did:web`
@@ -210,11 +215,11 @@ the following steps:
    9. If any verifications fail, discard the DID as invalid.
    10. As each log entry is processed and verified, collect the following information
       about each version:
-      1. DIDDoc.
-      2. `versionId` of the DIDDoc.
-      3. `versionTime`of the DIDDoc.
-			4. The active [[spec DID KEY]] DIDs authorized to update the DID, from the `updateKeys` lists in the [[ref: parameters]].
-			5. If pre-rotation is being used, the hashes of [[spec DID KEY]] DIDs that will be used in later `updateKeys` lists. The pre-rotation hashes are in the `nextKeys` list in the [[ref: parameters]].
+         1. DIDDoc.
+         2. `versionId` of the DIDDoc.
+         3. `versionTime`of the DIDDoc.
+         4. The active [[spec DID KEY]] DIDs authorized to update the DID, from the `updateKeys` lists in the [[ref: parameters]].
+         5. If pre-rotation is being used, the hashes of [[spec DID KEY]] DIDs that will be used in later `updateKeys` lists. The pre-rotation hashes are in the `nextKeys` list in the [[ref: parameters]].
 
 On completing the processing and successful verification of all entries in the [[ref: DID Log]], respond to
 the DID resolution request, including the application of query parameters such
@@ -384,7 +389,7 @@ items are defined below.
     Hash Generation and
     Validation](#pre-rotation-key-hash-generation-and-validation) section of
     this specification.
-  - If the parameter `prerotation` has been set to `true`, all [[spec DID KEY]] DIDs added to `updateKeys` lists **MUST** have a corresponding hash
+  - If the parameter `prerotation` has been set to `true`, all [[spec DID KEY]] DIDs added to `updateKeys` lists **MUST** have a corresponding hash 
     listed in the `nextKeys` items from a previous [[ref: DID log entries]].
   - See the section of this specification [Using Pre-Rotation
     Keys](#using-pre-rotation-keys) for non-normative guidance in using
@@ -426,7 +431,7 @@ To generate the required [[ref: SCID]] for a `did:tdw` DID, the DID Controller
 
 Where:
 
-1. The `partial initial log entry with placeholders` consists of the following elements of the
+1. The `partial initial log entry with placeholders` consists of the following elements of
    the first log entry, as a JSON Lines array. The placeholder is the literal string "`{SCID}`".
 
    - The `entryHash` as a placeholder.
@@ -456,7 +461,7 @@ To verify the [[ref: SCID]] of a `did:tdw` DID being resolved, the resolver
       error.
 3. Remove from the first [[ref: DID log entry]] the data integrity proof.
 4. Replace the `entryHash` value with the placeholder literal "`{SCID}`"
-4. Treat the rsulting log entry as a string and do a text replacement of the `scid`
+4. Treat the resulting log entry as a string and do a text replacement of the `scid`
    from the first step with the literal string `{SCID}`.
 5. Execute the hashing process defined in the generation defined above to
    generate the value `calculatedSCID`.

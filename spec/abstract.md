@@ -1,7 +1,7 @@
 ## Abstract
 
-The `did:tdw` (Trust DID Web) is an enhancement to the `did:web` DID method,
-providing a complementary web-based features that address `did:web`'s
+Trust DID Web (`did:tdw`) is an enhancement to the `did:web` DID method,
+providing complementary web-based features that address `did:web`'s
 limitations. `did:tdw` features include:
 
 - Ongoing publishing of all DID Document (DIDDoc) versions for a DID instead of,

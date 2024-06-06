@@ -219,7 +219,7 @@ the following steps:
          2. `versionId` of the DIDDoc.
          3. `versionTime`of the DIDDoc.
          4. The active [[spec DID KEY]] DIDs authorized to update the DID, from the `updateKeys` lists in the [[ref: parameters]].
-         5. If pre-rotation is being used, the hashes of [[spec DID KEY]] DIDs that will be used in later `updateKeys` lists. The pre-rotation hashes are in the `nextKeys` list in the [[ref: parameters]].
+         5. If pre-rotation is being used, the hashes of [[spec DID KEY]] DIDs that will be used in later `updateKeys` lists. The pre-rotation hashes are in the `nextKeyHashes` list in the [[ref: parameters]].
 
 On completing the processing and successful verification of all entries in the [[ref: DID Log]], respond to
 the DID resolution request, including the application of query parameters such
@@ -379,18 +379,18 @@ items are defined below.
     - `eddsa-jcs-2022`: Use the [eddsa-jcs-2022](https://www.w3.org/TR/vc-di-eddsa/#eddsa-jcs-2022) cryptosuite.
 - `prerotation`: A boolean value indicating that subsequent authentication keys
   added to the DIDDoc (after this version) **MUST** have their hash included in
-  a `nextKeys` parameter item.
+  a `nextKeyHashes` parameter item.
   - The value is initialized to `false` until the item is included in an [[ref:
     DID log entry]].
   - Once the value is set to `true` in a [[ref: DID log entry]] it **MUST NOT**
     be set to `false` in a subsequent entry.
-- `nextKeys`: An array of strings that are hashes of [[spec DID KEY]] DIDs that will be added to the `updateKeys` list in a future version of the DID.
+- `nextKeyHashes`: An array of strings that are hashes of [[spec DID KEY]] DIDs that will be added to the `updateKeys` list in a future version of the DID.
   - The process for generating the hashes is defined in the [Pre-Rotation Key
     Hash Generation and
     Validation](#pre-rotation-key-hash-generation-and-validation) section of
     this specification.
   - If the parameter `prerotation` has been set to `true`, all [[spec DID KEY]] DIDs added to `updateKeys` lists **MUST** have a corresponding hash 
-    listed in the `nextKeys` items from a previous [[ref: DID log entries]].
+    listed in the `nextKeyHashes` items from a previous [[ref: DID log entries]].
   - See the section of this specification [Using Pre-Rotation
     Keys](#using-pre-rotation-keys) for non-normative guidance in using
     pre-rotation keys.
@@ -617,9 +617,9 @@ As described in the [parameters](#did-generation-and-validation-parameters)
 section of this specification, a [[ref: DID Controller]] **MAY** define that
 `prerotation` is active for the DID. When that is the case, all of the [[spec DID KEY]]s in the
 `updateKeys` parameters item in future versions of the DIDDoc **MUST** have their hash in one or
-more of the `nextKeys` arrays of previous [[ref: DID log entry]] parameters.
+more of the `nextKeyHashes` arrays of previous [[ref: DID log entry]] parameters.
 
-To create a hash to be included in the nextKeys array, the [[ref: DID Controller]]
+To create a hash to be included in the nextKeyHashes array, the [[ref: DID Controller]]
 **MUST** execute the following process:
 
 1. Generate a new key pair.
@@ -631,7 +631,7 @@ To create a hash to be included in the nextKeys array, the [[ref: DID Controller
       input JCS content.
    2. `base32_lower` as defined by the [[ref: base32_lower]] function. Its
       output is the lower case of the Base32 encoded string of the input hash.
-4. Add the hash calculated in Step 3 to a [[ref: DID log entry]] `nextKeys` item
+4. Add the hash calculated in Step 3 to a [[ref: DID log entry]] `nextKeyHashes` item
    in the [[ref: parameters]] item (4th item of the entry array).
 5. The [[spec DID KEY]] from Step 2 can be inserted into the `updateKeys` item
    in the [[ref: parameters]] item of a future [[ref: log entry]].
@@ -640,9 +640,9 @@ When processing a [[ref: DID log entry]] where the `prerotation` parameter is
 active, a resolver **MUST**:
 
 1. When processing each [[ref: DID log entry]], after verifying a DIDDoc, add an
-   optional array of `nextKeys` from the parameters into an array of hash
+   optional array of `nextKeyHashes` from the parameters into an array of hash
    strings.
-   1. The collection of the `nextKeys` from the current entry must occur after
+   1. The collection of the `nextKeyHashes` from the current entry must occur after
       the processing and verification of that entries` DIDDoc version so that a
       new key and its pre-rotation hash cannot be added in the same entry.
 2. For all DIDDoc versions after versionId 1, if there is an `updateKeys` item, verify that it contains a list of [[spec DID KEY]] DIDs, and for each:
@@ -655,7 +655,7 @@ active, a resolver **MUST**:
          output is the lower case of the Base32 encoded string of the input
          hash.
    3. Check to see if the hash string is listed in the collected list of
-      `nextKeys`.
+      `nextKeyHashes`.
       1. If so, the new key is verified.
       2. If not, the verification process (and resolution) failed.
 

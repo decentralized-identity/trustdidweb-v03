@@ -93,48 +93,55 @@ Creating a `did:tdw` DID is done by carrying out the following steps.
    (`did.jsonl`) will be published. Identify (using the placeholder `{SCID}`)
    where the required [[ref: SCID]] will be placed in the DID string (ie.
    `did:tdw:example.com:{SCID}`).
-2. Create the initial DIDDoc (`did.json`) file for the DID, with whatever
-   content is required. Wherever there is self-reference to the DID in the
-   DIDDoc, use the absolute form defined in step 1, with the identified
-   placeholder for the [[ref: SCID]] (ie. `did:tdw:example.com:{SCID}#key-1`).
-   1. As per [Authorized Keys](#authorized-keys), the DIDDoc **MUST** contain at
-      least one `authentication` or `verificationMethod` key type.
-3. Define a JSON array of valid [[ref: parameters]] that affect the generation
+2. Generate the authorization key pair(s) that will be used in creating the DID and
+   authorizing the first update to the DID (at least).
+	 1. If the DID is to use [[ref: pre-rotation]], additional processing at this point will be necessary to generate the necessary pre-rotation hashes.
+3. For each authorization key pair, generate a [[spec DID KEY]] DID based on the public key of the key pair.
+4. Create the initial DIDDoc (`did.json`) file for the DID, with whatever
+   content is required. Wherever there is an absolute self-reference to the DID in the
+   DIDDoc, use the form defined in step 1, with the identified
+   placeholder for the [[ref: SCID]] (ie. `did:tdw:example.com:{SCID}#key-1`). The
+   public key of authorization key pair(s) **MAY** be placed into the DIDDoc, but
+   that is not required.
+5. Define a JSON array of valid [[ref: parameters]] that affect the generation
    of the DID. The [DID Generation and Validation
    Parameters](#didtdw-did-method-parameters) section of this specification
-   defines the permitted [[ref: parameters]].
-4. Pass the DID string, initial DIDDoc, and [[ref: parameters]] to a `did:tdw`
+   defines the permitted [[ref: parameters]]. The authorization [[spec DID KEY]] DIDs
+   generated in step 3 **MUST** be included in the [[ref: parameters]] of the
+   first version of the DID, in the `updateKeys` item.
+6. Pass the initial DIDDoc, and [[ref: parameters]] to a `did:tdw`
    "Create" implementation that **MUST**:
-   1. Calculate the [[ref: SCID]] for the DID as defined in the [SCID Generation
+   1. Extract from the DIDDoc the value of the `id` item, the DID identifier
+      itself, and verify that it is a valid `did:tdw` DID that contains the
+      `{SCID}` placeholder in a allowed location in the DID string as per the
+      ABNF of a `did:tdw` DID as defined in the [Method-Specific
+      Identifier](#method-specific-identifier) section of this specification.
+   2. Calculate the [[ref: SCID]] for the DID as defined in the [SCID Generation
       and Validation](#scid-generation-and-validation) section of this
       specification.
    2. Replace in the DIDDoc the placeholder for the [[ref: SCID]] `{SCID}` with
       the calculated `SCID`.
    3. Generate a DID Entry as a JSON array with the following five JSON items:
-      1. The [[ref: SCID]] as the `entryHash` value:
-         `"4c99uuenu8gk6n3bgf09fuf350gx"`
-      2. An integer, `1`, that is the versionId for this first version of the
+      1. The [[ref: SCID]] as the `entryHash` value.
+      2. An integer, `1`, that is the `versionId` for this first version of the
          DIDDoc: `1`
-      3. A string that is the current time in [[ref: ISO8601]] format:
-         `"2024-04-04T07:32:58Z"`
-      4. The [[ref: parameters]] passed in as a JSON dict:
-         `{"method":"did:tdw:1","scid":"4c99uuenu8gk6n3bgf09fuf350gx"}`
+      3. A string that is the current time in [[ref: ISO8601]] format (e.g.,
+         `"2024-04-04T07:32:58Z"`) that is the `versionTime` for this first version of the DIDDoc
+      4. The [[ref: parameters]] passed in as a JSON dict.
       5. The contents of the initial DIDDoc, in the form: `{"value": <DIDDoc>}`
    4. Calculate the [[ref: Entry Hash]] (`entryHash`) of the DID Entry as
       defined in the [Entry Hash Generation and
       Validation](#entry-hash-generation-and-validation) section of this
       specification.
-   5. Update the `entryHash` with the value produced in the previous step.
+   5. Update the value of the `entryHash` item with the value produced in the previous step.
    6. Generate a [[ref: Data Integrity]] proof on the initial DIDDoc using an
-      authorized key from the DID, and the `entryHash` as the proof `challenge`.
-      The definition of "authorized" in this case is specified in the
-      [Authorized Keys](#authorized-keys) section of this specification. The
-      proof becomes the sixth and last JSON item in the DID log entry.
+      authorized key from a [[spec DID KEY]] DID in the `updateKeys` item in the [[ref: parameters]], and the `entryHash` as the proof `challenge`.
+      The proof becomes the sixth and last JSON item in the DID log entry.
    7. Put the resulting entry, with extraneous white space removed as the
-      contents of a file `did.jsonl` and publish the file at the appropriate
-      location defined by the `did:tdw` value.
-      - This is a logical operation -- how a deployment serves the `did.jsonl`
-        content is not constrained.
+      contents of a file `did.jsonl`.
+	8. Publish the file at the appropriate location defined by the `did:tdw` DID identifier.
+        - This is a logical operation -- how a deployment serves the `did.jsonl`
+          content is not constrained.
 
 A controller **MAY** generate an equivalent `did:web` DIDDoc and publish it as
 defined in the [Publishing a Parallel `did:web`
@@ -168,7 +175,7 @@ To process the retrieved [[ref: DID Log]] file, the resolver **MUST** carry out
 the following steps:
 
 1. Process the Log entries in the order they appear in the file, applying the
-   [[ref: parameters]] set on current and previous entries. As noted in the
+   [[ref: parameters]] set from the current and previous entries. As noted in the
    [Create (Register)](#create-register), each log entry consists of a JSON
    array of 6 items:
    1. `entryHash`
@@ -200,18 +207,21 @@ the following steps:
    7. Generate the version of the DIDDoc for the entry by using the JSON value
       of the `value` item, or by using [[ref: JSON Patch]] to apply the JSON
       value of the `patch` entry item to the previous version of the DIDDoc.
-   8. If [[ref: Key Pre-Rotation]] is being used, verify that any added keys in
-      the DIDDoc have a valid pre-rotation entry as defined in the [Key
-      Pre-Rotation Hash Generation and
+   8. If [[ref: Key Pre-Rotation]] is being used, verify that any added keys
+      authorized to update the DIDDoc have a valid pre-rotation entry as defined
+      in the [Key Pre-Rotation Hash Generation and
       Verification](#pre-rotation-key-hash-generation-and-validation) section of
       this specification.
-   9. Once each log entry has been processed, collect the following information
+   9. If any verifications fail, discard the DID as invalid.
+   10. As each log entry is processed and verified, collect the following information
       about each version:
-      1. DIDDocument
-      2. `versionId`
-      3. `versionTime`
+         1. DIDDoc.
+         2. `versionId` of the DIDDoc.
+         3. `versionTime`of the DIDDoc.
+         4. The active [[spec DID KEY]] DIDs authorized to update the DID, from the `updateKeys` lists in the [[ref: parameters]].
+         5. If pre-rotation is being used, the hashes of [[spec DID KEY]] DIDs that will be used in later `updateKeys` lists. The pre-rotation hashes are in the `nextKeyHashes` list in the [[ref: parameters]].
 
-On completing the processing of all entries in the [[ref: DID Log]], respond to
+On completing the processing and successful verification of all entries in the [[ref: DID Log]], respond to
 the DID resolution request, including the application of query parameters such
 as `?versionId=` and `?versionTime=` with the appropriate DIDDoc version.
 
@@ -249,13 +259,9 @@ as follows:
 1. Make the desired changes to the DIDDoc. While the contents of a new DIDDoc
    version are (mostly) up to the DID controller, there are some limitations:
    1. The `id` of the DIDDoc **MAY** be changed when the DID Controller wants to
-      (or must) publish the DID at a different location and wants to retain the
+      (or is forced to) publish the DID at a different location and wants to retain the
       [[ref: SCID]] and history of the DID. For details, see the section [Moving
       a DID's Web Location](#moving-a-dids-web-location).
-   2. If [[ref: Key Pre-Rotation]] is being used in the DID, only keys with a
-      valid `nextKeys` entry in a previous DIDDoc can be added, as defined in
-      the [Using Pre-Rotation Keys](#using-pre-rotation-keys) section of this
-      specification.
 2. Define a JSON array of valid [[ref: parameters]] that affect the evolution of
    the DID. The [`did:tdw` DID Method Parameters](#didtdw-did-method-parameters)
    section of this specification defines the permitted [[ref: parameters]].
@@ -266,12 +272,11 @@ as follows:
          `entryHash` value.
       2. An integer that is one more than the `versionId` of the previous [[ref:
          DID Log Entry]].
-      3. A string that is the current time in [[ref: ISO8601]] format:
-         `"2024-04-05T07:32:58Z"`
-      4. The [[ref: parameters]] passed in as a JSON dict: `{}`
+      3. A string that is the current time in [[ref: ISO8601]] format.
+      4. The [[ref: parameters]] passed in as a JSON dict.
          1. [[ref: parameters]] from previous versions continue to apply and do
             not need to be repeated in each version. As a result, the
-            `parameters` item will often be an empty dict.
+            `parameters` item may be an empty dict (`{}`).
       5. Generate a [[ref: JSON Patch]] to evolve the previous DIDDoc version to
          the new DIDDoc version, and put the resulting patch in the item
          `{"patch": <DIDDoc Patch>}`. For details see the [Generating and
@@ -284,15 +289,15 @@ as follows:
       defined in the [Entry Hash Generation and
       Validation](#entry-hash-generation-and-validation) section of this
       specification.
-   3. Update the `entryHash` with the value produced in the previous step.
+   3. Update the value of the `entryHash` item with the value produced in the previous step.
    4. Generate a [[ref: Data Integrity]] proof on the new DIDDoc of the entry
-      using an authorized key from the DID, and the `entryHash` as the proof
+      using an authorized key, and the `entryHash` as the proof
       `challenge`. The definition of "authorized" is formalized in the
       [Authorized Keys](#authorized-keys) section of this specification. The
       proof becomes the last JSON item in the entry.
    5. Append the resulting entry to the existing contents of the [[ref: DID
       Log]] file `did.jsonl` on a new line.
-4. Update the [[ref: DID Log]] file at the appropriate location defined by the
+4. Publish the updated [[ref: DID Log]] file at the appropriate location defined by the
       `did:tdw` identifier.
       - This is a logical operation -- how a deployment serves the `did.jsonl`
       content is not constrained.
@@ -302,7 +307,7 @@ publish it as defined in the [Publishing a Parallel `did:web`
 DID](#publishing-a-parallel-didweb-did) section of this specification.
 
 A controller may use the `move` [[ref: DID log entry]] [[ref: parameter]] to
-change the DID string. That effectively creates a new DID, but a DID that
+change the DID string. That action effectively creates a new DID, but a DID that
 retains the [[ref: SCID]] and verifiable history of the original DID. A [[ref:
 DID Controller]] may do that when forced (for example, loss of domain name) or
 by choice (moving from a DID hosting provider to another) without losing the
@@ -314,8 +319,8 @@ of the Implementers Guide for a discussion of moving a `did:tdw` DID.
 To deactivate the DID, the [[ref: DID Controller]] **SHOULD** add to the [[ref:
 DID log entry]] [[ref: parameters]] the item `"deactivated": true`. A [[ref: DID
 Controller]] **MAY** update the DIDDoc further to indicate the deactivation of
-the DID, such as removing the `authentication` key type entries, preventing
-further updates to the DID/DIDDoc.
+the DID, such as including an empty `updateKeys` list (`"updateKeys": []`) in the [[ref: parameters]],
+preventing further versions of the DID.
 
 A resolver encountering in the [[ref: DID log entry]] [[ref: parameters]] the
 item `"deactivated": true` should return in the DIDDoc Metadata the JSON item
@@ -360,6 +365,10 @@ items are defined below.
       in processing the log.
 - `scid`: The value of the [[ref: SCID]] for this DID.
   - This item **MUST** appear in the first [[ref: DID log entry]].
+- `updateKeys`: A list of one or more [[spec DID KEY]] DIDs that are authorized
+  to sign the log entries that update the DID from one version to the next. An instance of the list in an entry replaces the previously active list. If an entry does not have the `updateKeys` item, the currently active list continues to apply. See the
+  [Authorized Keys](#authorized-keys) section of this specification for additional details.
+  - This item **MUST** appear in the first [[ref: DID log entry]].
 - `hash`: The hashing algorithm to use when executing hashes.
   - By default, the value is initialized to `sha256`.
   - Acceptable values:
@@ -370,20 +379,18 @@ items are defined below.
     - `eddsa-jcs-2022`: Use the [eddsa-jcs-2022](https://www.w3.org/TR/vc-di-eddsa/#eddsa-jcs-2022) cryptosuite.
 - `prerotation`: A boolean value indicating that subsequent authentication keys
   added to the DIDDoc (after this version) **MUST** have their hash included in
-  a `nextKeys` parameter item.
+  a `nextKeyHashes` parameter item.
   - The value is initialized to `false` until the item is included in an [[ref:
     DID log entry]].
   - Once the value is set to `true` in a [[ref: DID log entry]] it **MUST NOT**
     be set to `false` in a subsequent entry.
-- `nextKeys`: An array of strings that are hashes of future keys to be added to
-  the DIDDoc.
+- `nextKeyHashes`: An array of strings that are hashes of [[spec DID KEY]] DIDs that will be added to the `updateKeys` list in a future version of the DID.
   - The process for generating the hashes is defined in the [Pre-Rotation Key
     Hash Generation and
     Validation](#pre-rotation-key-hash-generation-and-validation) section of
     this specification.
-  - If the parameter `prerotation` has been set to `true`, all keys added to a
-    version of the DIDDoc after version 1 **MUST** have a corresponding hash
-    listed in the `nextKeys` items from a previous [[ref: DID log entries]].
+  - If the parameter `prerotation` has been set to `true`, all [[spec DID KEY]] DIDs added to `updateKeys` lists **MUST** have a corresponding hash 
+    listed in the `nextKeyHashes` items from a previous [[ref: DID log entries]].
   - See the section of this specification [Using Pre-Rotation
     Keys](#using-pre-rotation-keys) for non-normative guidance in using
     pre-rotation keys.
@@ -413,23 +420,26 @@ items are defined below.
 #### SCID Generation and Validation
 
 The [[ref: Self-certifying identifier]] or `scid` is a required parameter in the
-first [[ref: DID log entry]] and is a portion of the hash of the initial DID
-Document.
+first [[ref: DID log entry]] and is a portion of the hash of the DID's inception event.
 
 ##### Generate SCID
 
 To generate the required [[ref: SCID]] for a `did:tdw` DID, the DID Controller
 **MUST** execute the following function:
 
- `left(base32_lower(hash(JCS(initial DIDDoc with placeholders))), <length>)`
+ `left(base32_lower(hash(JCS(partial initial log entry with placeholders))), <length>)`
 
 Where:
 
-1. The `initial DIDDoc with placeholders` is the initial DID Doc defined by the
-   [[ref: DID Controller]] with the placeholder `{SCID}` put everywhere the
-   [[ref: SCID]] will be used in the resolved version 1 DIDDoc. At minimum, the
-   `{SCID}` **MUST** appear in the top level `id` item of the DIDDoc. It **MAY**
-   occur elsewhere in the DIDDoc.
+1. The `partial initial log entry with placeholders` consists of the following elements of
+   the first log entry, as a JSON Lines array. The placeholder is the literal string "`{SCID}`".
+
+   - The `entryHash` as a placeholder.
+   - The `versionId` entry, which must be `1`.
+   - The `versionTime` entry, which must be a string that is the current time in [[ref: ISO8601]] format, e.g.,
+         `"2024-04-05T07:32:58Z"`
+   - The complete `parameters` for the entry, with the placeholder wherever the SCID will eventually be placed.
+   - The `{"value": <DIDDoc>}` element with the placeholders wherever the SCID will eventually be placed.
 2. `JCS` is an implementation of the [[ref: JSON Canonicalization Scheme]]
    [[spec:rfc8785]]. It outputs a canonicalized representation of its input.
 3. `hash` is either `sha256` or an alternative hash algorithm defined in the
@@ -449,15 +459,13 @@ To verify the [[ref: SCID]] of a `did:tdw` DID being resolved, the resolver
 2. Verify that the length of the `scid` is at least 28 characters.
    1. If less than 28 characters, terminate the resolution process with an
       error.
-3. Extract from the first [[ref: DID log entry]] the `value` item's value, which
-   is the initial DIDDoc.
-4. Treat the `value`s value as a string and do a text replacement of the `scid`
-   from the first step with `{SCID}`. This should result in the `initial DIDDoc
-   with placeholders` data needed for the next step.
+3. Remove from the first [[ref: DID log entry]] the data integrity proof.
+4. Replace the `entryHash` value with the placeholder literal "`{SCID}`"
+4. Treat the resulting log entry as a string and do a text replacement of the `scid`
+   from the first step with the literal string `{SCID}`.
 5. Execute the hashing process defined in the generation defined above to
    generate the value `calculatedSCID`.
    1. For the `<length>` value, use the length of the `scid` extracted in step
-      1.
 6. Verify that the `scid` matches the `calculatedSCID`.
 
 #### Entry Hash Generation and Validation
@@ -521,50 +529,22 @@ execute the following process:
 
 #### Authorized Keys
 
-Each entry in the [[ref: DID Log]] MUST include a [[ref: Data Integrity]] proof
-signed by a key **authorized** to control (create, update, deactivate) the DID.
-For `did:tdw`, the following defines the process for collecting the authorized
-keys.
+Each entry in the [[ref: DID Log]] **MUST** include a [[ref: Data Integrity]] proof signed by a key **authorized** to control (create, update, deactivate) the DID. For `did:tdw`, the authorized keys are those referenced by the list of [[spec DID KEY]] DIDs in the **active** `updateKeys` list in the `parameters` item of the [[ref: log entries]].
 
-1. Retrieve the DIDDoc in which the set of authorized controller DIDs is found.
-   For the first version (`1`) of the DID, that is the first (and only) DIDDoc.
-   For all subsequent versions of the DID, the **previous** DIDDoc version is
-   used.
-2. From the DIDDoc, the top-level `controller` item is retrieved to create a
-   (possibly empty) array of controller DIDs from the DIDDoc.
-   1. If the list of controller DIDs is empty, the DID being signed is added to
-      the array.
-3. For each DID in the list, the set of `authentication` key type references are
-   collected from within the DIDDoc.
-   1. If there are no `authentication` key type references, the
-      `verificationMethod` key references are collected.
-   2. If the controller DID is for an **external** DID, the key referenced
-      **MUST** be present in the DIDDoc being processed.
-
-The controller of the DID **MUST** use a key from the resulting key references
-to sign the [[ref: DID Log]] entry.
+For the first [[ref: log entry]] the **active** `updateKeys` list is the one in that first [[ref: log entry]]. For all subsequent entries, **active** means
+the most recent `updateKeys` list **before** the entry to be signed is created. Thus, the general case is that each log entry is signed by the keys from the previous log entry.
 
 A resolver of the DID **MUST** verify that the key used for signing the [[ref:
-DID Log]] entry is in the list of authorized DID key references, and **MUST**
-verify the proof.
+DID Log]] entry is one from a [[spec DID KEY]] DID in the list of currently active `updateKeys` [[ref: parameter]], and that the signature verifies.
 
+The `did:tdw` Implementation Guide contains further discussion on the management of keys authorized to update the DID.
 
 ::: note
 
-- [[spec: DID-CORE]] is not clear (at least to the authors of this
-   specification) on what key types define those authorized to update a DID.
-- The requirement to have the key reference for external DIDs (not the
-   controlled DID) copied into the DIDDoc is to prevent an implementation from
-   having to resolve external DIDs (that could use any [[ref: DID Method]])
-   during the resolution of a DID. This *might* be too restrictive and could be
-   changed in an update to this specification. For example, it might be
-   reasonable to require that external DIDs of certain [[ref: DID Methods]]
-   (such as `did:tdw` or `did:web`) be resolved as part of resolving the
-   controlled DID.
-- In a future version of the specification, the authors would like to require
-   support for [[ref: verifiableConditions]] key types, to enable [[ref:
-   multi-sig]] DID control support, such as requiring "N of M" signatures must
-   be in a proof for it to be valid.
+Note: The initial approach we considered using to find an authorized key was to use key references in the DIDDoc itself. However, we struggled to understand how to apply the guidance in the [[spec: DID-CORE]] specification in determining the appropriate key(s) in the DIDDoc to use, and so decided instead to use the mechanism specified in this section. A future version of this specification could revert that decision if the [[ref: DID Core]] guidance is clarified, or if an appropriate interpretation of the existing guidance is agreed upon.
+
+One scenario in particular that we did not think is satisfied by the [[spec: DID-CORE]] specification is in determining the authorized keys when the `controller` of the DID is not the DID itself, and so might need to be found by (potentially recursively) resolving other DIDs. We felt it a requirement that in resolving and verifying a `did:tdw` DID, resolvers must be able to access all necessary public keys in the [[ref: DID Log Entries]] themselves, and
+not have to retrieve them after retrieving the [[ref: DID Log]]. The approach outlined in this section ensures that is the case for `did:tdw`.
 
 :::
 
@@ -625,74 +605,59 @@ added security and convenience of using `did:tdw` are lost.
 #### Pre-Rotation Key Hash Generation and Validation
 
 Pre-rotation is a term defining how a [[ref: DID Controller]] can commit to the
-keys that will be added ("rotated to") in future versions of the DIDDoc. The
-purpose of committing to future keys is that if the currently active keys are
+authorization keys that will be used ("rotated to") when updating the DIDDoc. The purpose of committing to future keys is that if the currently authorized keys are
 compromised by an attacker, the attacker should not be able to rotate the
-compromised keys to new ones only the attacker controls to take over the control
+compromised keys to new ones only the attacker controls and take over control
 of the DID. The effectiveness of pre-rotation is based on the idea that an
-attacker cannot compromised the future keys. See the non-normative section about
-[Using Pre-Rotation Keys](#using-pre-rotation-keys) in the implementors guide
+attacker cannot compromise the future keys. See the non-normative section about
+[Using Pre-Rotation Keys](#using-pre-rotation-keys) in the implementer's guide
 section of this specification.
 
 As described in the [parameters](#did-generation-and-validation-parameters)
 section of this specification, a [[ref: DID Controller]] **MAY** define that
-`prerotation` is active for the DID. When that is the case, all additions of
-new keys in future versions of the DIDDoc **MUST** have their hash in one or
-more of the `nextKeys` arrays of previous [[ref: DID log entry]] parameters.
+`prerotation` is active for the DID. When that is the case, all of the [[spec DID KEY]]s in the
+`updateKeys` parameters item in future versions of the DIDDoc **MUST** have their hash in one or
+more of the `nextKeyHashes` arrays of previous [[ref: DID log entry]] parameters.
 
-To create a hash to be included in the nextKeys array, the [[ref: DID Controller]]
+To create a hash to be included in the nextKeyHashes array, the [[ref: DID Controller]]
 **MUST** execute the following process:
 
 1. Generate a new key pair.
-2. Create the JSON dict [Verification
-   Material](https://www.w3.org/TR/did-core/#verification-material), defined in
-   [[spec:DID-CORE]], for the new key. An example of such an entry is defined
-   below.
-3. Calculate the hash string as `base32_lower(hash(JCS(<verificationMaterial>)))`,
+2. Generate a [[spec DID KEY]] based on the public key of the new key pair.
+3. Calculate the hash string as `base32_lower(hash(did:key DID))`,
    where:
-   1. `JCS` is an implementation of the [[ref: JSON Canonicalization Scheme]]
-      [[spec:rfc8785]]. Its output is a canonicalized representation of its
-      input.
-   2. `hash` is either `sha256` or an alternative hash algorithm defined in the
+   1. `hash` is either `sha256` or an alternative hash algorithm defined in the
       `hash` item in the [[ref: parameters]]. Its output is the hash of its
       input JCS content.
-   3. `base32_lower` as defined by the [[ref: base32_lower]] function. Its
+   2. `base32_lower` as defined by the [[ref: base32_lower]] function. Its
       output is the lower case of the Base32 encoded string of the input hash.
-4. Add the hash calculated in Step 3 to a [[ref: DID log entry]] `nextKeys` item
-   in the parameters (4th item of the entry array).
-5. The JSON dict from Step 2 can be inserted into a future version of the
-   DIDDoc.
+4. Add the hash calculated in Step 3 to a [[ref: DID log entry]] `nextKeyHashes` item
+   in the [[ref: parameters]] item (4th item of the entry array).
+5. The [[spec DID KEY]] from Step 2 can be inserted into the `updateKeys` item
+   in the [[ref: parameters]] item of a future [[ref: log entry]].
 
 When processing a [[ref: DID log entry]] where the `prerotation` parameter is
 active, a resolver **MUST**:
 
 1. When processing each [[ref: DID log entry]], after verifying a DIDDoc, add an
-   optional array of `nextKeys` from the parameters into an array of hash
+   optional array of `nextKeyHashes` from the parameters into an array of hash
    strings.
-   1. The collection of the `nextKeys` from the current entry must occur after
+   1. The collection of the `nextKeyHashes` from the current entry must occur after
       the processing and verification of that entries` DIDDoc version so that a
       new key and its pre-rotation hash cannot be added in the same entry.
-2. For all DIDDoc versions after versionId 1, detect when a new key
-   [Verification
-   Material](https://www.w3.org/TR/did-core/#verification-material) is added to
-   a version of a DIDDoc. If so, for each new key:
-   1. Extract the Verification Material JSON dict for the new key from the new
-      DIDDoc.
-   2. Calculate the hash string as
-      `base32_lower(hash(JCS(verificationMaterial)))`, where:
-      1. `JCS` is an implementation of the [[ref: JSON Canonicalization Scheme]]
-         [[spec:rfc8785]]. Its output is a canonicalized representation of its
-         input.
-      2. `hash` is either `sha256` or an alternative hash algorithm defined in
+2. For all DIDDoc versions after versionId 1, if there is an `updateKeys` item, verify that it contains a list of [[spec DID KEY]] DIDs, and for each:
+   1. Calculate a hash string as
+      `base32_lower(hash(did:key DID))`, where:
+      1. `hash` is either `sha256` or an alternative hash algorithm defined in
          the `hash` item in the [[ref: parameters]]. Its output is the hash of
-         its input JCS content.
-      3. `base32_lower` as defined by the [[ref: base32_lower]] function. Its
+         its input [[spec DID KEY]].
+      2. `base32_lower` as defined by the [[ref: base32_lower]] function. Its
          output is the lower case of the Base32 encoded string of the input
          hash.
    3. Check to see if the hash string is listed in the collected list of
-      `nextKeys`.
+      `nextKeyHashes`.
       1. If so, the new key is verified.
-      2. If not, the verification process failed.
+      2. If not, the verification process (and resolution) failed.
 
 ### DID URL Resolution
 

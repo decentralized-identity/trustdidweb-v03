@@ -19,7 +19,7 @@ specified below.
 The method specific identifier is a fully qualified domain name that is secured
 by a TLS/SSL certificate with an optional path to the [[ref: DID Log]]. The
 identifier **MUST** contain a [[ref: self-certifying identifier]] (SCID) as
-either part of the subdomain component of the domain name, or as a component of
+either a subdomain component of the domain name, or as a component of
 the optional path. The content of the [[ref: SCID]] is
 [generated](#scid-generation-and-validation) in creating the DID. The formal
 rules describing valid domain name syntax are described in [[spec:RFC1035]],
@@ -81,7 +81,9 @@ path w/ port
 
 The location of the `did:tdw` `did.jsonl` [[ref:DID Log]] file is the same as
 where the comparable `did:web` `did.json` file is published. A [[ref: DID
-Controller]] **MAY** choose to publish both DIDs and so both files.
+Controller]] **MAY** choose to publish both DIDs and so both files. The process
+to do so is described in the [publishing a parallel `did:web`
+DID](#publishing-a-parallel-didweb-did) section of this specification.
 
 ### DID Method Operations
 
@@ -95,27 +97,28 @@ Creating a `did:tdw` DID is done by carrying out the following steps.
    `did:tdw:example.com:{SCID}`).
 2. Generate the authorization key pair(s) that will be used in creating the DID and
    authorizing the first update to the DID (at least).
-	 1. If the DID is to use [[ref: pre-rotation]], additional processing at this point will be necessary to generate the necessary pre-rotation hashes.
-3. For each authorization key pair, generate a [[spec DID KEY]] DID based on the public key of the key pair.
+   1. If the DID is to use [[ref: pre-rotation]], additional processing at this point will be necessary to generate the necessary pre-rotation hashes.
+3. For each authorization key pair, generate a [[spec DID-KEY]] DID based on the public key of the key pair.
 4. Create the initial DIDDoc (`did.json`) file for the DID, with whatever
-   content is required. Wherever there is an absolute self-reference to the DID in the
-   DIDDoc, use the form defined in step 1, with the identified
-   placeholder for the [[ref: SCID]] (ie. `did:tdw:example.com:{SCID}#key-1`). The
-   public key of authorization key pair(s) **MAY** be placed into the DIDDoc, but
-   that is not required.
+   content is required. The top level `id` item **MUST** be included and
+   **MUST** be the DID string from step 1. Wherever there is an absolute
+   self-reference to the DID in the DIDDoc, use the form defined in step 1, with
+   the identified placeholder for the [[ref: SCID]] (ie.
+   `did:tdw:example.com:{SCID}#key-1`). The public key(s) of the authorization key
+   pair(s) **MAY** be placed into the DIDDoc, but that is not required.
 5. Define a JSON array of valid [[ref: parameters]] that affect the generation
    of the DID. The [DID Generation and Validation
    Parameters](#didtdw-did-method-parameters) section of this specification
-   defines the permitted [[ref: parameters]]. The authorization [[spec DID KEY]] DIDs
-   generated in step 3 **MUST** be included in the [[ref: parameters]] of the
-   first version of the DID, in the `updateKeys` item.
-6. Pass the initial DIDDoc, and [[ref: parameters]] to a `did:tdw`
-   "Create" implementation that **MUST**:
-   1. Extract from the DIDDoc the value of the `id` item, the DID identifier
-      itself, and verify that it is a valid `did:tdw` DID that contains the
-      `{SCID}` placeholder in a allowed location in the DID string as per the
-      ABNF of a `did:tdw` DID as defined in the [Method-Specific
-      Identifier](#method-specific-identifier) section of this specification.
+   defines the permitted [[ref: parameters]]. That section defines what items
+   **MUST** be included in this first log entry for the DID.
+6. Pass the DID string created in step 1, the initial DIDDoc, and [[ref: parameters]] to a `did:tdw`
+   "Create" process that **MUST**:
+   1. Verify that the DIDDoc contains the a top level `id` item whose value
+      is the same as the specific DID string, and verify that it is a valid
+      `did:tdw` DID that contains the `{SCID}` placeholder in an allowed
+      location in the DID string as per the ABNF of a `did:tdw` DID as defined
+      in the [Method-Specific Identifier](#method-specific-identifier) section
+      of this specification.
    2. Calculate the [[ref: SCID]] for the DID as defined in the [SCID Generation
       and Validation](#scid-generation-and-validation) section of this
       specification.
@@ -124,10 +127,10 @@ Creating a `did:tdw` DID is done by carrying out the following steps.
    3. Generate a DID Entry as a JSON array with the following five JSON items:
       1. The [[ref: SCID]] as the `entryHash` value.
       2. An integer, `1`, that is the `versionId` for this first version of the
-         DIDDoc: `1`
+         DIDDoc.
       3. A string that is the current time in [[ref: ISO8601]] format (e.g.,
-         `"2024-04-04T07:32:58Z"`) that is the `versionTime` for this first version of the DIDDoc
-      4. The [[ref: parameters]] passed in as a JSON dict.
+         `"2024-04-04T07:32:58Z"`) that is the `versionTime` for the first version of the DID.
+      4. The input [[ref: parameters]] passed in as a JSON dict.
       5. The contents of the initial DIDDoc, in the form: `{"value": <DIDDoc>}`
    4. Calculate the [[ref: Entry Hash]] (`entryHash`) of the DID Entry as
       defined in the [Entry Hash Generation and
@@ -135,7 +138,8 @@ Creating a `did:tdw` DID is done by carrying out the following steps.
       specification.
    5. Update the value of the `entryHash` item with the value produced in the previous step.
    6. Generate a [[ref: Data Integrity]] proof on the initial DIDDoc using an
-      authorized key from a [[spec DID KEY]] DID in the `updateKeys` item in the [[ref: parameters]], and the `entryHash` as the proof `challenge`.
+      authorized key from a [[spec DID KEY]] DID in the required `updateKeys` item in the
+      [[ref: parameters]], and the `entryHash` as the proof `challenge`.
       The proof becomes the sixth and last JSON item in the DID log entry.
    7. Put the resulting entry, with extraneous white space removed as the
       contents of a file `did.jsonl`.
@@ -155,12 +159,12 @@ simple retrieval of the `did:web` DIDDoc.
 
 The following steps MUST be executed to resolve the DIDDoc for a `did:tdw` DID:
 
-1. Replace `:` with `/` in the method specific identifier to obtain the fully
+1. Remove the literal `did:tdw` prefix from the DID.
+2. Replace `:` with `/` in the method specific identifier to obtain the fully
    qualified domain name and optional path.
-2. If the domain contains a port percent decode the colon.
-3. Generate an HTTPS URL to the expected location of the DIDDoc by prepending
+3. If the domain contains a port percent decode the colon.
+4. Generate an HTTPS URL to the expected location of the DIDDoc by prepending
    `https://`.
-4. If no path has been specified in the URL, append `/.well-known`.
 5. Append `/did.jsonl` to complete the URL.
 6. Perform an HTTP GET request to the URL using an agent that can successfully
    negotiate a secure HTTPS connection, which enforces the security requirements
@@ -207,8 +211,9 @@ the following steps:
    7. Generate the version of the DIDDoc for the entry by using the JSON value
       of the `value` item, or by using [[ref: JSON Patch]] to apply the JSON
       value of the `patch` entry item to the previous version of the DIDDoc.
-   8. If [[ref: Key Pre-Rotation]] is being used, verify that any added keys
-      authorized to update the DIDDoc have a valid pre-rotation entry as defined
+   8. If [[ref: Key Pre-Rotation]] is being used, verify that any `updateKeys`
+      in the `parameters` item have a valid pre-rotation entry in the active
+      array of `nextKeyHashes` [[ref: parameter]] as defined
       in the [Key Pre-Rotation Hash Generation and
       Verification](#pre-rotation-key-hash-generation-and-validation) section of
       this specification.
@@ -218,7 +223,7 @@ the following steps:
          1. DIDDoc.
          2. `versionId` of the DIDDoc.
          3. `versionTime`of the DIDDoc.
-         4. The active [[spec DID KEY]] DIDs authorized to update the DID, from the `updateKeys` lists in the [[ref: parameters]].
+         4. The latest list of active [[spec DID-KEY]] DIDs authorized to update the DID, from the `updateKeys` lists in the [[ref: parameters]].
          5. If pre-rotation is being used, the hashes of [[spec DID KEY]] DIDs that will be used in later `updateKeys` lists. The pre-rotation hashes are in the `nextKeyHashes` list in the [[ref: parameters]].
 
 On completing the processing and successful verification of all entries in the [[ref: DID Log]], respond to
@@ -529,10 +534,10 @@ execute the following process:
 
 #### Authorized Keys
 
-Each entry in the [[ref: DID Log]] **MUST** include a [[ref: Data Integrity]] proof signed by a key **authorized** to control (create, update, deactivate) the DID. For `did:tdw`, the authorized keys are those referenced by the list of [[spec DID KEY]] DIDs in the **active** `updateKeys` list in the `parameters` item of the [[ref: log entries]].
+Each entry in the [[ref: DID Log]] **MUST** include a [[ref: Data Integrity]] proof signed by a key **authorized** to control (create, update, deactivate) the DID. For `did:tdw`, the authorized keys are those referenced by the list of [[spec DID-KEY]] DIDs in the **active** `updateKeys` list in the `parameters` item of the [[ref: log entries]].
 
 For the first [[ref: log entry]] the **active** `updateKeys` list is the one in that first [[ref: log entry]]. For all subsequent entries, **active** means
-the most recent `updateKeys` list **before** the entry to be signed is created. Thus, the general case is that each log entry is signed by the keys from the previous log entry.
+the most recent `updateKeys` list **before** the entry to be signed is created. Thus, the general case is that each log entry is signed by the keys from the **previous** log entry.
 
 A resolver of the DID **MUST** verify that the key used for signing the [[ref:
 DID Log]] entry is one from a [[spec DID KEY]] DID in the list of currently active `updateKeys` [[ref: parameter]], and that the signature verifies.
@@ -541,10 +546,22 @@ The `did:tdw` Implementation Guide contains further discussion on the management
 
 ::: note
 
-Note: The initial approach we considered using to find an authorized key was to use key references in the DIDDoc itself. However, we struggled to understand how to apply the guidance in the [[spec: DID-CORE]] specification in determining the appropriate key(s) in the DIDDoc to use, and so decided instead to use the mechanism specified in this section. A future version of this specification could revert that decision if the [[ref: DID Core]] guidance is clarified, or if an appropriate interpretation of the existing guidance is agreed upon.
+Note: The initial approach we considered using to find an authorized key was to
+use key references in the DIDDoc itself. However, we struggled to understand how
+to apply the guidance in the [[spec: DID-CORE]] specification in determining the
+appropriate key(s) in the DIDDoc to use, and so decided instead to use the
+mechanism specified in this section. A future version of this specification
+could revert that decision if the [[ref: DID Core]] guidance is clarified, or if
+an appropriate interpretation of the existing guidance is agreed upon.
 
-One scenario in particular that we did not think is satisfied by the [[spec: DID-CORE]] specification is in determining the authorized keys when the `controller` of the DID is not the DID itself, and so might need to be found by (potentially recursively) resolving other DIDs. We felt it a requirement that in resolving and verifying a `did:tdw` DID, resolvers must be able to access all necessary public keys in the [[ref: DID Log Entries]] themselves, and
-not have to retrieve them after retrieving the [[ref: DID Log]]. The approach outlined in this section ensures that is the case for `did:tdw`.
+One scenario in particular that we did not think is satisfied by the [[spec:
+DID-CORE]] specification is in determining the authorized keys when the
+`controller` of the DID is not the DID itself, and so might need to be found by
+(potentially recursively) resolving other DIDs. We felt it a requirement that in
+resolving and verifying a `did:tdw` DID, resolvers must be able to access all
+necessary public keys in the [[ref: DID Log Entries]] themselves, and not have
+to retrieve them after retrieving the [[ref: DID Log]]. The approach outlined in
+this section ensures that is the case for `did:tdw`.
 
 :::
 
@@ -605,13 +622,14 @@ added security and convenience of using `did:tdw` are lost.
 #### Pre-Rotation Key Hash Generation and Validation
 
 Pre-rotation is a term defining how a [[ref: DID Controller]] can commit to the
-authorization keys that will be used ("rotated to") when updating the DIDDoc. The purpose of committing to future keys is that if the currently authorized keys are
-compromised by an attacker, the attacker should not be able to rotate the
-compromised keys to new ones only the attacker controls and take over control
-of the DID. The effectiveness of pre-rotation is based on the idea that an
-attacker cannot compromise the future keys. See the non-normative section about
-[Using Pre-Rotation Keys](#using-pre-rotation-keys) in the implementer's guide
-section of this specification.
+authorization keys that will be used ("rotated to") when updating the DIDDoc.
+The purpose of committing to future keys is that if the currently authorized
+keys are compromised by an attacker, the attacker should not be able to rotate
+the compromised keys to new ones only the attacker controls and take over
+control of the DID. The effectiveness of pre-rotation is based on the idea that
+an attacker cannot compromise the future keys. See the non-normative section
+about [Using Pre-Rotation Keys](#using-pre-rotation-keys) in the implementer's
+guide section of this specification.
 
 As described in the [parameters](#did-generation-and-validation-parameters)
 section of this specification, a [[ref: DID Controller]] **MAY** define that

@@ -19,7 +19,7 @@ limitations. `did:tdw` features include:
   update the DID.
 - An optional mechanism for publishing "pre-rotation" keys to prevent the loss of
   control of a DID in cases where an active private key is compromised.
-- An optional mechanism for having collaborating "approvers" (aka "witnesses")
+- An optional mechanism for having collaborating "witnesses"
   that approve of updates to the DID by the DID Controller before publication.
 - DID URL path handling that defaults (but can be overridden) to automatically
   resolving `<did>/path/to/file` by using a comparable DID-to-HTTPS translation

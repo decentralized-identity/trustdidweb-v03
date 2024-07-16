@@ -94,9 +94,9 @@ In renaming the DID, the version number component of the DID's `version` continu
 While the feature does "bend" the rules for DIDs, we think there is significant
 value in some use cases for supporting the specified capability.
 
-While the portability capability is powerful, it should used with care and only in use
-cases where the capability is specifically required. When used, the both the
-pre-rotation, and witnesses features **SHOULD** also be enabled.
+While portability is powerful, it must be used with care and only in use
+cases where the capability is specifically required. When used, both the
+pre-rotation and witnesses features of `did:tdw` **SHOULD** also be enabled.
 
 #### Mergers, Acquisitions and Name Changes
 

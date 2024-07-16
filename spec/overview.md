@@ -78,7 +78,7 @@ The following is a `tl;dr` summary of how `did:tdw` works:
 6. Given a `did:tdw` DID, a resolver converts the DID to an HTTPS URL,
   retrieves, and processes the log file `did.jsonl`, generating and verifying
   each log entry as per the requirements outlined in this specification.
-    - In the process, the resolvers collects all the DIDDoc versions and public
+    - In the process, the resolver collects all the DIDDoc versions and public
       keys used by the DID currently, or in the past. This enables
       resolving both current and past versions of the DID.
 7. `did:tdw` DID URLs with paths and `/whois` are resolved to documents
@@ -103,8 +103,7 @@ proof of concept implementations. The specification/implementation interplay
 helped immensely in defining a practical, intuitive, straightforward, DID
 method. The existing proof of concept implementations of the `did:tdw` DID
 Method are listed in the [Implementors Guide](#Implementations). The current
-Typescript and Python implementations are less than 1500 lines of Typescript
-code.
+Typescript and Python implementations are less than 1500 lines of code.
 
 ### The `/whois` Use Case
 

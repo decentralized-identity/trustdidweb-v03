@@ -29,8 +29,8 @@ be a part of the method specific identifier by one of the following mechanisms:
 Formal rules describing valid domain name syntax are described in
 [[spec:RFC1035]], [[spec:RFC1123]], and [[spec:RFC2181]]. Each `did:tdw` DID's
 globally unique [[ref: SCID]] is [generated](#scid-generation-and-verification)
-during the creation the DID based on the DID's initial content and placed into
-the DID identifier while creating the first version of the DID for publication.
+during the creation of the DID based on its initial content and placed into
+the DID identifier for publication and use.
 
 The domain name element of the method specific identifier MUST match the
 common name used in the SSL/TLS certificate, and it MUST NOT include IP
@@ -92,7 +92,7 @@ Each entry is a JSON array consisting of the following 5 items.
    challenge.
 
 After creation, each entry has (per the [[ref JSON Lines]] specification) all
-extra whitespace removed, a `\n` character is appended, and the result added to
+extra whitespace removed, a `\n` character appended, and the result added to
 the DID Log file for publication.
 
 Examples of [[ref: DID Logs]] and [[ref: DID log entries]] can be found in the

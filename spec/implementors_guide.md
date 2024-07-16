@@ -79,20 +79,24 @@ environments for creating keys for different purposes. Enabling connectivity bet
 the key generation environments to enable automated key rotation while maintaining the
 key recovery environment as "isolated" is technically challenging.
 
-### Moving a DID
+### Enabling DID Portability
 
-As noted in the [`did:tdw` DID Method Parameters](#didtdw-did-method-parameters) section of this specification,
-a `did:tdw` DID can be "moved" by changing the DID string to one that resolves to a different HTTPS URL, as
-long as:
+As noted in the [update (rotate)](#update-rotate) section of the specification,
+a portable `did:tdw` DID can be renamed by changing the `id` DID string in the
+DIDDoc to one that resolves to a different HTTPS URL, as long as:
 
-- the [[ref: SCID]] stays the same in the new DID,
-- the DIDDoc is updated at the same time to have the new DID as the top-level `id`, and
+- the DID was created with the [[ref: parameter]] `portable` set to `true`,
+- the [[ref: SCID]] stays the same in the new DID, and
 - the DIDDoc is updated at the same time to have the old DID string(s) as `alsoKnownAs` entries.
 
-In moving the DID, the `versionId` of the DID continues to increment.
+In renaming the DID, the version number component of the DID's `version` continues to increment.
 
-While the feature does "bend" the rules for DIDs, we think there is significant value in supporting
-the specified functionality. These are the uses cases that we considered in adding the functionality.
+While the feature does "bend" the rules for DIDs, we think there is significant
+value in some use cases for supporting the specified capability.
+
+While the portability capability is powerful, it should used with care and only in use
+cases where the capability is specifically required. When used, the both the
+pre-rotation, and witnesses features **SHOULD** also be enabled.
 
 #### Mergers, Acquisitions and Name Changes
 

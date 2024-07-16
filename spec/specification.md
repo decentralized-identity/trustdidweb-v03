@@ -4,7 +4,7 @@
 
 The target system of the Trust DID Web (TDW) DID method is the host (or domain)
 name when the domain specified by the DID is resolved through the Domain Name
-System (DNS).
+System (DNS) and verified by processing a log of DID versions.
 
 ### Method Name
 
@@ -16,33 +16,36 @@ specified below.
 
 ### Method-specific Identifier
 
-The method specific identifier is a fully qualified domain name that is secured
-by a TLS/SSL certificate with an optional path to the [[ref: DID Log]]. The
-identifier **MUST** contain a [[ref: self-certifying identifier]] (SCID) as
-either a subdomain component of the domain name, or as a component of
-the optional path. The content of the [[ref: SCID]] is
-[generated](#scid-generation-and-verification) in creating the DID. The formal
-rules describing valid domain name syntax are described in [[spec:RFC1035]],
-[[spec:RFC1123]], and [[spec:RFC2181]].
+The method specific identifier contains both the [[ref: self-certifying
+identifier]] (SCID) for the DID, and a fully qualified domain name that is
+secured by a TLS/SSL certificate, with an optional path to the [[ref: DID Log]].
+As per the Augmented Backus-Naur Form (ABNF) notation below, the SCID **MUST**
+be a part of the method specific identifier by one of the following mechanisms:
 
-The domain name component of the method specific identifier MUST match the
+- A separate, colon-delimited element at the start of the method specific identifier.
+- Embedded in the fully qualified domain name.
+- Embedded in the optional path relative to the fully qualified domain name.
+  
+Formal rules describing valid domain name syntax are described in
+[[spec:RFC1035]], [[spec:RFC1123]], and [[spec:RFC2181]]. Each `did:tdw` DID's
+globally unique [[ref: SCID]] is [generated](#scid-generation-and-verification)
+during the creation the DID based on the DID's initial content and placed into
+the DID identifier while creating the first version of the DID for publication.
+
+The domain name element of the method specific identifier MUST match the
 common name used in the SSL/TLS certificate, and it MUST NOT include IP
 addresses. A port MAY be included and the colon MUST be percent encoded to
 prevent a conflict with paths. Directories and subdirectories MAY optionally be
 included, delimited by colons rather than slashes.
 
-The [[ref: SCID]], a globally unique identifier, is generated as part of the
-creation of the DID and placed into the DID identifier.
-
 As specified in the following Augmented Backus-Naur Form (ABNF) notation
-[[spec:rfc2234]] the [[ref: SCID]] **MUST** be present in the DID string, but
-may be placed in the (optional) subdomain component of the domain, or as a
-segment in the (optional) URL path. See examples below. The `domain-segment` and
-`path-segment` elements refer to [[spec:rfc3986]]'s ABNF for a Generic URL (page
-49). Attempting to replicate here the full ABNF of those elements from that RFC
-would inevitably be wrong.
+[[spec:rfc2234]] the [[ref: SCID]] **MUST** be present in the DID string. See
+examples below. The `domain-segment` and `path-segment` elements refer to
+[[spec:rfc3986]]'s ABNF for a Generic URL (page 49). Attempting to replicate
+here the full ABNF of those elements from that RFC would inevitably be wrong.
 
 ```abnf
+tdw-did = "did:tdw:" scid ":" *( “.” domain-segment ) *( ":" path-segment )
 tdw-did = "did:tdw:" *( domain-segment “.” ) scid 2*( “.” domain-segment ) *( ":" path-segment )
 tdw-did = "did:tdw:" 2*( domain-segment “.” ) *( ":" path-segment ) (":" scid ) *( ":" path-segment )
 domain-segment = ; A part of a domain name as defined in RFC3986, such as "example" and "com" in "example.com"
@@ -51,39 +54,49 @@ scid = 28+( lower-base32 )
 lower-base32 = [2-7a-z]
 ```
 
-::: example
+The difference between a DID having the SCID as the first element of the method
+specific identifier or embedded in the domain name/path is whether the SCID is
+used in the HTTP URL derived from the DID method specific identifier. If the
+SCID is not embedded in the domain name/path, then it will not be part of the
+HTTP URL used to resolve the DID. IN all cases, the SCID will be in the DID Log
+and **MUST** be verified in resolving the DID.
 
-`did:tdw` DIDs and the corresponding web locations for their `did:tdw` log file.
-`{SCID}` is a placeholder for where the generated SCID will be placed in the
-examples.
+### The DID Log File
 
----
+The DID log file contains a list of entries, one for each version of the DID. A
+version of the DID is an update to the contents of the resolved DIDDoc for the
+DID, or a change to the [[ref: parameters]] that control the generation and
+verification of the DID.
 
-subdomain
+Each entry is a JSON array consisting of the following 5 items.
 
-`did:tdw:{SCID}.example.com` -->
+`[ versionId, versionTime, parameters, DIDDoc, Data Integrity Proof ]`
 
-`https://{SCID}.example.com/.well-known/did.jsonl`
+1. The entry `versionId` is a value that combines the version number (starting at
+   `1` and incrementing by one per DID version), a literal dash `-`, and the
+   `entryHash`, a hash calculated across the log entry content. The input to the
+   hash is chosen so as to link each entry to its predecessor in a ledger-like
+   chain. The input to the hash is specified in the [Entry Hash Generation and
+   Verification](#entry-hash-generation-and-verification) section of this
+   specification.
+2. The `versionTime` (as stated by the DID Controller) of the entry.
+3. A JSON object `parameters` that define configurations/options used in the
+   processing of current and future log entries. `parameters` are defined in the
+   [`did:tdw` DID Method Parameters](#didtdw-did-method-parameters) section of
+   this specification.
+4. The DIDDoc for this version of the DID as either a `value`, the full
+   document, or a `patch`, such that the new DIDDoc is derived using [[ref: JSON
+   Patch]] to derive the new version from the previous entry.
+5. A [[ref: Data Integrity]] (DI) proof across the entry, signed by a DID
+   Controller authorized to update the DIDDoc, using the `versionId` as the
+   challenge.
 
-path
+After creation, each entry has (per the [[ref JSON Lines]] specification) all
+extra whitespace removed, a `\n` character is appended, and the result added to
+the DID Log file for publication.
 
-`did:tdw:example.com:dids:{SCID}` -->
-
-`https://example.com/dids/{SCID}/did.jsonl`
-
-path w/ port
-
-`did:tdw:example.com%3A3000:dids:{SCID}` -->
-
-`https://example.com:3000/dids/{SCID}/did.jsonl`
-
-:::
-
-The location of the `did:tdw` `did.jsonl` [[ref:DID Log]] file is the same as
-where the comparable `did:web` `did.json` file is published. A [[ref: DID
-Controller]] **MAY** choose to publish both DIDs and so both files. The process
-to do so is described in the [publishing a parallel `did:web`
-DID](#publishing-a-parallel-didweb-did) section of this specification.
+Examples of [[ref: DID Logs]] and [[ref: DID log entries]] can be found in the
+[did:tdw` Examples](#didtdw-example) section of this specification.
 
 ### DID Method Operations
 
@@ -93,68 +106,77 @@ Creating a `did:tdw` DID is done by carrying out the following steps.
 
 1. Define the DID string, and hence, the web location at which the DID Log
    (`did.jsonl`) will be published. Identify (using the placeholder `{SCID}`)
-   where the required [[ref: SCID]] will be placed in the DID string (ie.
-   `did:tdw:example.com:{SCID}`).
+   where the required [[ref: SCID]] will be placed in the DID string (e.g.,
+   `did:tdw:example.com:{SCID}`, `did:tdw:{SCID}:example.com`, etc.). Ve3rify
+   that the DID identifier is a valid `did:tdw` DID that contains the `{SCID}`
+   placeholder in an allowed location in the DID string as per the ABNF of a
+   `did:tdw` DID as defined in the [Method-Specific
+   Identifier](#method-specific-identifier) section of this specification.
 2. Generate the authorization key pair(s) that will be used in creating the DID and
    authorizing the first update to the DID. As well, generate any other key pairs
    that will be placed into the initial DIDDoc for the DID.
-   1. If the DID is to use [[ref: pre-rotation]], additional processing at this
-      point will be necessary to generate the necessary "next" authorization
-      keys and the corresponding [[ref: pre-rotation]] hashes.
+   1. If the DID is to use [[ref: pre-rotation]], additional key generation will
+      be necessary to generate the required "next" authorization keys and their
+      corresponding [[ref: pre-rotation]] hashes.
    2. For each authorization key pair, generate a [[ref: multikey]] based on the
       key pair's public key. The [[ref: multikey]] representations of the public
-      keys will be placed in the `updateKeys` item in [[ref: parameters]].
+      keys are placed in the `updateKeys` item in [[ref: parameters]].
    3. The public key(s) of the authorization key pair(s) **MAY** be used in the
       DIDDoc as well, but that is not required.
 3. Create the initial DIDDoc for the DID, with whatever content is required. The
    top level `id` item **MUST** be included and **MUST** be the DID string from
    step 1, including the placeholder for the SCID. All other absolute
    self-reference's to the DID in the DIDDoc must use the form defined in step 1, with
-   the identified placeholder for the [[ref: SCID]] (ie.
-   `did:tdw:example.com:{SCID}#key-1`).
-4. Define a JSON array of valid [[ref: parameters]] to configure the DID generation
+   the identified placeholder for the [[ref: SCID]]  (e.g.,
+   `did:tdw:example.com:{SCID}#key-1`, `did:tdw:{SCID}:example.com#key-1`, etc.).
+4. Define the JSON object using valid [[ref: parameters]] to configure the DID generation
    and verification processes.
    The [DID Generation and Verification Parameters](#didtdw-did-method-parameters)
    section of this specification defines the permitted [[ref: parameters]]. That
    section defines what items **MUST** be included in this first log entry for the DID.
 5. Formulate an input JSON array containing the following items for processing:
-   `[ "{SCID}", 1, "<current time>", "parameters": [ <parameters>], { "value": "<DIDDoc with Placeholders>" } ]`
-6. Verify that the first item in the input JSON array is the literal string `{SCID}`.
-7. Verify that the second item in the input JSON array, the `versionId`, is `1`.
-8. Verify that the third item in the input JSON array, `versionTime` is a valid [[ref: ISO8601]]
+   `[ "1-{SCID}", "<current time>", "parameters": [ <parameters>], { "value": "<DIDDoc with Placeholders>" } ]`
+6. Verify that the first item in the input JSON array is the literal string `1-{SCID}`.
+7. Verify that the second item in the input JSON array, `versionTime` is a valid [[ref: ISO8601]]
    date/time string, and that the represented time is before or equal to the current
    time.
-9. Verify that the required [[ref: parameters]] array elements in the fourth
-   item of the input JSON are present, and collect and use the specified
-   parameters.
-10. Extract the DIDDoc, the value of the fifth item of the JSON input array.
-   Verify that the DIDDoc contains the a top level `id` item whose value is the
-   same as the specific DID string, and that it is a valid `did:tdw` DID that
-   contains the `{SCID}` placeholder in an allowed location in the DID string as
-   per the ABNF of a `did:tdw` DID as defined in the
-   [Method-Specific Identifier](#method-specific-identifier) section of this specification.
-11. Use the input JSON array to calculate the [[ref: SCID]] for the DID as defined in the
-    [SCID Generation and Verification](#scid-generation-and-verification) section of this
+8. Verify that the third item in the input JSON array is the [[ref: parameters]]
+   object, including that all the parameters are valid and that all required
+   values in the first version of the DID are present. Collect and use the
+   specified parameters in the remainder of the DID creation steps.
+9. Verify that the fourth item in the input JSON array is the JSON object `{
+   "value": <diddoc> }`, where `<diddoc>` is the initial DIDDoc with
+   placeholders (the string `{SCID}`) where the SCID will be placed.
+10. Extract the DIDDoc, and verify that the DIDDoc contains the a top level `id`
+   item whose value is the same as the specific DID string from step 1,
+   including the placement of the `{SICD}` placeholders. Other DIDDoc
+   verifications **SHOULD** be performed.
+11. Use the verified input JSON array to calculate the [[ref: SCID]] for the DID
+    as defined in the [SCID Generation and
+    Verification](#scid-generation-and-verification) section of this
     specification.
 12. Replace throughout the input JSON array the placeholder "`{SCID}`" for the [[ref: SCID]] with
     the calculated `SCID` from the previous step.
-13. Use the JSON array updates in the previous step to calculate the [[ref: Entry Hash]]
+13. Use the JSON array updated in the previous step to calculate the [[ref: Entry Hash]]
    (`entryHash`) for the log entry, as defined in the
    [Entry Hash Generation and Verification](#entry-hash-generation-and-verification)
    section of this specification.
-14. Update the value of the `entryHash` (first) item of the JSON array
-   with the value produced in the previous step.
+14. Update the value of the `versionId` (first) item of the JSON array with the
+   literal string `1-` followed by the `entryHash` value produced in the
+   previous step.
 15. Generate a [[ref: Data Integrity]] proof on the initial DIDDoc using an
-   authorized key from a DID in the required `updateKeys` item in the
-   [[ref: parameters]], and the `entryHash` as the proof `challenge`.
-   Add the proof to the revised JSON array as the sixth and last item.
-   The result is in the initial [[ref: DID log entry]] for the DID.
-16. Place the [[ref: DID log entry]], with extraneous white space
-   removed as the contents of a file `did.jsonl`.
-17. If the [[ref: DID Controller]] has opted to use [[ref: witnesses]] for
-    the DID, collect the required approvals from the DID's [[ref: witnesses]]. See the
-   [DID Witnesses](#did-witnesses) section of this specification.
-18. Publish the file at the appropriate location defined by the `did:tdw` DID identifier.
+   authorized key from a DID in the required `updateKeys` item in the [[ref:
+   parameters]], and the `versionId` as the proof `challenge`. Add the proof to
+   the revised JSON array as the fifth and last item in the log entry array. The
+   result is in the initial [[ref: DID log entry]] for the DID.
+16. If the [[ref: DID Controller]] has opted to use [[ref: witnesses]] for the
+    DID, collect and add the required approvals from the DID's [[ref:
+   witnesses]]. See the [DID Witnesses](#did-witnesses) section of this
+   specification.
+17. Make the [[ref: DID log entry]], with extraneous white space
+   removed and a carriage return appended as the contents of a file `did.jsonl`.
+18. Publish the complete [[ref: DID Log]] file at the appropriate Web location
+    defined by the `did:tdw` DID identifier.
      - This is a logical operation -- how a deployment serves the `did.jsonl`
        content is not constrained.
 
@@ -170,35 +192,102 @@ for the convenience of the simple retrieval of the `did:web` DIDDoc.
 
 The following steps MUST be executed to resolve the DIDDoc for a `did:tdw` DID:
 
-1. Remove the literal `did:tdw` prefix from the DID.
-2. Replace `:` with `/` in the method specific identifier to obtain the fully
+1. Remove the literal `did:tdw` prefix from the DID, leaving the method specific
+   identifier.
+2. Determine if the SCID is in its own element at the start of the
+   method-specific identifier or is embedded in the domain name/path. To do so,
+   the resolver **MUST** scan the text of the 1st element of the method specific
+   identifier (up to the first `:`) for the `.` character. If one or more `.`
+   characters are found, the SCID is embedded in the domain name/path.
+   Otherwise, the SCID is the first method specific identifier element (e.g.,
+   the form of the DID is `did:tdw:<SCID>:`).
+   1. If the SCID is the first, separate element of the method specific
+      identifier, remove that element and its associate colon (`:`) from the
+      method specific identifier and continue processing.
+3. Replace `:` with `/` in the method specific identifier to obtain the fully
    qualified domain name and optional path.
-3. If the domain contains a port percent decode the colon.
-4. Generate an HTTPS URL to the expected location of the DIDDoc by prepending
+4. If there is no optional path, append `/.well-known` to the URL.
+5. If the domain contains a port, percent decode the colon.
+6. Generate an HTTPS URL to the expected location of the DIDDoc by prepending
    `https://`.
-5. Append `/did.jsonl` to complete the URL.
-6. Perform an HTTP GET request to the URL using an agent that can successfully
+7. Append `/did.jsonl` to complete the URL.
+8. Perform an HTTP GET request to the URL using an agent that can successfully
    negotiate a secure HTTPS connection, which enforces the security requirements
    as described in
    [Security and privacy considerations](#security-and-privacy-considerations).
-7. When performing the DNS resolution during the HTTP GET request, the client
+9.  When performing the DNS resolution during the HTTP GET request, the client
    SHOULD utilize [[spec:rfc8484]] in order to prevent tracking of the identity
    being resolved.
-8. Process the [[ref: DID Log]] file as described below.
+10.  Process the [[ref: DID Log]] file as described below.
+
+The following are a series of examples of various DID-to-HTTPS transformations based
+on the processing steps specified above.
+
+::: example
+
+`did:tdw` DIDs and the corresponding web locations for their `did:tdw` log file.
+`{SCID}` is a placeholder for where the generated SCID will be placed in the
+examples. Note that when the `{SCID}` follows the literal `did:tdw:` as a
+separate element, the `{SCID}` is not part of the HTTP URL to the DID Log file.
+
+---
+
+domain/did:web-compatible
+
+`did:tdw:{SCID}:example.com` -->
+
+`https://example.com/.well-known/did.jsonl`
+
+subdomain
+
+`did:tdw:{SCID}:issuer.example.com` -->
+
+`https://issuer.example.com/.well-known/did.jsonl`
+
+`did:tdw:{SCID}.example.com` -->
+
+`https://{SCID}.example.com/.well-known/did.jsonl`
+
+path
+
+`did:tdw:{SCID}:example.com:dids:issuer` -->
+
+`https://example.com/dids/issuer/did.jsonl`
+
+`did:tdw:example.com:dids:{SCID}` -->
+
+`https://example.com/dids/{SCID}/did.jsonl`
+
+path w/ port
+
+`did:tdw:{SCID}:example.com%3A3000:dids:issuer` -->
+
+`https://example.com:3000/dids/issuer/did.jsonl`
+
+`did:tdw:example.com%3A3000:dids:{SCID}` -->
+
+`https://example.com:3000/dids/{SCID}/did.jsonl`
+
+:::
+
+The location of the `did:tdw` `did.jsonl` [[ref:DID Log]] file is the same as
+where the comparable `did:web` `did.json` file is published. A [[ref: DID
+Controller]] **MAY** choose to publish both DIDs and so both files. The process
+to do so is described in the [publishing a parallel `did:web`
+DID](#publishing-a-parallel-didweb-did) section of this specification.
 
 To process the retrieved [[ref: DID Log]] file, the resolver **MUST** carry out
 the following steps on each of the log entries in the order they appear in the
 file, applying the [[ref: parameters]] set from the current and previous
 entries. As noted in the [Create (Register)](#create-register), each log entry
-consists of a JSON array of 6 items:
+consists of a JSON array of five items:
 
-   1. `entryHash`
-   2. `versionId`
-   3. `versionTime`
-   4. `parameters`
-   5. DIDDoc content -- either the full `value` or a [[ref: JSON Patch]] `patch`
+   1. `versionId`
+   2. `versionTime`
+   3. `parameters`
+   4. DIDDoc content -- either the full `value` or a [[ref: JSON Patch]] `patch`
       to be applied to the prior version of the DIDDoc.
-   6. A Data Integrity proof for the current version of the DIDDoc of
+   5. A Data Integrity proof for the current version of the DIDDoc of
       the entry.
 
 For each entry:
@@ -211,25 +300,35 @@ For each entry:
      effect after the entry has been published. For example, rotating the
      authorized keys to update a DID takes effect only *after* the entry in
      which they are defined has been published.
-2. Verify the Data Integrity proof in the entry, and ensure they are signed by
+2. Verify the Data Integrity proof in the entry, and ensure it is signed by
    the authorized keys as defined in the [Authorized Keys](#authorized-keys)
    section of this specification.
-   - If the DID Controller has opted to use [[ref: witnesses]], verify the
-   witness Data Integrity proofs, and ensure they are signed by a threshold of
-   witnesses.
-3. Verify the `entryHash` for the entry using the process defined in the
-   [Entry Hash Generation and Verification](#entry-hash-generation-and-verification)
-   section of this specification.
-4. Verify that the first log entry `versionId` is `1`, and that the
-   `versionId` is incremented by one for each subsequent log entry.
-5. Verify that the `versionTime` for each log entry is greater than the previous
+   1. If the DID Controller has opted to use [[ref: witnesses]], verify the
+      witness Data Integrity proofs, and ensure they are signed by a threshold
+      of witnesses. See the [DID Witnesses](#did-witnesses) section of this
+      specification.
+3. Verify the `versionId` for the entry. Recall the the `versionId` is the
+   concatenation of the version number (an integer, starting at 1 and
+   incremented per version), a dash (`-`), and the `entryHash`.
+   1. Verify that the version number is `1` for the the first log entry and is
+      incremented by one for each subsequent log entry.
+   2. Verify the `entryHash` using the process defined in the
+      [Entry Hash Generation and Verification](#entry-hash-generation-and-verification)
+      section of this specification.
+4. Verify that the `versionTime` for each log entry is greater than the previous
    entry, and that the `versionTime` of the last entry is earlier than the current
    time.
-6. Process the first log entry to verify the [[ref: SCID]]
+5. Parse and apply the `did:tdw` DID Method configuration `parameters`. Note
+   that in versions after the first, some `parameters` apply to immediately and
+   impact the process of the current DID version, while others, such as
+   `updateKeys` and `witnesses` apply after the current version has been
+   published. For specifics, see the [`did:tdw` DID Method
+   Parameters](#didtdw-did-method-parameters) section of this specification.
+6. If processing the first DID log entry, verify the [[ref: SCID]]
    (defined in the [[ref: parameters]]) according to the
    [SCID Generation and Verification](#scid-generation-and-verification) section
    of this specification.
-7. Extract the version of the DIDDoc for the entry by using the JSON value
+7. Extract the contents of the DIDDoc for the entry by using the JSON value
    of the `value` item, or by using [[ref: JSON Patch]] to apply the JSON
    value of the `patch` entry item to the previous version of the DIDDoc.
 8. If [[ref: Key Pre-Rotation]] is being used, verify that any `updateKeys`
@@ -249,6 +348,8 @@ For each entry:
       5. If pre-rotation is being used, the hashes of authorized DIDs that may
          be used in later `updateKeys` lists. The pre-rotation hashes are in the
          `nextKeyHashes` list in the [[ref: parameters]].
+      6. The `did:tdw` processing configuration settings as defined by in the
+         `parameters` object.
 11. In processing the last log entry, check if [[ref: witnesses]] are being used by the
     DID Controller, and if so, verify the witness data integrity proofs in the entry and
     verify that they are signed by a threshold of witnesses, as described in the
@@ -295,30 +396,31 @@ verifiable [[ref: DID Log Entry]] follows a similar process to the
 
 1. Make the desired changes to the DIDDoc. While the contents of a new DIDDoc
    version are (mostly) up to the DID controller, there are some limitations:
-   1. The `id` of the DIDDoc **MAY** be changed when the DID Controller wants to
-      (or is forced to) publish the DID at a different location and wants to retain the
-      [[ref: SCID]] and history of the DID. For details, see the section
-      [Moving a DID's Web Location](#moving-a-dids-web-location).
+   1. If the DID is configured to support [[ref: portability]], the `id` of the
+      DIDDoc **MAY** be changed when the DID Controller wants to (or is forced
+      to) publish the DID at a different location and wants to retain the [[ref:
+      SCID]] and history of the DID. For details, see the [DID
+      Portability](#did-protability) section of this specification.
 2. Define a JSON array of valid [[ref: parameters]] that affect the evolution of
    the DID. The [`did:tdw` DID Method Parameters](#didtdw-did-method-parameters)
    section of this specification defines the permitted [[ref: parameters]]. Any
    [[ref: parameters]] defined in the array override the previously active
    value, while any [[ref: parameters]] not included imply the existing values
-   remain in effect. If no changes to the [[ref: parameters]] are wanted, the
-   JSON `[]` is expected.
+   remain in effect. If no changes to the [[ref: parameters]] are needed, an
+   empty JSON object `{}` is expected.
    - While all [[ref: parameters]] in the first [[ref: Log Entry]] take effect
      immediately, some kinds of parameters defined in later entries only take
-     effect after the entry has been published. For example, rotating the
-     authorized keys to update a DID takes effect only *after* the entry in
-     which they are defined has been published.
+     effect after the entry has been published. For example, rotating the keys
+     authorized to update a DID or changing the witnesses for a DID take effect
+     only *after* the entry in which they are defined has been published.
 3. Generate a preliminary [[ref: DID Log Entry]] JSON array with the following JSON items:
-   1. The `entryHash` from the previous [[ref: DID Log Entry]] as the
-      `entryHash` value.
-   2. An integer that is one more than the `versionId` of the previous
-     [[ref: DID Log Entry]].
-   3. A string that is the current time in [[ref: ISO8601]] format.
-   4. The [[ref: parameters]] passed in as a JSON dict.
-   5. Generate a [[ref: JSON Patch]] to evolve the previous DIDDoc version to
+   1. The `versionId` from the previous [[ref: DID Log Entry]] as the
+      `versionId` value.
+   2. A string that is the current time in [[ref: ISO8601]] format. The time
+      must be greater than the time of the previous log entry, and must be less
+      than or equal to the current time.
+   3. The [[ref: parameters]] passed in as a JSON object.
+   4. Generate a [[ref: JSON Patch]] to evolve the previous DIDDoc version to
       the new DIDDoc version, and put the resulting patch in the item as
       `{"patch": <DIDDoc Patch>}`. For details of the process, see the
       [Generating and Applying a JSON Patch](#generating-and-applying-a-json-patch)
@@ -326,23 +428,24 @@ verifiable [[ref: DID Log Entry]] follows a similar process to the
       1. An implementation **MAY** skip the [[ref: JSON Patch]] process and
          simply put the full new version of the DIDDoc in the item
          `{"value": <DIDDoc>}` as is done in the initial entry in the log.
-4. Calculate the [[ref: Entry Hash]] (`entryHash`) of the new [[ref: DID Log Entry]]
-   as defined in the
-   [Entry Hash Generation and Verification](#entry-hash-generation-and-verification)
+4. Calculate the new `versionId` of the new [[ref: DID Log Entry]], including
+   incrementing the version number component and using the process described in
+   the [Entry Hash Generation and Verification](#entry-hash-generation-and-verification)
    section of this specification.
-5. Replace the value of the `entryHash` item in the preliminary [[ref: DID Log
+5. Replace the value of the `versionId` item in the preliminary [[ref: DID Log
    Entry]] with the value produced in the previous step.
 6. Generate a [[ref: Data Integrity]] proof on the new DIDDoc of the entry
-   using an authorized key, and the `entryHash` as the proof
+   using an authorized key, and the `versionId` as the proof
    `challenge`. The definition of "authorized" is formalized in the
-   [Authorized Keys](#authorized-keys) section of this specification. The
-   proof becomes the last JSON item in the entry.
+   [Authorized Keys](#authorized-keys) section of this specification.
 7. If the [[ref: DID Controller]] has opted to use [[ref: witnesses]] for
-   the DID, collect the required approvals from the DID's [[ref: witnesses]]. See the
+   the DID, collect the required approvals from the DID's [[ref: witnesses]], adding their proofs to the data integrity proof. See the
    [DID Witnesses](#did-witnesses) section of this specification.
-8. Append the resulting entry to the existing contents of the [[ref: DID
-   Log]] file `did.jsonl` on a new line.
-9. Publish the updated [[ref: DID Log]] file at the appropriate location defined by the
+8. The proof (or proof set) is added as the fifth and last JSON item in the log entry.
+9. Make the entry a [[ref JSON Line]] by removing extra whitespace, adding a `\n`
+   to the entry, and appending the new log entry to the existing contents of
+   the [[ref: DID Log]] file `did.jsonl`.
+10. Publish the updated [[ref: DID Log]] file at the appropriate location defined by the
       `did:tdw` identifier.
       - This is a logical operation -- how a deployment serves the `did.jsonl`
       content is not constrained.
@@ -361,7 +464,7 @@ the DID, such as including an empty `updateKeys` list (`"updateKeys": []`) in
 the [[ref: parameters]], preventing further versions of the DID.
 
 A resolver encountering in the [[ref: DID log entry]] [[ref: parameters]] the
-item `"deactivated": true` should return in the DIDDoc Metadata the JSON item
+item `"deactivated": true` **SHOULD** return in the DIDDoc Metadata the JSON item
 `"deactivated": true`, as per the [[spec:DID-CORE]] specification.
 
 ### DID Method Processes
@@ -372,7 +475,7 @@ of those processes is specified in the following sections.
 
 #### `did:tdw` DID Method Parameters
 
-Entries in the `did:tdw` [[ref: DID Log]] file contain, in the 4th item, a JSON
+Entries in the `did:tdw` [[ref: DID Log]] file contain, in the 3rd item, a JSON
 object that defines the DID processing parameters being used by the [[ref: DID
 Controller]] when publishing that and subsequent DID Entries. A DID Resolver
 will use the same parameters when processing the [[ref: DID Log]] to resolve the
@@ -387,6 +490,7 @@ An example of the JSON prettified parameters item in the first DID Log entry for
 {
     "hash": "sha3-256",
     "prerotation": true,
+    "portable": false,
     "updateKeys": [
       "z82LkqR25TU88tztBEiFydNf4fUPn8oWBANckcmuqgonz9TAbK9a7WGQ5dm7jyqyRMpaRAe"
     ],
@@ -403,14 +507,15 @@ An example of the JSON prettified parameters item in the first DID Log entry for
 The allowed parameter items and (where applicable) enumerated values for those
 items are defined below.
 
-- `method`: Defines the version of the [[ref: DID Log]] processing specification
-  to use when processing a given DID's log file. As new versions of the
-  processing specifications are defined, additional values will be added to the
-  list of acceptable values.
+- `method`: Defines the `did:tdw` specification version to use when processing a
+  given DID's log file. As new versions of this specifications are
+  defined, additional parameters and enumerated values will be added to this. This
+  allows a long lasting DID to evolve the settings being used by the DID over time,
+  such as changing the hash algorithm used, or the Data Integrity cryptosuite.
   - This item **MUST** appear in the first [[ref: DID Log]] entry.
   - This item **MAY** appear in later [[ref: DID Log]] entries to indicate that
     the processing rules for that and later entries have been changed to a
-    different version.
+    different specification version.
   - Acceptable values for this specification are:
     - `did:tdw:0.1`: Requires that the rules defined in this specification be used
       in processing the log.
@@ -428,11 +533,17 @@ items are defined below.
     that initial log entry. In all other DID log entries, an `updateKeys` item becomes
     active *after* the publication of its entry -- meaning its log entry must
     be signed by the most recent `updateKeys` list from a prior DID log entry.
+- `portable`: A boolean (`true` / `false`) indicating if the DID is portable and
+  thus can be renamed to change the Web location of the DID.
+  - The value can **ONLY** be set to `true` in the first log entry, the initial version of the DID.
+  - If not explicitly set in the first log entry, it is set to `false`.
+  - Once the value has been set to `false`, it cannot be set back to `true`.
 - `hash`: The hashing algorithm to use when executing hashes.
   - By default, the value is initialized to `sha3-256`.
   - Acceptable values:
     - `sha3-256`: Use the `SHA3-256` algorithm from [[spec:rfc4634]].
-- `cryptosuite`: The Data Integrity cryptosuite to use when generating and verifying the authentication proofs on the [[ref: DID log entries]].
+- `cryptosuite`: The Data Integrity cryptosuite to use when generating and
+  verifying the authentication proofs on the [[ref: DID log entries]].
   - By default, the value is initialized to `eddsa-jcs-2022`
   - Acceptable values:
     - `eddsa-jcs-2022`: Use the [eddsa-jcs-2022](https://www.w3.org/TR/vc-di-eddsa/#eddsa-jcs-2022) cryptosuite.
@@ -443,7 +554,9 @@ items are defined below.
     [[ref: DID log entry]].
   - Once the value is set to `true` in a [[ref: DID log entry]] it **MUST NOT**
     be set to `false` in a subsequent entry.
-- `nextKeyHashes`: An array of strings that are hashes of [[ref: multikey]] formatted public keys that **MAY** be added to the `updateKeys` list in the log entry of a future version of the DID.
+- `nextKeyHashes`: An array of strings that are hashes of [[ref: multikey]]
+  formatted public keys that **MAY** be added to the `updateKeys` list in the
+  log entry of a future version of the DID.
   - The process for generating the hashes and additional details for using pre-rotation are defined in the
     [Pre-Rotation Key Hash Generation and Verification](#pre-rotation-key-hash-generation-and-verification)
     section of this specification.
@@ -456,7 +569,7 @@ items are defined below.
     [[ref: parameters]] item, a `nextKeyHashes` item, with a new set of hashes,
     **MUST** also be included in the same [[ref: parameters]] item. Any unused
     hashes in the prior `nextKeyHashes` are ignored.
-- `witness`: A JSON item containing the parameters for declaring the witnesses
+- `witness`: A JSON object containing the parameters for declaring the witnesses
   for the DID, and the parameters for the process of updating a DID via a
   collaboration with [[ref: witnesses]] prior to publication. For details of
   this item data and its usage in the approvals process, see the
@@ -501,10 +614,11 @@ Where:
    pre-publication JSON array of what will become the first log entry. The
    placeholder is the literal string "`{SCID}`".
 
-   - The `entryHash` as the placeholder.
-   - The `versionId` entry, which must be `1`.
-   - The `versionTime` entry, which must be a string that is the current time in [[ref: ISO8601]] format, e.g.,
-         `"2024-04-05T07:32:58Z"`
+   - The `versionId` entry, which must be `1-{SCID}`, which is the first
+     version number for the DID `1`, a dash `-`, and the placeholder for the
+     SCID.
+   - The `versionTime` entry, which must be a string that is the current time in
+         [[ref: ISO8601]] format, e.g., `"2024-04-05T07:32:58Z"`
    - The complete `parameters` for the initial log entry as defined by the
      [[ref: DID Controller]], with the placeholder wherever the SCID will
      eventually be placed.
@@ -532,18 +646,24 @@ To verify the [[ref: SCID]] of a `did:tdw` DID being resolved, the resolver
 2. Determine the length of the `scid` and save it for use later. If the length
    is less than 28 characters, terminate the resolution process with an error.
 3. Remove from the first [[ref: DID log entry]] the data integrity proof.
-4. Replace the `entryHash` value with the placeholder literal "`{SCID}`"
+4. Replace the `versionId` value with the literal `"1-{SCID}"`.
 5. Treat the resulting log entry as a string and do a text replacement of the `scid`
    value from the first step with the literal string `{SCID}`.
 6. Use the log entry and length as inputs to the process defined in the
-   [Generate SCID](#generate-scid) section.
+   [Generate SCID](#generate-scid) section (above).
 7. Verify that the value generated by the process matches the `scid` extracted
    previously. If not, terminate the resolution process with an error.
 
 #### Entry Hash Generation and Verification
 
-The `entryHash` is the first item in each [[ref: DID log entry]] and is a hash
-calculate across the entry, excluding the [[ref: Data Integrity]] proof.
+The `entryHash` is part of the `versionId` item in each [[ref: DID log entry]],
+the part following the integer version number and the dash `-` character. The
+`entryHash` is calculated across the entry, excluding the [[ref: Data
+Integrity]] proof. The `versionId` used as input to the hash is a predecessor
+value, ensuring that the entries are cryptographically "chained" together in a
+microledger. For the first log entry, the predecessor `versionId` includes the
+SCID (itself a hash), while for all other entries it is the `versionId` from the
+previous log entry.
 
 ##### Generate Entry Hash
 
@@ -571,7 +691,7 @@ Update the example to reflect the latest specification.
 :::
 
 ```json
-["4c99uuenu8gk6n3bgf09fuf350gx",1,"2024-04-15T19:56:18Z",{"method": "did:tdw:1","scid": "4c99uuenu8gk6n3bgf09fuf350gx"},{"value": {"@context": ["https://www.w3.org/ns/did/v1","https://w3id.org/security/multikey/v1"],"id": "did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx","controller": "did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx","authentication": ["did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx#y4SDXopT"],"assertionMethod": ["did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx#5b48Zj6B"],"verificationMethod": [{"id": "did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx#y4SDXopT","controller": "did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx","type": "Multikey","publicKeyMultibase": "z6Mksta2t7db1WSx2JBorfYFcJnaJMBKUyupD2qPy4SDXopT"},{"id": "did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx#5b48Zj6B","controller": "did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx","type": "Multikey","publicKeyMultibase": "z6Mkw1KSvGWNAwSwWbcpwPgFARX4vKPa1xvcDMsJ5b48Zj6B"}]}}]
+["1-4c99uuenu8gk6n3bgf09fuf350gx","2024-04-15T19:56:18Z",{"method": "did:tdw:1","scid": "4c99uuenu8gk6n3bgf09fuf350gx"},{"value": {"@context": ["https://www.w3.org/ns/did/v1","https://w3id.org/security/multikey/v1"],"id": "did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx","controller": "did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx","authentication": ["did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx#y4SDXopT"],"assertionMethod": ["did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx#5b48Zj6B"],"verificationMethod": [{"id": "did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx#y4SDXopT","controller": "did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx","type": "Multikey","publicKeyMultibase": "z6Mksta2t7db1WSx2JBorfYFcJnaJMBKUyupD2qPy4SDXopT"},{"id": "did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx#5b48Zj6B","controller": "did:tdw:example.com:4c99uuenu8gk6n3bgf09fuf350gx","type": "Multikey","publicKeyMultibase": "z6Mkw1KSvGWNAwSwWbcpwPgFARX4vKPa1xvcDMsJ5b48Zj6B"}]}}]
 ```
 
 Resulting entry hash: `4fbja27mgf0bumtbg2b4hbzqc2ux9a9crrqx7w6cfnd97k9u7k5g`
@@ -581,11 +701,13 @@ Resulting entry hash: `4fbja27mgf0bumtbg2b4hbzqc2ux9a9crrqx7w6cfnd97k9u7k5g`
 To verify the `entryHash` for a given  `did:tdw` [[ref: DID log entry]], a DID
 Resolver **MUST** execute the following process:
 
-1. Extract the first item in the [[ref: DID log entry]] as the `entryHash`.
+1. Extract the `versionId` (first item) in the [[ref: DID log entry]], and
+   remove from it the version number and dash prefix, leaving the log entry
+   `entryHash`.
 2. Remove the [[ref: Data Integrity]] proof (6th item) from the log entry.
-3. Set the first item of the entry to the `entryHash` (first item) of the
+3. Set the first item of the entry to the `versionId` (first item) of the
    previous log entry. If this is the first entry in the log, set the value to
-   the [[ref: SCID]] for the DID.
+   the `1-<scid>` where `<scid>` if the SCID of the DID.
 4. Calculate the hash string as `base32_lower(hash(JCS(entry)))`, where:
    1. `entry` is the data from the previous step.
    2. `JCS` is an implementation of the [[ref: JSON Canonicalization Scheme]]
@@ -655,6 +777,14 @@ resolver **MUST**:
    DIDDoc.
 
 The output is the DIDDoc for that version of the DID.
+
+#### DID Portability
+
+::: todo
+
+To Do: Complete this section.
+
+:::
 
 #### Pre-Rotation Key Hash Generation and Verification
 
@@ -771,6 +901,13 @@ An overview of the witness mechanism is as follows:
   - The specification leaves to implementers how the proofs are conveyed to
     the [[ref: DID Controller]].
 
+::: to do
+
+To Do: Update to use a Data Integrity Proof Set, where the authorized key identifies
+the proof, and the witnesses proofs reference the identifier.
+
+:::
+
 As with the handling of the `updateKeys`, [[ref: DID Log Entry]] changes require
 proofs from the the [[ref: witnesses]] active *prior* to the publication of a
 new version. If a new version changes the list of [[ref: witnesses]], that
@@ -778,7 +915,7 @@ change must be approved by the *prior* [[ref: witnesses]]. For the first entry
 in the [[ref: DID Log]], the [[ref: witnesses]] listed in that entry must
 approve the version, since there are no "prior" witnesses.
 
-The data structure for the `witness` [[ref: parameters]] item is as follows.
+The data object for the `witness` [[ref: parameters]] item is as follows.
 The threshold design borrows from the [[ref: verifiable conditions]]
 specification.
 
@@ -914,7 +1051,7 @@ that **MUST** have the DID as the `credentialSubject`.
 
 A [[ref: DID Controller]] **MAY** explicitly add to their DIDDoc a `did:tdw`
 service with the `"id": "#whois"`. Such an entry **MUST** override the implicit
-`service` above. If the [[ref: DID Controller]] wants to publish the `/whois`
+`service` above. If the [[ref: DID Controller]] wants to publish the `/Coould. whois`
 [[ref: verifiable presentation]] in a different format than the [[ref: W3C
 VCDM]] format, they **MUST** explicitly add to their DIDDoc a service with the
 `"id": "#whois"` to specify the name and implied format of the [[ref: verifiable

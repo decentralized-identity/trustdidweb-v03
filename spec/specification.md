@@ -14,18 +14,18 @@ specification, this string MUST be in lowercase. The remainder of the DID, after
 the prefix, is the [method-specific identifier](#method-specific-identifier),
 specified below.
 
-### Method Specific Identifier
+### Method-Specific Identifier
 
-The `did:tdw` method specific identifier contains both the [[ref:
+The `did:tdw` method-specific identifier contains both the [[ref:
 self-certifying identifier]] (SCID) for the DID, and a fully qualified domain
 name that is secured by a TLS/SSL certificate, with an optional path. Given the
 DID, a [transformation to an HTTPS URL](#the-did-to-https-transformation) can be
 performed such that the [[ref: DID Log]] for the `did:tdw` DID is retrieved (via
 an `HTTP GET`) and processed to produce the DIDDoc for the DID. As per the
 Augmented Backus-Naur Form (ABNF) notation below, the SCID **MUST** be a part of
-the method specific identifier by one of the following mechanisms:
+the method-specific identifier by one of the following mechanisms:
 
-- A separate, colon-delimited element at the start of the method specific identifier.
+- A separate, colon-delimited element at the start of the method-specific identifier.
 - Embedded in the fully qualified domain name.
 - Embedded in the optional path relative to the fully qualified domain name.
   
@@ -35,7 +35,7 @@ globally unique [[ref: SCID]] is [generated](#scid-generation-and-verification)
 during the creation of the DID based on its initial content and placed into
 the DID identifier for publication and use.
 
-The domain name element of the method specific identifier MUST match the
+The domain name element of the method-specific identifier MUST match the
 common name used in the SSL/TLS certificate, and it MUST NOT include IP
 addresses. A port MAY be included and the colon MUST be percent encoded to
 prevent a conflict with paths. Directories and subdirectories MAY optionally be
@@ -59,14 +59,14 @@ lower-base32 = [2-7a-z]
 
 The difference between a DID having the SCID as the first element of the method
 specific identifier or embedded in the domain name/path is whether the SCID is
-used in the HTTP URL derived from the DID method specific identifier. If the
+used in the HTTP URL derived from the DID method-specific identifier. If the
 SCID is not embedded in the domain name/path, then it will not be part of the
 HTTP URL used to resolve the DID. IN all cases, the SCID will be in the DID Log
 and **MUST** be verified in resolving the DID.
 
 ### The DID to HTTPS Transformation
 
-The `did:tdw` [method specific identifier](#method-specific-identifier) is
+The `did:tdw` [method-specific identifier](#method-specific-identifier) is
 defined to enable a transformation of the DID to an HTTPS URL for publishing
 and retrieving the [[ref: DID Log]]. This section defines the transformation
 from DID to HTTPS URL, including a number of examples.
@@ -83,12 +83,12 @@ retrieve the DID Log.
    scan the text of the 1st element of the method specific
    identifier (up to the first `:`) for the `.` character. If one or more `.`
    characters are found, the SCID must be embedded in the domain name/path.
-   Otherwise, the SCID is the first method specific identifier element (e.g.,
+   Otherwise, the SCID is the first method-specific identifier element (e.g.,
    the form of the DID is `did:tdw:<SCID>:`).
-   1. If the SCID is the first element of the method specific identifier, remove
+   1. If the SCID is the first element of the method-specific identifier, remove
       the SCID by removing the text up to and including the first colon
-      (`<scid>:`) from the method specific identifier and continue processing.
-3. Replace `:` with `/` in the method specific identifier to obtain the fully
+      (`<scid>:`) from the method-specific identifier and continue processing.
+3. Replace `:` with `/` in the method-specific identifier to obtain the fully
    qualified domain name and optional path.
 4. If there is no optional path, append `/.well-known` to the URL.
    1. When this algorithm is used for resolving a DID path (such as
@@ -169,7 +169,7 @@ verification of the DID.
 
 Each entry is a JSON array consisting of the following 5 items.
 
-`[ versionId, versionTime, parameters, DIDDoc, Data Integrity Proof ]`
+`[ versionId, versionTime, parameters, DIDDoc State, Data Integrity Proof ]`
 
 1. The entry `versionId` is a value that combines the version number (starting at
    `1` and incrementing by one per DID version), a literal dash `-`, and the
@@ -183,9 +183,9 @@ Each entry is a JSON array consisting of the following 5 items.
    processing of current and future log entries. `parameters` are defined in the
    [`did:tdw` DID Method Parameters](#didtdw-did-method-parameters) section of
    this specification.
-4. The DIDDoc for this version of the DID as either a `value`, the full
-   document, or a `patch`, such that the new DIDDoc is derived using [[ref: JSON
-   Patch]] to derive the new version from the previous entry.
+4. The DIDDoc State for this version of the DID as either `value`, the full
+   document, or `patch`, such that the new DIDDoc is derived using
+   [[ref: JSON Patch]] from the previous entry.
 5. A [[ref: Data Integrity]] (DI) proof across the entry, signed by a DID
    Controller authorized to update the DIDDoc, using the `versionId` as the
    challenge.
@@ -234,8 +234,8 @@ Creating a `did:tdw` DID is done by carrying out the following steps.
    section of this specification defines the permitted [[ref: parameters]]. That
    section defines what items **MUST** be included in this first log entry for the DID.
 5. Formulate an input JSON array containing the following items for processing:
-   `[ "1-{SCID}", "<current time>", "parameters": [ <parameters>], { "value": "<DIDDoc with Placeholders>" } ]`
-6. Verify that the first item in the input JSON array is the literal string `1-{SCID}`.
+   `[ "{SCID}", "<current time>", "parameters": [ <parameters>], { "value": "<DIDDoc with Placeholders>" } ]`
+6. Verify that the first item in the input JSON array is the placeholder string `{SCID}`.
 7. Verify that the second item in the input JSON array, `versionTime` is a valid [[ref: ISO8601]]
    date/time string, and that the represented time is before or equal to the current
    time.
@@ -261,8 +261,8 @@ Creating a `did:tdw` DID is done by carrying out the following steps.
    [Entry Hash Generation and Verification](#entry-hash-generation-and-verification)
    section of this specification.
 14. Update the value of the `versionId` (first) item of the JSON array with the
-   literal string `1-` followed by the `entryHash` value produced in the
-   previous step.
+   literal string `1-` (for version number 1) followed by the `entryHash` value
+   produced in the previous step.
 15. Generate a [[ref: Data Integrity]] proof on the initial DIDDoc using an
    authorized key from a DID in the required `updateKeys` item in the [[ref:
    parameters]], and the `versionId` as the proof `challenge`. Add the proof to
@@ -569,6 +569,8 @@ items are defined below.
   - The value can **ONLY** be set to `true` in the first log entry, the initial version of the DID.
   - If not explicitly set in the first log entry, it is set to `false`.
   - Once the value has been set to `false`, it cannot be set back to `true`.
+  - See the section of this specification on [DID Portability](#did-portability)
+    for more details about renaming a `did:tdw` DID.
 - `hash`: The hashing algorithm to use when executing hashes.
   - By default, the value is initialized to `sha-256`.
   - Acceptable values:
@@ -811,11 +813,18 @@ The output is the DIDDoc for that version of the DID.
 
 #### DID Portability
 
-::: todo
+As noted in the [Update (rotate)](#update-rotate) section of the specification,
+a `did:tdw` DID can be renamed by changing the `id` DID string in the
+DIDDoc to one that resolves to a different HTTPS URL if the following conditions are met.
 
-To Do: Complete this section.
-
-:::
+- The [[ref: DID Log]] **MUST** contain all of the log entries from the creation
+  of the DID.
+- The log entry in which the DID is renamed **MUST** be a valid DID entry
+  building on the prior [[ref: DID Log]] entries, per this specification.
+- The [[ref: parameter]] `portable` **MUST** be set to `true`, as defined in the
+  [DID Method Parameters](#didtdw-did-method-parameters) section.
+- The [[ref: SCID]] **MUST** be the same in the renamed DID.
+- The DIDDoc **MUST** contain the prior DID string as an `alsoKnownAs` entry.
 
 #### Pre-Rotation Key Hash Generation and Verification
 
@@ -998,7 +1007,7 @@ so, the [[ref: DID Controller]] **MUST**:
 2. Execute a text replacement across the DIDDoc of `did:tdw:<SCID>:` to
    `did:web:`, where `<scid>` is the actual `did:tdw` [[ref: SCID]].
    1. This covers `did:tdw`s where the SCID is the first, separate element of
-      the [method specific identifier](#method-specific-identifier).
+      the [method-specific identifier](#method-specific-identifier).
 3. Execute a text replacement across the DIDDoc of `did:tdw` to `did:web`.
    1. This covers `did:tdw`s where the SCID is embedded in the fully qualified
       domain or optional path.

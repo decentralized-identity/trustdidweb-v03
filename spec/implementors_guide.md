@@ -79,20 +79,28 @@ environments for creating keys for different purposes. Enabling connectivity bet
 the key generation environments to enable automated key rotation while maintaining the
 key recovery environment as "isolated" is technically challenging.
 
-### Enabling DID Portability
+### Using DID Portability
 
-As noted in the [update (rotate)](#update-rotate) section of the specification,
-a portable `did:tdw` DID can be renamed by changing the `id` DID string in the
-DIDDoc to one that resolves to a different HTTPS URL, as long as:
+As noted in the [DID Portability](#did-portability) section of the
+specification, a `did:tdw` DID can be renamed (ported) by changing the `id` DID string in
+the DIDDoc to one that resolves to a different HTTPS URL, as long as the
+specified conditions are met.
 
-- the DID was created with the [[ref: parameter]] `portable` set to `true`,
-- the [[ref: SCID]] stays the same in the new DID, and
-- the DIDDoc is updated at the same time to have the old DID string(s) as `alsoKnownAs` entries.
+While the impact of the feature is in fact the creation of a new DID, we think
+there is significant value in some use cases for supporting the specified
+capability. Ideally, the HTTPS URL for the "old" DID is changed to a redirect to
+the new DID, allowing for a seamless, verifiable evolution of the DID.
 
-In renaming the DID, the version number component of the DID's `version` continues to increment.
-
-While the feature does "bend" the rules for DIDs, we think there is significant
-value in some use cases for supporting the specified capability.
+An interesting example use case is a DID that replaces an email address hosted
+by a particular service. The extra capabilities of having the identifier being a
+DID vs. an email address is compelling enough, allowing it to be used for a
+range of services beyond email. The portability benefit comes when the owner of
+the DID decides to move to a new service, taking their DID with them. Since the
+verifiable history would be carried over to that new service, assuring those
+that had interacted with the DID (through chats, emails, postings, etc.) in the
+past is the same as the new DID on the new service. Compare that with what
+happens today when you switch from one email provider to another, and you have
+to reach out to all your contacts to assure them that you changed providers.
 
 While portability is powerful, it must be used with care and only in use
 cases where the capability is specifically required. When used, both the

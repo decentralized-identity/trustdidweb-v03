@@ -51,10 +51,10 @@ The following is a `tl;dr` summary of how `did:tdw` works:
   information needed to derive a version of the DIDDoc from its preceding
   version.
 3. Each log entry includes five JSON entries:
-    1. The `version` of the entry, value that combines a version number
+    1. The `versionId` of the entry, a value that combines the version number
        (starting at `1` and incrementing by one per version), a literal dash
-       `-`, and a hash of the entry. The content of the hash is chosen so as to
-       link each entry to its predecessor in a ledger-like chain.
+       `-`, and a hash of the entry. The entry hash calculation links each entry
+       to its predecessor in a ledger-like chain.
     2. The `versionTime` (as stated by the DID Controller) of the entry.
     3. A set of `parameters` that impact the processing of the current and
       future log entries.
@@ -64,7 +64,7 @@ The following is a `tl;dr` summary of how `did:tdw` works:
       a `patch` derived using [[ref: JSON Patch]] to update the new version from
       the previous entry.
     5. A [[ref: Data Integrity]] (DI) proof across the entry, signed by a DID
-      Controller authorized to update the DIDDoc, using the `version` as the
+      Controller authorized to update the DIDDoc, using the `versionId` as the
       challenge.
 4. In generating the first version of the DIDDoc, the DID Controller calculates
   the [[ref: SCID]] for the DID, including it as a `parameter` in the first log
@@ -85,10 +85,8 @@ The following is a `tl;dr` summary of how `did:tdw` works:
   published by the DID Controller that are by default in the web location relative to the
   `did.jsonl` file. See the [note below](#the-whois-use-case) about the
    powerful capability enabled by the `/whois` DID URL path.
-8. Optionally, a DID Controller can generate and publish a `did:web` DIDDoc
-  from the latest `did:tdw` DIDDoc by changing the `id` to the `did:web` DID,
-  and adding an `alsoKnownAs` for the `did:tdw` (indicating to a resolver that
-  they can verify the DIDDoc, if wanted).
+8. Optionally, a DID Controller can easily generate and publish a `did:web` DIDDoc
+  from the latest `did:tdw` DIDDoc in parallel with the `did:tdw` [[ref: DID Log]].
 
   ::: warning
     A resolver settling for just the `did:web` version of the DID does not get the
@@ -103,7 +101,7 @@ proof of concept implementations. The specification/implementation interplay
 helped immensely in defining a practical, intuitive, straightforward, DID
 method. The existing proof of concept implementations of the `did:tdw` DID
 Method are listed in the [Implementors Guide](#Implementations). The current
-Typescript and Python implementations are less than 1500 lines of code.
+Typescript and Python implementations are each less than 1500 lines of code.
 
 ### The `/whois` Use Case
 

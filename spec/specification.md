@@ -647,9 +647,7 @@ Where:
    pre-publication JSON array of what will become the first log entry. The
    placeholder is the literal string "`{SCID}`".
 
-   - The `versionId` entry, which must be `1-{SCID}`, which is the first
-     version number for the DID `1`, a dash `-`, and the placeholder for the
-     SCID.
+   - The `versionId` entry, which must be `{SCID}`.
    - The `versionTime` entry, which must be a string that is the current time in
          [[ref: ISO8601]] format, e.g., `"2024-04-05T07:32:58Z"`
    - The complete `parameters` for the initial log entry as defined by the
@@ -679,7 +677,7 @@ To verify the [[ref: SCID]] of a `did:tdw` DID being resolved, the resolver
 2. Determine the length of the `scid` and save it for use later. If the length
    is less than 28 characters, terminate the resolution process with an error.
 3. Remove from the first [[ref: DID log entry]] the data integrity proof.
-4. Replace the `versionId` value with the literal `"1-{SCID}"`.
+4. Replace the `versionId` value with the literal `"{SCID}"`.
 5. Treat the resulting log entry as a string and do a text replacement of the `scid`
    value from the first step with the literal string `{SCID}`.
 6. Use the log entry and length as inputs to the process defined in the
@@ -694,7 +692,7 @@ the part following the integer version number and the dash `-` character. The
 `entryHash` is calculated across the entry, excluding the [[ref: Data
 Integrity]] proof. The `versionId` used as input to the hash is a predecessor
 value, ensuring that the entries are cryptographically "chained" together in a
-microledger. For the first log entry, the predecessor `versionId` includes the
+microledger. For the first log entry, the predecessor `versionId` is the
 SCID (itself a hash), while for all other entries it is the `versionId` from the
 previous log entry.
 

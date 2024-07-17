@@ -95,12 +95,13 @@ An interesting example use case is a DID that replaces an email address hosted
 by a particular service. The extra capabilities of having the identifier being a
 DID vs. an email address is compelling enough, allowing it to be used for a
 range of services beyond email. The portability benefit comes when the owner of
-the DID decides to move to a new service, taking their DID with them. Since the
-verifiable history would be carried over to that new service, assuring those
-that had interacted with the DID (through chats, emails, postings, etc.) in the
-past is the same as the new DID on the new service. Compare that with what
-happens today when you switch from one email provider to another, and you have
-to reach out to all your contacts to assure them that you changed providers.
+the DID decides to move to a new service, taking their DID with them. The
+verifiable history carried over to the renamed DID hosted by the new service
+provides assurance to those who interacted with the old DID (through chats,
+emails, postings, etc.) that they are still engaging with the same entity,
+despite the DID renaming. Compare that with what happens today when you switch
+from one email provider to another, and you have to reach out to all your
+contacts to assure them that you changed providers.
 
 While portability is powerful, it must be used with care and only in use
 cases where the capability is specifically required. When used, both the

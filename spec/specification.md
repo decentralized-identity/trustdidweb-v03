@@ -91,10 +91,17 @@ retrieve the DID Log.
 3. Replace `:` with `/` in the method specific identifier to obtain the fully
    qualified domain name and optional path.
 4. If there is no optional path, append `/.well-known` to the URL.
+   1. When this algorithm is used for resolving a DID path (such as
+      `<did>/whois` or `<did>/path/to/file as defined in the section [DID URL
+      Handling](#did-url-resolution)), the `/.well-known` **MUST NOT** be
+      included in the HTTPS URL.
 5. If the domain contains a port, percent decode the colon.
 6. Generate an HTTPS URL to the expected location of the DIDDoc by prepending
    `https://`.
 7. Append `/did.jsonl` to complete the URL.
+   1. When this algorithm is used for resolving a DID path (such as
+      `<did>/whois` or `<did>/path/to/file as defined in the section [DID URL
+      Handling](#did-url-resolution)), append the DID URL path instead.
 
 The following are some examples of various DID-to-HTTPS transformations based
 on the processing steps specified above.
@@ -1018,9 +1025,11 @@ Specifically, a `did:tdw` implementation **MUST**:
 - Resolve the `/whois` DID URL path using a [[spec:LINKED-VP]] service, whether
   or not it exists in the `did:tdw` DIDDoc, returning a [[ref: Verifiable
   Presentation]], if published by the [[ref: DID Controller]], found at the same
-  path as the `did.jsonl` file, using the `/whois.json` filename component.
+  path as the `did.jsonl` file, using the `/whois.vp` filename component, and
+  the `application/vp' media type, as per the [IANA Verifiable Presentation
+  Assignment](https://www.iana.org/assignments/media-types/application/vp).
   - For example, `did:tdw:{SCID}.example.com/whois` returns the verifiable
-    presentation from `https://{SCID}.example.com/.well-known/whois.json`.
+    presentation from `https://{SCID}.example.com/.well-known/whois.vp`.
 - Resolve any `did:tdw` DID URL using a [[spec:DID-CORE]] `relativeRef` DID
   parameter, whether or not a supporting service exists in the `did:tdw` DIDDoc,
   returning the file found at web location corresponding to the DID-to-HTTPS
@@ -1062,26 +1071,27 @@ Controller.
 `did:tdw` DIDs **automatically** supports a `/whois` service endpoint with the
 following definition based on the [[spec:LINKED-VP]] specification, with the
 `serviceEndpoint` defining a similar `did:tdw` DID-to-HTTPS DID Log
-transformation with `did.jsonl` changed to `whois.json`. Differing from the
-DID-to-HTTPS DID Log transformation is that the `well-known/` component of the
-`did.jsonl` resolution is dropped from the `whois.json` resolution.
+transformation with `did.jsonl` changed to `whois.vp`. Differing from the
+[DID-to-HTTPS transformation](#the-did-to-https-transformation) is that the
+`.well-known/` component of the `did.jsonl` transformation is dropped from the
+`whois.vp` resolution.
 
 ```json
 {
    "@context": "https://identity.foundation/linked-vp/contexts/v1",
    "id": "#whois",
    "type": "LinkedVerifiablePresentation",
-   "serviceEndpoint": "<did-to-https-translation>/whois.json"
+   "serviceEndpoint": "<did-to-https-translation>/whois.vp"
 }
 ```
 
-The returned `whois.json` **MUST** contain a [[ref: W3C VCDM]] [[ref: verifiable
+The returned `whois.vp` **MUST** contain a [[ref: W3C VCDM]] [[ref: verifiable
 presentation]] signed by the DID and containing [[ref: verifiable credentials]]
 that **MUST** have the DID as the `credentialSubject`.
 
 A [[ref: DID Controller]] **MAY** explicitly add to their DIDDoc a `did:tdw`
 service with the `"id": "#whois"`. Such an entry **MUST** override the implicit
-`service` above. If the [[ref: DID Controller]] wants to publish the `/Coould. whois`
+`service` above. If the [[ref: DID Controller]] wants to publish the `whois`
 [[ref: verifiable presentation]] in a different format than the [[ref: W3C
 VCDM]] format, they **MUST** explicitly add to their DIDDoc a service with the
 `"id": "#whois"` to specify the name and implied format of the [[ref: verifiable
@@ -1114,8 +1124,10 @@ The automatic resolution of `did:tdw` DID URL paths follows the
 - The `#files` service defined below then defines the `serviceEndpoint` for the
   `relativeRef`.
   - For `did:tdw`, that service is implicitly defined, with the
-    `serviceEndpoint` matching the `did:tdw` DID-to-HTTPS DIDDoc transformation
-    and `did.jsonl` replaced by the DID URL Path.
+    `serviceEndpoint` matching the `did:tdw` [DID-to-HTTPS
+    transformation](#the-did-to-https-transformation) and `did.jsonl` replaced
+    by the DID URL Path. If `.well-known/` is part of the HTTPS URL, it is
+    removed from the URL before resolving the URL.
 
 Thus, the implicit service for DID `did:tdw:example.com:dids:<scid>` is:
 

@@ -79,20 +79,33 @@ environments for creating keys for different purposes. Enabling connectivity bet
 the key generation environments to enable automated key rotation while maintaining the
 key recovery environment as "isolated" is technically challenging.
 
-### Moving a DID
+### Using DID Portability
 
-As noted in the [`did:tdw` DID Method Parameters](#didtdw-did-method-parameters) section of this specification,
-a `did:tdw` DID can be "moved" by changing the DID string to one that resolves to a different HTTPS URL, as
-long as:
+As noted in the [DID Portability](#did-portability) section of the
+specification, a `did:tdw` DID can be renamed (ported) by changing the `id` DID string in
+the DIDDoc to one that resolves to a different HTTPS URL, as long as the
+specified conditions are met.
 
-- the [[ref: SCID]] stays the same in the new DID,
-- the DIDDoc is updated at the same time to have the new DID as the top-level `id`, and
-- the DIDDoc is updated at the same time to have the old DID string(s) as `alsoKnownAs` entries.
+While the impact of the feature is in fact the creation of a new DID, we think
+there is significant value in some use cases for supporting the specified
+capability. Ideally, the HTTPS URL for the "old" DID is changed to a redirect to
+the new DID, allowing for a seamless, verifiable evolution of the DID.
 
-In moving the DID, the `versionId` of the DID continues to increment.
+An interesting example use case is a DID that replaces an email address hosted
+by a particular service. The extra capabilities of having the identifier being a
+DID vs. an email address is compelling enough, allowing it to be used for a
+range of services beyond email. The portability benefit comes when the owner of
+the DID decides to move to a new service, taking their DID with them. The
+verifiable history carried over to the renamed DID hosted by the new service
+provides assurance to those who interacted with the old DID (through chats,
+emails, postings, etc.) that they are still engaging with the same entity,
+despite the DID renaming. Compare that with what happens today when you switch
+from one email provider to another, and you have to reach out to all your
+contacts to assure them that you changed providers.
 
-While the feature does "bend" the rules for DIDs, we think there is significant value in supporting
-the specified functionality. These are the uses cases that we considered in adding the functionality.
+While portability is powerful, it must be used with care and only in use
+cases where the capability is specifically required. When used, both the
+pre-rotation and witnesses features of `did:tdw` **SHOULD** also be enabled.
 
 #### Mergers, Acquisitions and Name Changes
 

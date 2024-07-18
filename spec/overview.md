@@ -42,47 +42,51 @@ features listed in the [Abstract](#abstract).
 
 The following is a `tl;dr` summary of how `did:tdw` works:
 
-1. `did:tdw` uses the same DID-to-HTTPS tranformation as `did:web`, so
+1. `did:tdw` uses the same DID-to-HTTPS transformation as `did:web`, so
    `did:tdw`'s  `did.jsonl` ([[ref: JSON Lines]]) file is found in the same
-   location as `did:web`'s `did.json` file.
+   location as `did:web`'s `did.json` file, and supports an easy transition
+   from `did:web` to gain the added benefits of `did:tdw`.
 2. The `did.jsonl` is a list of JSON [[ref: DID log entries]], one per line,
   whitespace removed (per [[ref: JSON Lines]]), each of which contains the
   information needed to derive a version of the DIDDoc from its preceding
   version.
-3. Each entry includes six JSON entries:
-    1. A hash of the entry.
-    2. The `versionId` of the DIDDoc, starting from 1 and incrementing.
-    3. The `versionTime` (as stated by the DID Controller) of the entry.
-    4. A set of `parameters` that impact the processing of the current and
+3. Each log entry includes five JSON entries:
+    1. The `versionId` of the entry, a value that combines the version number
+       (starting at `1` and incrementing by one per version), a literal dash
+       `-`, and a hash of the entry. The entry hash calculation links each entry
+       to its predecessor in a ledger-like chain.
+    2. The `versionTime` (as stated by the DID Controller) of the entry.
+    3. A set of `parameters` that impact the processing of the current and
       future log entries.
         - Example parameters are the version of the `did:tdw` specification and
         hash algorithm being used.
-    5. The new version of the DIDDoc as either a `value` (the full document) or
+    4. The new version of the DIDDoc as either a `value` (the full document) or
       a `patch` derived using [[ref: JSON Patch]] to update the new version from
       the previous entry.
-    6. A [[ref: Data Integrity]] (DI) proof across the entry, signed by a DID
-      Controller authorized to update the DIDDoc.
+    5. A [[ref: Data Integrity]] (DI) proof across the entry, signed by a DID
+      Controller authorized to update the DIDDoc, using the `versionId` as the
+      challenge.
 4. In generating the first version of the DIDDoc, the DID Controller calculates
-  the [[ref: SCID]] for the DID, includes it as a `parameter` in the first log
-  entry, and inserts it where needed in the initial (and all subsequent)
-  DIDDocs.
-5. A DID Controller generates and publishes the updated log file by making it
+  the [[ref: SCID]] for the DID, including it as a `parameter` in the first log
+  entry, and inserting it where needed in the initial (and all subsequent)
+  DIDDocs. The SCID enables an optional portability capability, allowing a DID's
+  web location to be moved to a new location while retaining the DID and version
+  history of the DID.
+5. A DID Controller generates and publishes the new/updated log file by making it
   available at the appropriate location on the web, based on the identifier of the
   DID.
 6. Given a `did:tdw` DID, a resolver converts the DID to an HTTPS URL,
   retrieves, and processes the log file `did.jsonl`, generating and verifying
   each log entry as per the requirements outlined in this specification.
-    - In the process, the resolvers may collect all the DIDDoc versions and public
-      keys (by reference) used by the DID currently, or in the past. This enables
-      resolving both current and past DID URLs.
+    - In the process, the resolver collects all the DIDDoc versions and public
+      keys used by the DID currently, or in the past. This enables
+      resolving both current and past versions of the DID.
 7. `did:tdw` DID URLs with paths and `/whois` are resolved to documents
   published by the DID Controller that are by default in the web location relative to the
   `did.jsonl` file. See the [note below](#the-whois-use-case) about the
    powerful capability enabled by the `/whois` DID URL path.
-8. Optionally, a DID Controller can generate and publish a `did:web` DIDDoc
-  from the latest `did:tdw` DIDDoc by changing the `id` to the `did:web` DID,
-  and adding an `alsoKnownAs` for the `did:tdw` (indicating to a resolver that
-  they can verify the DIDDoc, if wanted).
+8. Optionally, a DID Controller can easily generate and publish a `did:web` DIDDoc
+  from the latest `did:tdw` DIDDoc in parallel with the `did:tdw` [[ref: DID Log]].
 
   ::: warning
     A resolver settling for just the `did:web` version of the DID does not get the
@@ -97,7 +101,7 @@ proof of concept implementations. The specification/implementation interplay
 helped immensely in defining a practical, intuitive, straightforward, DID
 method. The existing proof of concept implementations of the `did:tdw` DID
 Method are listed in the [Implementors Guide](#Implementations). The current
-Typescript implementation is less than 1000 lines of Typescript code.
+Typescript and Python implementations are each less than 1500 lines of code.
 
 ### The `/whois` Use Case
 

@@ -3,6 +3,8 @@ Trust DID Web - `did:tdw`
 
 **Specification Status:** DRAFT
 
+**Specification Version:** 0.2 (see [Changelog](#did-tdw-version-changelog))
+
 **Latest Draft:**
   [https://github.com/bcgov/trustdidweb](https://github.com/bcgov/trustdidweb)
 

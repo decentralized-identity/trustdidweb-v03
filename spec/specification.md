@@ -44,7 +44,7 @@ examples below. The `domain-segment` and `path-segment` elements refer to
 here the full ABNF of those elements from that RFC would inevitably be wrong.
 
 ```abnf
-tdw-did = "did:tdw:" scid ":" 2+( "." domain-segment ) *( ":" path-segment )
+tdw-did = "did:tdw:" scid ":" domain-segment 1+( "." domain-segment ) *( ":" path-segment )
 domain-segment = ; A part of a domain name as defined in RFC3986, such as "example" and "com" in "example.com"
 path-segment= ; A part of a URL path as defined in RFC3986, such as "path", "to", "folder" in "path/to/folder"
 scid = 28+( lower-base32 )

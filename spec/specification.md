@@ -18,7 +18,7 @@ specified below.
 
 The `did:tdw` method-specific identifier contains both the [[ref:
 self-certifying identifier]] (SCID) for the DID, and a fully qualified domain
-(with an optional path) name that is secured by a TLS/SSL certificate. Given the
+name (with an optional path) that is secured by a TLS/SSL certificate. Given the
 DID, a [transformation to an HTTPS URL](#the-did-to-https-transformation) can be
 performed such that the [[ref: DID Log]] for the `did:tdw` DID is retrieved (via
 an `HTTP GET`) and processed to produce the DIDDoc for the DID. As per the

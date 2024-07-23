@@ -78,12 +78,12 @@ when forced to change (such as when an organization is acquired by another,
 resulting in a change of domain names) and when changing DID hosting service
 providers.
 
-[[def: base32_lower]]
+[[def: base58]]
 
-~ Applies [[spec:rfc4648]] to convert
-data to a `base32` encoding, and then lower cases the result. Data encoded as
-base32 consists of a string of characters containing only the letters A-Z and
-digits 2-7.
+~ Applies [[spec:draft-msporny-base58-03]] to convert
+data to a `base58` encoding. Data encoded as
+base58 consists of a string of characters containing only the letters A-Z, a-z and
+digits 1-9.
 
 [[def: Linked-VP, Linked Verifiable Presentation]]
 

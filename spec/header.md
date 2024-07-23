@@ -3,7 +3,7 @@ Trust DID Web - `did:tdw`
 
 **Specification Status:** DRAFT
 
-**Specification Version:** 0.2 (see [Changelog](#did-tdw-version-changelog))
+**Specification Version:** 0.3 (see [Changelog](#did-tdw-version-changelog))
 
 **Latest Draft:**
   [https://github.com/bcgov/trustdidweb](https://github.com/bcgov/trustdidweb)
@@ -13,6 +13,7 @@ Trust DID Web - `did:tdw`
 ~ [John Jordan, BC Gov](https://github.com/jljordan42)
 ~ [Andrew Whitehead](https://github.com/andrewwhitehead)
 ~ [Brian Richter](https://github.com/brianorwhatever)
+~ [Michel Sahli](https://github.com/bj-ms)
 
 **Participate:**
 ~ [GitHub repo](https://github.com/bcgov/trustdidweb)

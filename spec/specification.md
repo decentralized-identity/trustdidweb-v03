@@ -506,7 +506,7 @@ An example of the JSON prettified parameters item in the first DID Log entry for
     "nextKeyHashes": [
       "enkkrohe5ccxyc7zghic6qux5inyzthg2tqka4b57kvtorysc3aa"
     ],
-    "method": "did:tdw:0.2",
+    "method": "did:tdw:0.3",
     "scid": "{SCID}"
 }
 ```
@@ -526,7 +526,7 @@ items are defined below.
     the processing rules for that and later entries have been changed to a
     different specification version.
   - Acceptable values for this specification are:
-    - `did:tdw:0.2`: Requires that the rules defined in this specification be used
+    - `did:tdw:0.3`: Requires that the rules defined in this specification be used
       in processing the log.
 - `scid`: The value of the [[ref: SCID]] for this DID.
   - This item **MUST** appear in the first [[ref: DID log entry]].

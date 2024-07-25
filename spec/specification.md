@@ -613,7 +613,7 @@ first [[ref: DID log entry]] and is the hash of the DID's inception event.
 To generate the required [[ref: SCID]] for a `did:tdw` DID, the DID Controller
 **MUST** execute the following function:
 
- `base58(multihash(JCS(preliminary log entry with placeholders)))`
+ `base58btc(multihash(JCS(preliminary log entry with placeholders)))`
 
 Where:
 
@@ -636,8 +636,8 @@ Where:
 3. `multihash` is an implementation of the [[ref: multihash]].
    Acceptable multihash identifier are defined in [[spec:controller-document]].
    Its output is a hash prefixed with a hash function identifier and the hash size.
-4. `base58` is an implementation of the [[ref: base58]] function.
-   Its output is the Base58 encoded string of its input.
+4. `base58btc` is an implementation of the [[ref: base58btc]] function.
+   Its output is the base58 encoded string of its input.
 
 ##### Verify SCID
 
@@ -671,7 +671,7 @@ previous log entry.
 ##### Generate Entry Hash
 
 To generate the required hash for a `did:tdw` DID entry, the DID Controller
-**MUST** execute the process `base58(multihash(JCS(entry)))` given a
+**MUST** execute the process `base58btc(multihash(JCS(entry)))` given a
 preliminary log entry as the string `entry`, where:
 
 1. `JCS` is an implementation of the [[ref: JSON Canonicalization Scheme]]
@@ -680,8 +680,8 @@ preliminary log entry as the string `entry`, where:
 2. `multihash` is an implementation of the [[ref: multihash]].
    Acceptable multihash identifier are defined in [[spec:controller-document]].
    Its output is a hash prefixed with a hash function identifier and the hash size.
-3. `base58` is an implementation of the [[ref: base58]] function.
-   Its output is the Base58 encoded string of its input.
+3. `base58btc` is an implementation of the [[ref: base58btc]] function.
+   Its output is the base58 encoded string of its input.
 
 The following is an example of a preliminary log entry that is processed to
 produce an entry hash. As this is a first entry in a DID Log, the input
@@ -711,7 +711,7 @@ Resolver **MUST** execute the following process:
 3. Set the first item of the entry to the `versionId` (first item) of the
    previous log entry. If this is the first entry in the log, set the value to
    the `1-<scid>` where `<scid>` if the SCID of the DID.
-4. Calculate the hash string as `base58(multihash(JCS(entry)))`, where:
+4. Calculate the hash string as `base58btc(multihash(JCS(entry)))`, where:
    1. `entry` is the data from the previous step.
    2. `JCS` is an implementation of the [[ref: JSON Canonicalization Scheme]]
       ([[spec:rfc8785]]). Its output is a canonicalized representation of its
@@ -719,8 +719,8 @@ Resolver **MUST** execute the following process:
    3. `multihash` is an implementation of the [[ref: multihash]].
       Acceptable multihash identifier are defined in [[spec:controller-document]].
       Its output is a hash prefixed with a hash function identifier and the hash size.
-   4. `base58` as defined by the [[ref: base58]] function. Its
-      output is the Base58 encoded string of the input hash.
+   4. `base58btc` as defined by the [[ref: base58btc]] function. Its
+      output is the base58 encoded string of the input hash.
 5. Verify that the calculated value matches the extracted value from Step 1. If
    not, terminate the resolution process with an error.
 
@@ -823,13 +823,13 @@ authorization key.
 1. Generate a new key pair.
 2. Generate a [[ref: multikeys]] representation of the public key of the new key
    pair.
-3. Calculate the hash string as `base58(multihash(multikey))`, where:
+3. Calculate the hash string as `base58btc(multihash(multikey))`, where:
    1. `multikey` is the [[ref: multikey]] representation of the public key.
    2. `multihash` is an implementation of the [[ref: multihash]].
       Acceptable multihash identifier are defined in [[spec:controller-document]].
       Its output is a hash prefixed with a hash function identifier and the hash size.
-   3. `base58` as defined by the [[ref: base58]] function. Its
-      output is the Base58 encoded string of the input hash.
+   3. `base58btc` as defined by the [[ref: base58btc]] function. Its
+      output is the base58 encoded string of the input hash.
 4. Insert the calculated hash into the `nextKeyHashes` array being built up within
    the [[ref: parameters]] item.
 5. The generated key pair **SHOULD** be safely stored so that it can be used in

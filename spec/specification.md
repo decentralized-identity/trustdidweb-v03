@@ -500,7 +500,6 @@ An example of the JSON prettified parameters item in the first DID Log entry for
 
 ``` json
 {
-    "hash": "sha-256",
     "prerotation": true,
     "portable": false,
     "updateKeys": [
@@ -552,10 +551,6 @@ items are defined below.
   - Once the value has been set to `false`, it cannot be set back to `true`.
   - See the section of this specification on [DID Portability](#did-portability)
     for more details about renaming a `did:tdw` DID.
-- `hash`: The hashing algorithm to use when executing hashes.
-  - By default, the value is initialized to `sha-256`.
-  - Acceptable values:
-    - `sha-256`: Use the `SHA-256` algorithm from [[spec:rfc4634]].
 - `cryptosuite`: The Data Integrity cryptosuite to use when generating and
   verifying the authentication proofs on the [[ref: DID log entries]].
   - By default, the value is initialized to `eddsa-jcs-2022`
@@ -613,14 +608,14 @@ items are defined below.
 #### SCID Generation and Verification
 
 The [[ref: Self-certifying identifier]] or `SCID` is a required parameter in the
-first [[ref: DID log entry]] and is a portion of the hash of the DID's inception event.
+first [[ref: DID log entry]] and is the hash of the DID's inception event.
 
 ##### Generate SCID
 
 To generate the required [[ref: SCID]] for a `did:tdw` DID, the DID Controller
 **MUST** execute the following function:
 
- `base58(hash(JCS(preliminary log entry with placeholders)))`
+ `base58(multihash(JCS(preliminary log entry with placeholders)))`
 
 Where:
 
@@ -640,9 +635,9 @@ Where:
 2. `JCS` is an implementation of the [[ref: JSON Canonicalization Scheme]]
    [[spec:rfc8785]]. It outputs a canonicalized representation of its JSON
    input.
-3. `hash` is the hash algorithm enumerated in the `hash` item in the [[ref:
-   parameters]], or if none is specified, the default hash algorithm defined in
-   this specification. Its output is the hash of its input.
+3. `multihash` is an implementation of the [[ref: multihash]].
+   Acceptable multihash identifier are defined in [[spec:controller-document]].
+   Its output is a hash prefixed with a hash function identifier and the hash size.
 4. `base58` is an implementation of the [[ref: base58]] function.
    Its output is the Base58 encoded string of its input.
 
@@ -678,15 +673,15 @@ previous log entry.
 ##### Generate Entry Hash
 
 To generate the required hash for a `did:tdw` DID entry, the DID Controller
-**MUST** execute the process `base58(hash(JCS(entry)))` given a
+**MUST** execute the process `base58(multihash(JCS(entry)))` given a
 preliminary log entry as the string `entry`, where:
 
 1. `JCS` is an implementation of the [[ref: JSON Canonicalization Scheme]]
    ([[spec:rfc8785]]). Its output is a canonicalized representation of its
    input.
-2. `hash` is the hash algorithm enumerated in the `hash` item in the [[ref:
-   parameters]], or if none is specified, the default hash algorithm defined in
-   this specification. Its output is the hash of its input.
+2. `multihash` is an implementation of the [[ref: multihash]].
+   Acceptable multihash identifier are defined in [[spec:controller-document]].
+   Its output is a hash prefixed with a hash function identifier and the hash size.
 3. `base58` is an implementation of the [[ref: base58]] function.
    Its output is the Base58 encoded string of its input.
 
@@ -718,14 +713,14 @@ Resolver **MUST** execute the following process:
 3. Set the first item of the entry to the `versionId` (first item) of the
    previous log entry. If this is the first entry in the log, set the value to
    the `1-<scid>` where `<scid>` if the SCID of the DID.
-4. Calculate the hash string as `base58(hash(JCS(entry)))`, where:
+4. Calculate the hash string as `base58(multihash(JCS(entry)))`, where:
    1. `entry` is the data from the previous step.
    2. `JCS` is an implementation of the [[ref: JSON Canonicalization Scheme]]
       ([[spec:rfc8785]]). Its output is a canonicalized representation of its
       input.
-   3. `hash` is the hash algorithm enumerated in the `hash` item in the [[ref:
-      parameters]], or if none is specified, the default hash algorithm defined in
-      this specification. Its output is the hash of its input.
+   3. `multihash` is an implementation of the [[ref: multihash]].
+      Acceptable multihash identifier are defined in [[spec:controller-document]].
+      Its output is a hash prefixed with a hash function identifier and the hash size.
    4. `base58` as defined by the [[ref: base58]] function. Its
       output is the Base58 encoded string of the input hash.
 5. Verify that the calculated value matches the extracted value from Step 1. If
@@ -830,12 +825,11 @@ authorization key.
 1. Generate a new key pair.
 2. Generate a [[ref: multikeys]] representation of the public key of the new key
    pair.
-3. Calculate the hash string as `base58(hash(multikey))`, where:
+3. Calculate the hash string as `base58(multihash(multikey))`, where:
    1. `multikey` is the [[ref: multikey]] representation of the public key.
-   2. ``hash` is the most recent hash algorithm enumerated in the `hash` item in
-      the [[ref: parameters]], or if none is specified, the default hash
-      algorithm defined in this specification. Its output is the hash of its
-      input.
+   2. `multihash` is an implementation of the [[ref: multihash]].
+      Acceptable multihash identifier are defined in [[spec:controller-document]].
+      Its output is a hash prefixed with a hash function identifier and the hash size.
    3. `base58` as defined by the [[ref: base58]] function. Its
       output is the Base58 encoded string of the input hash.
 4. Insert the calculated hash into the `nextKeyHashes` array being built up within

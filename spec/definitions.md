@@ -42,6 +42,9 @@ make changes to a DID document.
 the data of a log entry. The generated entry hash is subsequently put into the
 log entry and *MUST* be verified by a resolver.
 
+[[def: multihash]]
+~ Per the [[spec:draft-multiformats-multihash-07]], Multihash is a specification for differentiating hashes. Multihash defines that by prefixing hashes with a hash function identifier and the hash size.
+
 [[def: Data Integrity]]
 
 ~ [W3C Data

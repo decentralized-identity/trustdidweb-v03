@@ -84,9 +84,7 @@ providers.
 [[def: base58btc]]
 
 ~ Applies [[spec:draft-msporny-base58-03]] to convert
-data to a `base58` encoding. Data encoded as
-base58 consists of a string of characters containing only the letters A-Z, a-z and
-digits 1-9.
+data to a `base58` encoding.
 
 [[def: Linked-VP, Linked Verifiable Presentation]]
 

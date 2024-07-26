@@ -42,6 +42,9 @@ make changes to a DID document.
 the data of a log entry. The generated entry hash is subsequently put into the
 log entry and *MUST* be verified by a resolver.
 
+[[def: multihash]]
+~ Per the [[spec:draft-multiformats-multihash-07]], Multihash is a specification for differentiating hashes. Multihash defines that by prefixing hashes with a hash function identifier and the hash size.
+
 [[def: Data Integrity]]
 
 ~ [W3C Data
@@ -78,12 +81,10 @@ when forced to change (such as when an organization is acquired by another,
 resulting in a change of domain names) and when changing DID hosting service
 providers.
 
-[[def: base32_lower]]
+[[def: base58btc]]
 
-~ Applies [[spec:rfc4648]] to convert
-data to a `base32` encoding, and then lower cases the result. Data encoded as
-base32 consists of a string of characters containing only the letters A-Z and
-digits 2-7.
+~ Applies [[spec:draft-msporny-base58-03]] to convert
+data to a `base58` encoding.
 
 [[def: Linked-VP, Linked Verifiable Presentation]]
 

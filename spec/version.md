@@ -2,6 +2,10 @@
 
 The following lists the substantive changes in each version of the specification.
 
+- Version 0.3
+  - Change base32 encoding with base58, as it offers a better expansion rate.
+  - Remove the step to extract part of the base58 result during the generation of the [[ref: SCID]].
+  - Use multihash in the [[ref: SCID]] to differentiate the different hash function outputs.
 - Version 0.2
   - Changes the location of the [[ref: SCID]] in the DID to always be the first
     component after the DID Method prefix -- `did:tdw:<scid>:...`.

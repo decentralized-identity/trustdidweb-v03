@@ -47,8 +47,6 @@ here the full ABNF of those elements from that RFC would inevitably be wrong.
 tdw-did = "did:tdw:" scid ":" domain-segment 1+( "." domain-segment ) *( ":" path-segment )
 domain-segment = ; A part of a domain name as defined in RFC3986, such as "example" and "com" in "example.com"
 path-segment= ; A part of a URL path as defined in RFC3986, such as "path", "to", "folder" in "path/to/folder"
-scid = 28+( lower-base32 )
-lower-base32 = [2-7a-z]
 ```
 
 The ABNF for a `did:tdw` is almost identical to that of [[ref: did:web]], with changes only to
@@ -500,7 +498,6 @@ An example of the JSON prettified parameters item in the first DID Log entry for
 
 ``` json
 {
-    "hash": "sha-256",
     "prerotation": true,
     "portable": false,
     "updateKeys": [
@@ -509,7 +506,7 @@ An example of the JSON prettified parameters item in the first DID Log entry for
     "nextKeyHashes": [
       "enkkrohe5ccxyc7zghic6qux5inyzthg2tqka4b57kvtorysc3aa"
     ],
-    "method": "did:tdw:0.2",
+    "method": "did:tdw:0.3",
     "scid": "{SCID}"
 }
 ```
@@ -529,7 +526,7 @@ items are defined below.
     the processing rules for that and later entries have been changed to a
     different specification version.
   - Acceptable values for this specification are:
-    - `did:tdw:0.2`: Requires that the rules defined in this specification be used
+    - `did:tdw:0.3`: Requires that the rules defined in this specification be used
       in processing the log.
 - `scid`: The value of the [[ref: SCID]] for this DID.
   - This item **MUST** appear in the first [[ref: DID log entry]].
@@ -552,10 +549,6 @@ items are defined below.
   - Once the value has been set to `false`, it cannot be set back to `true`.
   - See the section of this specification on [DID Portability](#did-portability)
     for more details about renaming a `did:tdw` DID.
-- `hash`: The hashing algorithm to use when executing hashes.
-  - By default, the value is initialized to `sha-256`.
-  - Acceptable values:
-    - `sha-256`: Use the `SHA-256` algorithm from [[spec:rfc4634]].
 - `cryptosuite`: The Data Integrity cryptosuite to use when generating and
   verifying the authentication proofs on the [[ref: DID log entries]].
   - By default, the value is initialized to `eddsa-jcs-2022`
@@ -613,14 +606,14 @@ items are defined below.
 #### SCID Generation and Verification
 
 The [[ref: Self-certifying identifier]] or `SCID` is a required parameter in the
-first [[ref: DID log entry]] and is a portion of the hash of the DID's inception event.
+first [[ref: DID log entry]] and is the hash of the DID's inception event.
 
 ##### Generate SCID
 
 To generate the required [[ref: SCID]] for a `did:tdw` DID, the DID Controller
 **MUST** execute the following function:
 
- `left(base32_lower(hash(JCS(preliminary log entry with placeholders))), <length>)`
+ `base58btc(multihash(JCS(preliminary log entry with placeholders)))`
 
 Where:
 
@@ -640,13 +633,11 @@ Where:
 2. `JCS` is an implementation of the [[ref: JSON Canonicalization Scheme]]
    [[spec:rfc8785]]. It outputs a canonicalized representation of its JSON
    input.
-3. `hash` is the hash algorithm enumerated in the `hash` item in the [[ref:
-   parameters]], or if none is specified, the default hash algorithm defined in
-   this specification. Its output is the hash of its input.
-4. `base32_lower` is an implementation of the [[ref: base32_lower]] function.
-   Its output is the lower case of the Base32 encoded string of its input.
-5. `left` extracts the `<length>` number of characters from the string input.
-   1. `<length>` **MUST** be at least 28 characters.
+3. `multihash` is an implementation of the [[ref: multihash]].
+   Acceptable multihash identifier are defined in [[spec:controller-document]].
+   Its output is a hash prefixed with a hash function identifier and the hash size.
+4. `base58btc` is an implementation of the [[ref: base58btc]] function.
+   Its output is the base58 encoded string of its input.
 
 ##### Verify SCID
 
@@ -680,17 +671,17 @@ previous log entry.
 ##### Generate Entry Hash
 
 To generate the required hash for a `did:tdw` DID entry, the DID Controller
-**MUST** execute the process `base32_lower(hash(JCS(entry)))` given a
+**MUST** execute the process `base58btc(multihash(JCS(entry)))` given a
 preliminary log entry as the string `entry`, where:
 
 1. `JCS` is an implementation of the [[ref: JSON Canonicalization Scheme]]
    ([[spec:rfc8785]]). Its output is a canonicalized representation of its
    input.
-2. `hash` is the hash algorithm enumerated in the `hash` item in the [[ref:
-   parameters]], or if none is specified, the default hash algorithm defined in
-   this specification. Its output is the hash of its input.
-3. `base32_lower` is an implementation of the [[ref: base32_lower]] function.
-   Its output is the lower case of the Base32 encoded string of its input.
+2. `multihash` is an implementation of the [[ref: multihash]].
+   Acceptable multihash identifier are defined in [[spec:controller-document]].
+   Its output is a hash prefixed with a hash function identifier and the hash size.
+3. `base58btc` is an implementation of the [[ref: base58btc]] function.
+   Its output is the base58 encoded string of its input.
 
 The following is an example of a preliminary log entry that is processed to
 produce an entry hash. As this is a first entry in a DID Log, the input
@@ -720,16 +711,16 @@ Resolver **MUST** execute the following process:
 3. Set the first item of the entry to the `versionId` (first item) of the
    previous log entry. If this is the first entry in the log, set the value to
    the `1-<scid>` where `<scid>` if the SCID of the DID.
-4. Calculate the hash string as `base32_lower(hash(JCS(entry)))`, where:
+4. Calculate the hash string as `base58btc(multihash(JCS(entry)))`, where:
    1. `entry` is the data from the previous step.
    2. `JCS` is an implementation of the [[ref: JSON Canonicalization Scheme]]
       ([[spec:rfc8785]]). Its output is a canonicalized representation of its
       input.
-   3. `hash` is the hash algorithm enumerated in the `hash` item in the [[ref:
-      parameters]], or if none is specified, the default hash algorithm defined in
-      this specification. Its output is the hash of its input.
-   4. `base32_lower` as defined by the [[ref: base32_lower]] function. Its
-      output is the lower case of the Base32 encoded string of the input hash.
+   3. `multihash` is an implementation of the [[ref: multihash]].
+      Acceptable multihash identifier are defined in [[spec:controller-document]].
+      Its output is a hash prefixed with a hash function identifier and the hash size.
+   4. `base58btc` as defined by the [[ref: base58btc]] function. Its
+      output is the base58 encoded string of the input hash.
 5. Verify that the calculated value matches the extracted value from Step 1. If
    not, terminate the resolution process with an error.
 
@@ -832,14 +823,13 @@ authorization key.
 1. Generate a new key pair.
 2. Generate a [[ref: multikeys]] representation of the public key of the new key
    pair.
-3. Calculate the hash string as `base32_lower(hash(multikey))`, where:
+3. Calculate the hash string as `base58btc(multihash(multikey))`, where:
    1. `multikey` is the [[ref: multikey]] representation of the public key.
-   2. ``hash` is the most recent hash algorithm enumerated in the `hash` item in
-      the [[ref: parameters]], or if none is specified, the default hash
-      algorithm defined in this specification. Its output is the hash of its
-      input.
-   3. `base32_lower` as defined by the [[ref: base32_lower]] function. Its
-      output is the lower case of the Base32 encoded string of the input hash.
+   2. `multihash` is an implementation of the [[ref: multihash]].
+      Acceptable multihash identifier are defined in [[spec:controller-document]].
+      Its output is a hash prefixed with a hash function identifier and the hash size.
+   3. `base58btc` as defined by the [[ref: base58btc]] function. Its
+      output is the base58 encoded string of the input hash.
 4. Insert the calculated hash into the `nextKeyHashes` array being built up within
    the [[ref: parameters]] item.
 5. The generated key pair **SHOULD** be safely stored so that it can be used in

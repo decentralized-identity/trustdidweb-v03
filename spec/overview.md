@@ -1,6 +1,6 @@
 ## Overview
 
-The evolution of [[ref: Decentralized Identifiers]] ([[ref: DID]]) continues to
+The evolution of [[ref: Decentralized Identifiers]] (DID) continues to
 be a dynamic area of development in the quest for secure and private digital
 identity management. The `did:web` method, praised for its simplicity and ease
 of deployment, allows for DIDs to be associated with a domain's reputation or
@@ -48,45 +48,45 @@ The following is a `tl;dr` summary of how `did:tdw` works:
    from `did:web` to gain the added benefits of `did:tdw`.
 2. The `did.jsonl` is a list of JSON [[ref: DID log entries]], one per line,
   whitespace removed (per [[ref: JSON Lines]]), each of which contains the
-  information needed to derive a version of the DIDDoc from its preceding
+  information needed to derive a version of the [[ref: DIDDoc]] from its preceding
   version.
-3. Each log entry includes five JSON entries:
+3. Each [[ref: log entry]] includes five JSON entries:
     1. The `versionId` of the entry, a value that combines the version number
        (starting at `1` and incrementing by one per version), a literal dash
-       `-`, and a hash of the entry. The entry hash calculation links each entry
+       `-`, and a hash of the entry. The [[ref: entry hash]] calculation links each entry
        to its predecessor in a ledger-like chain.
-    2. The `versionTime` (as stated by the DID Controller) of the entry.
+    2. The `versionTime` (as stated by the [[ref: DID Controller]]) of the entry.
     3. A set of `parameters` that impact the processing of the current and
-      future log entries.
-        - Example parameters are the version of the `did:tdw` specification and
+      future [[ref: log entries]].
+        - Example [[ref: parameters]] are the version of the `did:tdw` specification and
         hash algorithm being used.
-    4. The new version of the DIDDoc as either a `value` (the full document) or
+    4. The new version of the [[ref: DIDDoc]] as either a `value` (the full document) or
       a `patch` derived using [[ref: JSON Patch]] to update the new version from
       the previous entry.
-    5. A [[ref: Data Integrity]] (DI) proof across the entry, signed by a DID
-      Controller authorized to update the DIDDoc, using the `versionId` as the
+    5. A [[ref: Data Integrity]] (DI) proof across the entry, signed by a [[ref: DID
+      Controller]] authorized to update the [[ref: DIDDoc]], using the `versionId` as the
       challenge.
-4. In generating the first version of the DIDDoc, the DID Controller calculates
-  the [[ref: SCID]] for the DID, including it as a `parameter` in the first log
-  entry, and inserting it where needed in the initial (and all subsequent)
-  DIDDocs. The SCID enables an optional portability capability, allowing a DID's
+4. In generating the first version of the [[ref: DIDDoc]], the [[ref: DID Controller]] calculates
+  the [[ref: SCID]] for the DID, including it as a `parameter` in the first [[ref: log
+  entry]], and inserting it where needed in the initial (and all subsequent)
+  DIDDocs. The [[ref: SCID]] enables an optional [[ref: portability]] capability, allowing a DID's
   web location to be moved to a new location while retaining the DID and version
   history of the DID.
-5. A DID Controller generates and publishes the new/updated log file by making it
+5. A [[ref: DID Controller]] generates and publishes the new/updated log file by making it
   available at the appropriate location on the web, based on the identifier of the
   DID.
 6. Given a `did:tdw` DID, a resolver converts the DID to an HTTPS URL,
   retrieves, and processes the log file `did.jsonl`, generating and verifying
-  each log entry as per the requirements outlined in this specification.
-    - In the process, the resolver collects all the DIDDoc versions and public
+  each [[ref: log entry]] as per the requirements outlined in this specification.
+    - In the process, the resolver collects all the [[ref: DIDDoc]] versions and public
       keys used by the DID currently, or in the past. This enables
       resolving both current and past versions of the DID.
 7. `did:tdw` DID URLs with paths and `/whois` are resolved to documents
-  published by the DID Controller that are by default in the web location relative to the
+  published by the [[ref: DID Controller]] that are by default in the web location relative to the
   `did.jsonl` file. See the [note below](#the-whois-use-case) about the
    powerful capability enabled by the `/whois` DID URL path.
-8. Optionally, a DID Controller can easily generate and publish a `did:web` DIDDoc
-  from the latest `did:tdw` DIDDoc in parallel with the `did:tdw` [[ref: DID Log]].
+8. Optionally, a [[ref: DID Controller]] can easily generate and publish a `did:web` DIDDoc
+  from the latest `did:tdw` [[ref: DIDDoc]] in parallel with the `did:tdw` [[ref: DID Log]].
 
   ::: warning
     A resolver settling for just the `did:web` version of the DID does not get the
@@ -118,7 +118,7 @@ We propose that the `/whois` path for a DID enable a comparable, decentralized,
 version of the `WHOIS` protocol for DIDs. Notably, when `<did>/whois` is
 resolved (using a standard DID `service` that follows the [[ref: Linked-VP]]
 specification), a [[ref: Verifiable Presentation]] (VP) may be returned (if
-published by the DID Controller) containing [[ref: Verifiable Credentials]] with
+published by the [[ref: DID Controller]]) containing [[ref: Verifiable Credentials]] with
 the DID as the `credentialSubject`, and the VP signed by the DID. Given a DID,
 one can gather verifiable data about the [[ref: DID Controller]] by resolving
 `<did>/whois` and processing the returned VP. That's powerful -- an efficient,
@@ -126,7 +126,7 @@ highly decentralized, trust registry. For `did:tdw`, the approach is very simple
 -- transform the DID to its HTTPS equivalent, and execute a `GET <https>/whois`.
 Need to know who issued the VCs in the VP? Get the issuer DIDs from those VCs,
 and resolve `<issuer did>/whois` for each. This is comparable to walking a CA
-(Certificate Authority) hierarchy, but self-managed by the DID Controllers --
+(Certificate Authority) hierarchy, but self-managed by the [[ref: DID Controllers]] --
 and the issuers that attest to them.
 
 The following is a use case for the `/whois` capability. Consider an example of

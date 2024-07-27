@@ -67,7 +67,7 @@ DID, ensuring that all the versions are "chained" together in a microledger. The
 generated [[ref: entry hash]] is subsequently included in the `versionId` element of the [[ref: log entry]] and **MUST** be
 verified by a resolver.
 
-[[def: ISO8601, [[ref: ISO8601]] String]]
+[[def: ISO8601, ISO8601 String]]
 
 ~ A date/time expressed using the [ISO8601
 Standard](https://en.wikipedia.org/wiki/ISO_8601).
@@ -79,7 +79,7 @@ structure such that is suitable for verifiable hashing or signing.
 
 [[def: JSON Lines]]
 
-~ A file of [[ref: JSON Lines]], as described on the site
+~ A file of JSON Lines, as described on the site
 [https://jsonlines.org/](https://jsonlines.org/). In short, `JSONL` is lines of JSON with
 whitespace removed and separated by a newline that is convenient for handling
 streaming JSON data or log files.

@@ -9,23 +9,23 @@ limitations. `did:tdw` features include:
 - The same DID-to-HTTPS transformation as `did:web`.
 - Supports the same [High Assurance DID-to-DNS] mechanism.
 - The ability to resolve the full history of the DID using a verifiable chain of
-  updates to the DIDDoc from genesis to deactivation.
+  updates to the [[ref: DIDDoc]] from genesis to deactivation.
 - A [[def: self-certifying identifier]] (SCID) for the DID that is globally
-  unique, embedded in the DID, and derived from the initial DIDDoc. The SCID
+  unique, embedded in the DID, and derived from the initial [[ref: DIDDoc]]. The SCID
   enables [[ref: DID portability]], such as moving the DID's web location (and
   so changing the DID string itself) while retaining a connection to the
   predecessor DID(s) and the DID's verifiable history.
-- DIDDoc updates contain a proof signed by the controller(s) *authorized* to
+- [[ref: DIDDoc]] updates contain a proof signed by the controller(s) *authorized* to
   update the DID.
 - An optional mechanism for publishing "pre-rotation" keys to prevent the loss of
   control of a DID in cases where an active private key is compromised.
 - An optional mechanism for having collaborating "witnesses"
-  that approve of updates to the DID by the DID Controller before publication.
+  that approve of updates to the DID by the [[ref: DID Controller]] before publication.
 - DID URL path handling that defaults (but can be overridden) to automatically
   resolving `<did>/path/to/file` by using a comparable DID-to-HTTPS translation
-  as for the DIDDoc.
+  as for the [[ref: DIDDoc]].
 - A DID URL path `<did>/whois` that defaults to automatically returning (if
-  published by the DID controller) a [[ref: Verifiable Presentation]] containing
+  published by the [[ref: DID controller]]) a [[ref: Verifiable Presentation]] containing
   [[ref: Verifiable Credentials]] with the DID as the `credentialSubject`,
   signed by the DID.
 

@@ -14,6 +14,7 @@ Trust DID Web - `did:tdw`
 ~ [Andrew Whitehead](https://github.com/andrewwhitehead)
 ~ [Brian Richter](https://github.com/brianorwhatever)
 ~ [Michel Sahli](https://github.com/bj-ms)
+~ [Martina Kolpondinos](https://github.com/martipos)
 
 **Participate:**
 ~ [GitHub repo](https://github.com/bcgov/trustdidweb)

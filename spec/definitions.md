@@ -30,14 +30,15 @@ by the controller of the DID.
 
 [[def: DID Log, DID Logs]]
 
-~ A log of JSON arrays each of which provides the information necessary to
-generate and validate a version of the [[ref: DIDDoc]] from the previous version.
+~ A DID Log is a list of [[ref: Entries]] one being added for each update of an entry item,
+including new versions of the [[ref: DIDDoc]] or changed information necessary to generate or validate the DID.
 
-[[def: DID [[ref: Log Entry]], [[ref: DID Log]] Entries]]
+[[def: DID Log Entry, DID Log Entries, Entries]]
 
-~ A DID Log Entry is a JSON array of items that define the authorized
+~ A DID Log Entry is a JSON array of five items which define the authorized
 transformation of a [[ref: DIDDoc]] from one version to the next. The initial entry
-establishes the DID and version 1 of the [[ref: DIDDoc]].
+establishes the DID and version 1 of the [[ref: DIDDoc]]. All entries are stored
+in the [[ref: DID Log]].
 
 [[def: DID Method, DID Methods]]
 
@@ -48,15 +49,21 @@ the DID Method Specification for `DID:tdw`.
 
 [[def: DID Portability, DID:tdw portability, `DID:tdw` portability]]
 
-`did:tdw` [[ref: portability]] encompasses the ability to change the DID string for the
+~ `did:tdw` [[ref: portability]] encompasses the ability to change the DID string for the
 DID while retaining the [[ref: SCID]] and the history of the DID. This is useful
 when forced to change (such as when an organization is acquired by another,
 resulting in a change of domain names) and when changing DID hosting service
 providers.
 
-[[def: DID:web]]
+[[def: did:web]]
 
-~ `DID:web`...
+~ `did:web` as described in the [W3C specification](https://w3c-ccg.github.io/did-method-web/)
+is a DID method that leverages the Domain Name System (DNS) to perform the DID operations.
+It is valued for its simplicity and ease of deployment compared to DID methods that are
+based on distributed ledgers or blockchain technology, but also comes with increased
+challenges related to trust and security. `did:web` provides a starting point for `did:tdw`,
+which complements `did:web` with specific features to address the limitations
+while still providing ease of deployment.
 
 [[def: Entry Hash, entryHash]]
 

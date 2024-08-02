@@ -3,7 +3,7 @@
 The emergence of [[ref: Decentralized Identifiers]] (DIDs) and with them the
 evolution of [[ref: DID Methods]] continues to be a dynamic area of
 development in the quest for trusted, secure and private digital identity
-management where the users are in controll over their own data.
+management where the users are in control of their own data.
 
 The `did:web` method, for example, leverages the Domain Name System (DNS) to
 perform the DID operations. This approach is praised for its simplicity and

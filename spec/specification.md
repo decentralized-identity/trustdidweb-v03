@@ -217,15 +217,14 @@ Creating a `did:tdw` DID is done by carrying out the following steps.
    
    All other absolute self-reference's to the DID in the [[ref: DIDDoc]] must use the form defined
    in step 1, with the identified placeholder for the [[ref: SCID]] (e.g., `did:tdw:{SCID}:example.com#key-1`,
-   `did:tdw:{SCID}:example.com:dids:issuer#key-1`, etc.). For the rest of the [[ref: DIDDoc]]
-   whatever content can be added as required.
+   `did:tdw:{SCID}:example.com:dids:issuer#key-1`, etc.). The [[ref: DIDDoc]] can contain any other content as deemed necessary by the [[ref: DID Controller]].
    
-   1. Note: The placeholders (the string `{SCID}`) **MUST** be in every place in the [[ref: DIDDoc]] where
+   1. Note: The placeholder (the string `{SCID}`) **MUST** be in every place in the [[ref: DIDDoc]] where
    the SCID is to be placed.
    
    
 4. **Generate a preliminary DID Log Entry** (input JSON array)
-   The [[ref: DID log entriy]] is an input JSON array that when completed contains the following items:
+   The [[ref: DID log entry]] is an input JSON array that when completed contains the following items:
    `[ versionId, versionTime, parameters, DIDDoc State, Data Integrity Proof ]`. When creating
    (registering) the DID the first entry starts with the follows items for processing:
    `[ "{SCID}", "<current time>", "parameters": [ <parameters>], { "value": "<DIDDoc with Placeholders>" } ]`

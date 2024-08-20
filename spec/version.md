@@ -3,6 +3,7 @@
 The following lists the substantive changes in each version of the specification.
 
 - Version 0.3
+  - Removes the `cryptosuite` parameter, moving it to implied by the `method` parameter.
   - Change base32 encoding with [[ref: base58btc]], as it offers a better expansion rate.
   - Remove the step to extract part of the [[ref: base58btc]] result during the generation of the [[ref: SCID]].
   - Use [[ref: multihash]] in the [[ref: SCID]] to differentiate the different hash function outputs.

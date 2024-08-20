@@ -21,4 +21,8 @@ Trust DID Web - `did:tdw`
 ~ [File a bug](https://github.com/bcgov/trustdidweb/issues)
 ~ [Commit history](https://github.com/bcgov/trustdidweb/commits/main)
 
+**Implementations:**
+~ [TypeScript](https://github.com/bcgov/trustdidweb-ts)
+~ [Python](https://github.com/bcgov/trustdidweb-py)
+
 ------------------------------------

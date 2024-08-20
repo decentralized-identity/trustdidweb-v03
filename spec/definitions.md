@@ -65,6 +65,12 @@ challenges related to trust and security. `did:web` provides a starting point fo
 which complements `did:web` with specific features to address the limitations
 while still providing ease of deployment.
 
+[[def: eddsa-jcs-2022]]
+
+~ A cryptosuite defined for [[ref: Data Integrity]] proofs. The specification
+for the cryptosuite can be found here:
+[eddsa-jcs-2022](https://www.w3.org/TR/vc-di-eddsa/#eddsa-jcs-2022)
+
 [[def: Entry Hash, entryHash]]
 
 ~ A `DID:tdw` entry hash is a hash generated using a formally defined process

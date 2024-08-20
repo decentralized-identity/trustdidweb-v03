@@ -92,11 +92,11 @@ resulting output hash replace the [[ref: SCID]] as the first item in the array
 #### Data Integrity Proof Generation and First Log Entry
 
 The last step in the creation of the first [[ref: log entry]] is the generation
-of the data integrity proof. One of the keys in the `updateKeys` [[ref:
+of the [[ref: data integrity]] proof. One of the keys in the `updateKeys` [[ref:
 parameter]] **MUST** be used (in the form of a `did:key`) to generate the
 signature in the proof, with the `versionId` value (item 1 of the [[ref: did log
-entry]]) used as the `challenge` item. The generated proof is added to the JSON
-Line as the sixth item, and the entire array becomes the first entry in the
+entry]]) used as the `challenge` item. The generated proof is added to the [[ref: JSON
+Line]] as the fifth item, and the entire array becomes the first entry in the
 [[ref: DID Log]].
 
 The following is the JSON prettified version of the entry log file that is published
@@ -242,7 +242,7 @@ The following is the JSON pretty-print [[ref: log entry]] for the second version
 
 #### Log File For Version 2
 
-The new version 2 `did.jsonl` file contains two entries, one for each version
+The new version 2 `did.jsonl` file contains two [[ref: entries]], one for each version
 of the [[ref: DIDDoc]].
 
 ```json
@@ -259,7 +259,7 @@ The same process is repeated for version 3 of the DID. In this case:
   - two services are added.
 - No changes are made to the authorized keys to update the DID. As a result, the `parameters` entry is empty (`{}`), and the [[ref: parameters]] in effect from previous versions of the DID remain in effect.
 
-Here is the pretty-printed log entry:
+Here is the pretty-printed [[ref: log entry]]:
 
 ```json
 [

@@ -59,10 +59,10 @@ providers.
 
 ~ `did:web` as described in the [W3C specification](https://w3c-ccg.github.io/did-method-web/)
 is a DID method that leverages the Domain Name System (DNS) to perform the DID operations.
-It is valued for its simplicity and ease of deployment compared to DID methods that are
+It is valued for its simplicity and ease of deployment compared to [[ref: DID methods]] that are
 based on distributed ledgers or blockchain technology, but also comes with increased
 challenges related to trust and security. `did:web` provides a starting point for `did:tdw`,
-which complements `did:web` with specific features to address the limitations
+which complements `did:web` with specific features to address the challenges
 while still providing ease of deployment.
 
 [[def: eddsa-jcs-2022]]

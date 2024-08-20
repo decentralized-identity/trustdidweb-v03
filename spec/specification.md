@@ -135,7 +135,7 @@ DID](#publishing-a-parallel-didweb-did) section of this specification.
 
 ### The DID Log File
 
-The [[ref: DID log]] file contains a list of entries, one for each version of the DID. A
+The [[ref: DID log]] file contains a list of [[ref: entries]], one for each version of the DID. A
 version of the DID is an update to the contents of the resolved [[ref: DIDDoc]] for the
 DID, and/or a change to the [[ref: parameters]] that control the generation and
 verification of the DID.
@@ -184,7 +184,7 @@ Creating a `did:tdw` DID is done by carrying out the following steps.
    a placeholder that will be replaced by the calculated [[ref: SCID]] later in the process (see step
    5). This first part of the DID string is followed by a fully qualified domain name
    (with an optional path) that is secured by a TLS/SSL certificate and
-   reflects the web location at which the DID Log (`did.jsonl`) will be published
+   reflects the web location at which the [[ref: DID Log]] (`did.jsonl`) will be published
 
    The DID **MUST** be a valid `did:tdw` DID as per the ABNF of a `did:tdw` DID defined
    in the [Method-Specific  Identifier](#method-specific-identifier) section of this specification.
@@ -220,7 +220,7 @@ Creating a `did:tdw` DID is done by carrying out the following steps.
    `did:tdw:{SCID}:example.com:dids:issuer#key-1`, etc.). The [[ref: DIDDoc]] can contain any other content as deemed necessary by the [[ref: DID Controller]].
 
    1. Note: The placeholder (the string `{SCID}`) **MUST** be in every place in the [[ref: DIDDoc]] where
-   the SCID is to be placed.
+   the [[ref: SCID]] is to be placed.
 
 4. **Generate a preliminary DID Log Entry** (input JSON array)
    The [[ref: DID log entry]] is an input JSON array that when completed contains the following items:
@@ -337,7 +337,7 @@ For each entry:
    the entry (if any). Continue processing using the now active set of
    [[ref: parameters]].
    - While all [[ref: parameters]] in the first [[ref: Log Entry]] take effect
-     immediately, some kinds of [[ref: parameters]] defined in later entries only take
+     immediately, some kinds of [[ref: parameters]] defined in later [[ref: entries]] only take
      effect *after* that entry has been published. For example, rotating the
      authorized keys to update a DID takes effect only *after* the entry in
      which they are defined has been published.
@@ -395,7 +395,7 @@ For each entry:
       6. All other `did:tdw` processing configuration settings as defined by in the
          `parameters` object.
 
-On completing the processing and successful verification of all entries in the
+On completing the processing and successful verification of all [[ref: entries]] in the
 [[ref: DID Log]], respond to the DID resolution request, including the
 application of DID query [[ref: parameters]] such as `?versionId=` and `?versionTime=` with
 the appropriate [[ref: DIDDoc]] version and content.
@@ -446,7 +446,7 @@ verifiable [[ref: DID Log Entry]] follows a similar process to the
    existing values remain in effect. If no changes to the [[ref: parameters]]
    are needed, an empty JSON object `{}` **MUST** be used.
    - While all [[ref: parameters]] in the first [[ref: Log Entry]] take effect
-     immediately, some types of [[ref: parameters]] defined in later entries only take
+     immediately, some types of [[ref: parameters]] defined in later [[ref: entries]] only take
      effect after the entry has been published. For example, rotating the keys
      authorized to update a DID or changing the [[ref: witnesses]] for a DID take effect
      only *after* the entry in which they are defined has been published.
@@ -515,7 +515,7 @@ of those processes is specified in the following sections.
 
 Entries in the `did:tdw` [[ref: DID Log]] file contain, in the 3rd item, a JSON
 object that defines the DID processing [[ref: parameters]] being used by the [[ref: DID
-Controller]] when publishing that and subsequent DID Entries. A DID Resolver
+Controller]] when publishing that and subsequent [[ref DID log entries]]. A DID Resolver
 will use the same [[ref: parameters]] when processing the [[ref: DID Log]] to resolve the
 DID. The [[ref: parameters]] object **MUST** include only the items defined in this
 specification.
@@ -549,9 +549,9 @@ items are defined below.
   defined, additional [[ref: parameters]] and enumerated values will be added to this. This
   allows a long lasting DID to evolve the settings being used by the DID over time,
   such as changing the hash algorithm used, or the [[ref: Data Integrity]] cryptosuite.
-  - This item **MUST** appear in the first [[ref: DID Log]] entry.
-  - This item **MAY** appear in later [[ref: DID Log]] entries to indicate that
-    the processing rules for that and later entries have been changed to a
+  - This item **MUST** appear in the first [[ref: DID log entry]].
+  - This item **MAY** appear in later [[ref: DID log entries]] to indicate that
+    the processing rules for that and later [[ref: entries]] have been changed to a
     different specification version.
   - Acceptable values for this specification are:
     - `did:tdw:0.3`: Requires that the rules defined in this specification be used
@@ -570,7 +570,7 @@ items are defined below.
   - This item **MUST** appear in the first [[ref: DID log entry]].
   - A key from the `updateKeys` item in the first [[ref: DID log entry]]
     **MUST** be used to authorize the initial [[ref: log entry]]. In all other
-    [[ref: DID log]] entries, an `updateKeys` item becomes active *after* the
+    [[ref: DID log entries]], an `updateKeys` item becomes active *after* the
     publication of its entry -- meaning its [[ref: log entry]] **MUST** be
     signed by a key the most recent `updateKeys` list from a **prior** [[ref:
     DID log]] entry.
@@ -610,7 +610,7 @@ items are defined below.
   [DID Witnesses](#did-witnesses) section of this specification.
   - A `witness` item in the first [[ref: DID log entry]] is used to define the
     [[ref: witnesses]] and necessary threshold for that initial [[ref: log entry]]. In all other
-    [[ref: DID log]] entries, a `witness` item becomes active **after** the publication
+    [[ref: DID log entries]], a `witness` item becomes active **after** the publication
     of its entry -- meaning its [[ref: log entry]] **MUST** be witnessed by the most recent
     `witnesses` from a **prior** [[ref: DID log]] entry.
 - `deactivated`: A JSON boolean that **SHOULD** be set to `true` when the DID is to
@@ -666,7 +666,7 @@ Where:
 4. `<hash algorithm>` is the hash algorithm used by the [[ref: DID Controller]].
    The hash algorithm **MUST** be one listed in the
    [parameters](#didtdw-did-method-parameters) defined by the version of the
-   `did:tdw` specification being used by the DID Controller.
+   `did:tdw` specification being used by the [[ref: DID Controller]].
 5. `base58btc` is an implementation of the [[ref: base58btc]] function.
    Its output is the base58 encoded string of its input.
 
@@ -678,11 +678,11 @@ To verify the [[ref: SCID]] of a `did:tdw` DID being resolved, the resolver
 1. Extract the first [[ref: DID log entry]] and use it for the rest of the steps
    in this process.
 2. Extract the `scid` item value from the [[ref: parameters]] in the [[ref: DID log entry]]. 
-3. Determine the hash algorithm used by the DID Controller from the [[ref: multihash]] `scid` value.
+3. Determine the hash algorithm used by the [[ref: DID Controller]] from the [[ref: multihash]] `scid` value.
    - The hash algorithm **MUST** be one listed in the
    [parameters](#didtdw-did-method-parameters) defined by the version of the
-   `did:tdw` specification being used by the DID Controller based on the
-   `method` parameters item.
+   `did:tdw` specification being used by the [[ref: DID Controller]] based on the
+   `method` [[ref: parameters]] item.
 4. Remove the [[ref: data integrity]] proof item from the first [[ref: DID log entry]].
 5. Replace the `versionId` item's value with the literal `"{SCID}"`.
 6. Treat the resulting [[ref: log entry]] as a string and do a text replacement of the `scid`
@@ -695,13 +695,13 @@ To verify the [[ref: SCID]] of a `did:tdw` DID being resolved, the resolver
 #### Entry Hash Generation and Verification
 
 The `entryHash` follows the version number and dash character `-` in the
-`versionId` item in each [[ref: DID log entry]]. Each `entryHash` is calculated
+`versionId` item in each DID log entry. Each `entryHash` is calculated
 across its [[ref: log entry]], excluding the [[ref: Data Integrity]] proof. The
 `versionId` used in the input to the hash is a predecessor value to the current
-[[ref: log entry]], ensuring that the entries are cryptographically "chained"
+[[ref: log entry]], ensuring that the [[ref: entries]] are cryptographically "chained"
 together in a microledger. For the first [[ref: log entry]], the predecessor
 `versionId` is the SCID (itself a hash), while for all other entries it is the
-`versionId` item from the previous [[ref: log entry]].
+`versionId` item from the previous log entry.
 
 ##### Generate Entry Hash
 
@@ -718,7 +718,7 @@ preliminary [[ref: log entry]] as the string `entry`, where:
 3. `<hash algorithm>` is the hash algorithm used by the [[ref: DID Controller]].
    The hash algorithm **MUST** be one listed in the
    [parameters](#didtdw-did-method-parameters) defined by the version of the
-   `did:tdw` specification being used by the DID Controller.
+   `did:tdw` specification being used by the [[ref: DID Controller]].
 4. `base58btc` is an implementation of the [[ref: base58btc]] function.
    Its output is the base58 encoded string of its input.
 
@@ -740,11 +740,11 @@ Resolver **MUST** execute the following process:
 1. Extract the `versionId` (first item) in the [[ref: DID log entry]], and
    remove from it the version number and dash prefix, leaving the log entry
    `entryHash`.
-2. Determine the hash algorithm used by the DID Controller from the [[ref: multihash]] `entryHash` value.
+2. Determine the hash algorithm used by the [[ref: DID Controller]] from the [[ref: multihash]] `entryHash` value.
    - The hash algorithm **MUST** be one listed in the
    [parameters](#didtdw-did-method-parameters) defined by the version of the
-   `did:tdw` specification being used by the DID Controller based on the
-   `method` parameters item set in the current or most recent prior [[ref: log entry]].
+   `did:tdw` specification being used by the [[ref: DID Controller]] based on the
+   `method` [[ref: parameters]] item set in the current or most recent prior [[ref: log entry]].
 3. Remove the [[ref: Data Integrity]] proof (5th item) from the [[ref: log entry]].
 4. Set the first item of the entry to the `versionId` (first item) of the
    previous [[ref: log entry]]. If this is the first entry in the log, set the value to
@@ -773,7 +773,7 @@ the [[ref: log entries]]. Any of the authorized verification keys may be referen
 in the [[ref: Data Integrity]] proof.
 
 For the first [[ref: log entry]] the **active** `updateKeys` list is the one in
-that first [[ref: log entry]]. For all subsequent entries, the **active** list
+that first [[ref: log entry]]. For all subsequent [[ref: entries]], the **active** list
 is the most recent `updateKeys` **before** the [[ref: log entry]] to be verified. Thus,
 the general case is that each [[ref: log entry]] is signed by the keys from the
 **previous** [[ref: log entry]]. Once a [[ref: log entry]] containing an `updateKeys` list is
@@ -797,7 +797,7 @@ JSON Patch]] as its `DIDDoc State` (fourth) item. A [[ref: DID Controller]] **MA
 `DIDDoc State` item of a [[ref: DID log entry]] to be the JSON item `value`, with its
 value the complete [[ref: DIDDoc]]. Typically (but not required), a [[ref: DID Controller]]
 will use `value` for the first [[ref: DID log entry]] and `patch` for all
-subsequent entries.
+subsequent [[ref: entries]].
 
 To create the value for a `patch` item for a [[ref: DID log entry]], the [[ref:
 DID Controller]] **MUST**:
@@ -815,7 +815,7 @@ resolver **MUST**:
 
 1. Have the fully resolved previous version of the [[ref: DIDDoc]].
 2. Extract the value of the `DIDDoc State` (fourth) item of the [[ref: DID log entry]] `patch` value.
-   1. If the `DIDDoc State` item is `value`, its value is the DIDDoc, and the
+   1. If the `DIDDoc State` item is `value`, its value is the [[ref: DIDDoc]], and the
       next step is not needed.
 3. Execute an implementation of [[ref: JSON Patch]] that takes the previous
    [[ref: DIDDoc]] and the extracted `patch` value as inputs, and outputs the
@@ -832,7 +832,7 @@ DIDDoc to one that resolves to a different HTTPS URL if the following conditions
 - The [[ref: DID Log]] of the renamed DID **MUST** contain all of the [[ref: log
   entries]] from the creation of the DID.
 - The [[ref: log entry]] in which the DID is renamed **MUST** be a valid DID entry
-  building on the prior [[ref: DID Log]] entries, per this specification.
+  building on the prior [[ref: DID log entries]], per this specification.
 - The [[ref: parameter]] `portable` **MUST** be set to `true`, as defined in the
   [DID Method Parameters](#didtdw-did-method-parameters) section.
 - The [[ref: SCID]] **MUST** be the same in the original and renamed DID.
@@ -852,7 +852,7 @@ in the Implementer's Guide for additional guidance.
 
 As described in the [parameters](#didtdw-did-method-parameters)
 section of this specification, a [[ref: DID Controller]] **MAY** define that
-`prerotation` is active for the DID (value `true`). When [[ref: pre-rotation is active,
+`prerotation` is active for the DID (value `true`). When [[ref: pre-rotation]] is active,
 all verification [[ref: multikeys]] in the `updateKeys` [[ref: parameters]] item in other
 than the initial version of the [[ref: DIDDoc]] **MUST** have their hash in the currently
 active nextKeyHashes` arrays from a previous [[ref: DID log entry]]. If
@@ -873,7 +873,7 @@ authorization key.
    3. `<hash algorithm>` is the hash algorithm used by the [[ref: DID Controller]].
       The hash algorithm **MUST** be one listed in the
       [parameters](#didtdw-did-method-parameters) defined by the version of the
-      `did:tdw` specification being used by the DID Controller.
+      `did:tdw` specification being used by the [[ref: DID Controller]].
    4. `base58btc` is an implementation of the [[ref: base58btc]] function.
       Its output is the base58 encoded string of its input.
 4. Insert the calculated hash into the `nextKeyHashes` array being built up within
@@ -896,7 +896,7 @@ When processing other than the first [[ref: DID log entry]] where the
    mulithash]] [[ref: multikey]].
 2. The hash algorithm **MUST** be one listed in the
    [parameters](#didtdw-did-method-parameters) defined by the version of the
-   `did:tdw` specification being used by the DID Controller.
+   `did:tdw` specification being used by the [[ref: DID Controller]].
 3. The resultant hash **MUST** in the most recently set `nextKeyHashes` prior to
    the [[ref: log entry]] being processed. If not, terminate the resolution
    process with an error.
@@ -956,7 +956,7 @@ An overview of the [[ref: witness]] mechanism is as follows:
   Log]].
   - In publishing a new version of the [[ref: DID Log]], the [[ref: DID
     Controller]] **SHOULD** remove the [[ref: witness]] [[ref: Data Integrity]] proofs from
-    earlier entries to reduce the size of the log. Only the set of approval
+    earlier [[ref: entries]] to reduce the size of the log. Only the set of approval
     proofs on the last [[ref: log entry]] are needed because of the chaining of the
     proofs via the use of the `entryHash` challenge.
   - Removing the prior entry [[ref: witness]] proofs does not affect the verifiability of
@@ -1118,7 +1118,7 @@ that **MUST** have the DID as the `credentialSubject`.
 
 A [[ref: DID Controller]] **MAY** explicitly add to their [[ref: DIDDoc]] a `did:tdw`
 service with the `"id": "#whois"`. Such an entry **MUST** override the implicit
-`service` above. If the [[ref: DID Controller wants to publish the `whois`
+`service` above. If the [[ref: DID Controller]] wants to publish the `whois`
 [[ref: verifiable presentation]] in a different format than the [[ref: W3C
 VCDM]] format, they **MUST** explicitly add to their [[ref: DIDDoc]] a service with the
 `"id": "#whois"` to specify the name and implied format of the [[ref: verifiable

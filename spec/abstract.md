@@ -10,7 +10,7 @@ limitations. `did:tdw` features include:
 - Supports the same [High Assurance DIDs with DNS] mechanism.
 - The ability to resolve the full history of the DID using a verifiable chain of
   updates to the [[ref: DIDDoc]] from genesis to deactivation.
-- A [[ref: self-certifying identifier]] (SCID) for the DID. The SCID, globally unique and
+- A [[ref: self-certifying identifier]] (SCID) for the DID. The [[ref: SCID]], globally unique and
   embedded in the DID, is derived from the initial [[ref: DID log entry]]. It ensures the integrity
   of the DID's history mitigating the risk of attackers creating a new object with
   the same identifier.

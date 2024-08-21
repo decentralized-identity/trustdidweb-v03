@@ -160,7 +160,7 @@ This is useful from a business perspective, but unexpected from a
 The [High Assurance DIDs with DNS] mechanism that can be used with `did:web`
 applies equally well with `did:tdw`. While `did:tdw` DIDs are not (yet)
 explicitly called out in the [High Assurance DIDs with DNS] specification, since
-`did:tdw` uses the same DID-to-HTTP transformation, an DID Controller publishing
+`did:tdw` uses the same DID-to-HTTP transformation, a [[ref: DID Controller]] publishing
 a `did:tdw` could use the same mechanism and publish the expected DNS Domain
 records, and add the required verification method and [[ref: Data Integrity]]
 proof to their [[ref: DIDDoc]] as defined in the [High Assurance DIDs with DNS]
@@ -189,46 +189,35 @@ the DID Method. For example, the key in the DNS record could be a required
 `did:tdw` witness, with its Data Integrity proof being a part of the
 [[ref: DID log entry]] rather than in the [[ref: DIDDoc]] itself.
 
-### Witnesses and Watchers
+### Witnesses
 
-The terms `witnesses` and `watchers` are often used in the decentralized trust
-space to refer to participants in an ecosystem that oversee the evolution of an
-identifier. In both cases, the goal is the same -- to collect and verify data
-about the identifier and share it with others that trust the collector so they
-don't need to do that work themselves. The participants are intended to identify
-both malicious attackers of the identifier, and malicious use of the identifier
-by the [[ref: DID Controller]].
+The term "witnesses" is often used in the decentralized trust space to refer to
+participants in an ecosystem that oversee the evolution of an identifier
+according to some ecosystem-specific governance framework. The goal is for the
+[[ref: witness]] to collect, verify and approve data about the identifier and
+share it with others that trust the [[ref: witness]] so they don't need to do
+that work themselves. The extra participants are intended to identify both
+malicious attackers of the identifier, and malicious use of the identifier by
+the [[ref: DID Controller]].
 
-#### Watchers
-
-Watchers are external parties that use various means to monitor the evolution of
-a decentralized identifier. For example, a watcher could keep a list of
-`did:tdw` DIDs and periodically retrieve and verify the DIDs, and serve the
-DIDDoc to the watchers clients -- saving them the trouble of verifying the DID.
-Since watchers are external participants and do not directly interact with the
-DID Controller, their implementation is itself outside of the specification for
-`did:tdw`. They have no special access to the DID Controller, nor do they
-receive any information not available to any other resolver.
-
-#### Witnesses
-
-Witnesses on the other hand play an explicit function in `did:tdw`. When used by
-a [[ref: DID Controller]], [[ref: witnesses]] (themselves identified by DIDs) are sent pending
-[[ref: DID log entries]] prepared by the [[ref: DID Controller]]. The [[ref: witnesses]] verify
-the [[ref: log entry]] using their copy of the "current state" of the DID, and
-then "approve" the update, according to the governance they use to define what
-"approval" means. For example, a [[ref: witness]] might interact with another party
-(perhaps even a person) to confirm that the [[ref: DID Controller]] created the [[ref:
-log entry]]. Once the [[ref: witness]] has both verified and approved the change, they
-express that approval by creating a [[ref: Data Integrity]] proof that is
-chained to the [[ref: data integrity]] proof created by the [[ref: DID Controller]], and
-send the proof back to the [[ref: DID Controller]]. Once the [[ref: DID Controller]] has a
-threshold of [[ref: witness]] proofs, the [[ref: DID Controller]] chains the [[ref: witnesses]] [[ref: data
-integrity]] proofs to their own [[ref: data integrity]] proof in the [[ref: log
-entry]], adds the [[ref: log entry]] to the [[ref: DID log]] and publishes the updated
-DIDDoc. A [[ref: DID Controller]] relying on [[ref: witnesses]] cannot independently
-publish an update to their DID -- they must get and publish the [[ref: witness]] approval
-proofs.
+Witnesses play an explicit function in `did:tdw`. When used by a [[ref: DID
+Controller]], [[ref: witnesses]] (themselves identified by DIDs) are sent
+pending [[ref: DID log entries]] prepared by the [[ref: DID Controller]]. The
+[[ref: witnesses]] verify the [[ref: log entry]] using their copy of the
+"current state" of the DID, and then "approve" the update, according to the
+governance they use to define what "approval" means. For example, a [[ref:
+witness]] might interact with another party (perhaps even a person) to confirm
+that the [[ref: DID Controller]] created the [[ref: log entry]]. Once the [[ref:
+witness]] has both verified and approved the change, they express that approval
+by creating a [[ref: Data Integrity]] proof that is chained to the [[ref: data
+integrity]] proof created by the [[ref: DID Controller]], and send the proof
+back to the [[ref: DID Controller]]. Once the [[ref: DID Controller]] has a
+threshold of [[ref: witness]] proofs, the [[ref: DID Controller]] adds the
+[[ref: witnesses]] [[ref: data integrity]] proofs to their own [[ref: data
+integrity]] proof in the [[ref: log entry]], adds the [[ref: log entry]] to the
+[[ref: DID log]] and publishes the updated DIDDoc. A [[ref: DID Controller]]
+relying on [[ref: witnesses]] cannot independently publish an update to their
+DID -- they must get and publish the [[ref: witness]] approval proofs.
 
 The application of [[ref: witnesses]] is very much dependent on the governance of the
 ecosystem. Such governance is outside the scope of the `did:tdw` specification,

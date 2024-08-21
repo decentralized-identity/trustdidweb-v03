@@ -33,7 +33,7 @@ by the controller of the DID.
 ~ A DID Log is a list of [[ref: Entries]] one being added for each update of an entry item,
 including new versions of the [[ref: DIDDoc]] or changed information necessary to generate or validate the DID.
 
-[[def: DID Log Entry, DID Log Entries, Entries]]
+[[def: DID Log Entry, DID Log Entries, Entries, Log Entries]]
 
 ~ A DID Log Entry is a JSON array of five items which define the authorized
 transformation of a [[ref: DIDDoc]] from one version to the next. The initial entry

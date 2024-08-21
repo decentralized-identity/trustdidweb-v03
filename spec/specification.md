@@ -328,7 +328,7 @@ are each a JSON array with five items:
    3. `parameters`
    4. `DIDDoc State` -- either the full `value` or a [[ref: JSON Patch]] `patch`
       to be applied to the prior version of the [[ref: DIDDoc]].
-   5. A [[ref: Data Integrity]] proof (or proof set) for the version of the [[ref: DIDDoc]] corresponding to that
+   5. A [[ref: Data Integrity]] proof array for the version of the [[ref: DIDDoc]] corresponding to that
       entry.
 
 For each entry:
@@ -478,7 +478,7 @@ verifiable [[ref: DID Log Entry]] follows a similar process to the
    DID, collect the required approvals from the DID's [[ref: witnesses]], adding
    their proofs to the [[ref: data integrity]] proof. See the [DID
    Witnesses](#did-witnesses) section of this specification.
-8. The proof (or proof set) **MUST** be added as the fifth and last JSON item in the [[ref: log entry]].
+8. The proof array **MUST** be added as the fifth and last JSON item in the [[ref: log entry]].
 9. The entry **MUST** be made a [[ref JSON Line]] by removing extra whitespace, adding a `\n`
    to the entry. 
 10. The new [[ref: log entry]] **MUST** be appended to the existing contents of
@@ -502,7 +502,7 @@ the DID, such as including an empty `updateKeys` list (`"updateKeys": []`) in
 the [[ref: parameters]], preventing further versions of the DID.
 
 A resolver encountering in the [[ref: DID log entry]] [[ref: parameters]] the
-item `"deactivated": true` **SHOULD** return in the [[ref: DIDDoc]] Metadata the JSON item
+item `"deactivated": true` **MUST** return in the [[ref: DIDDoc]] Metadata the JSON item
 `"deactivated": true`, as per the [[spec:DID-RESOLUTION]] specification.
 
 ### DID Method Processes
@@ -515,7 +515,7 @@ of those processes is specified in the following sections.
 
 Entries in the `did:tdw` [[ref: DID Log]] file contain, in the 3rd item, a JSON
 object that defines the DID processing [[ref: parameters]] being used by the [[ref: DID
-Controller]] when publishing that and subsequent [[ref DID log entries]]. A DID Resolver
+Controller]] when publishing that and subsequent [[ref: DID log entries]]. A DID Resolver
 will use the same [[ref: parameters]] when processing the [[ref: DID Log]] to resolve the
 DID. The [[ref: parameters]] object **MUST** include only the items defined in this
 specification.
@@ -1016,9 +1016,8 @@ the [[ref: DID Controller]] with a `selfWeight` of 2, and a `threshold` of 4, th
 threshold will be met by two [[ref: witnesses]] approving the change, plus the [[ref: DID
 Controller]].
 
-See the Implementer's Guide section on [Witnesses and
-Watchers](#witnesses-and-watchers) for more discussion on the witness
-capability and using it in production scenarios.
+See the Implementer's Guide section on [Witnesses](#witnesses) for more
+discussion on the witness capability and using it in production scenarios.
 
 #### Publishing a Parallel `did:web` DID
 

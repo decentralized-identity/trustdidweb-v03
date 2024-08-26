@@ -33,7 +33,7 @@ by the controller of the DID.
 ~ A DID Log is a list of [[ref: Entries]] one being added for each update of an entry item,
 including new versions of the [[ref: DIDDoc]] or changed information necessary to generate or validate the DID.
 
-[[def: DID Log Entry, DID Log Entries, Entries]]
+[[def: DID Log Entry, DID Log Entries, Entries, Log Entries]]
 
 ~ A DID Log Entry is a JSON array of five items which define the authorized
 transformation of a [[ref: DIDDoc]] from one version to the next. The initial entry
@@ -59,11 +59,19 @@ providers.
 
 ~ `did:web` as described in the [W3C specification](https://w3c-ccg.github.io/did-method-web/)
 is a DID method that leverages the Domain Name System (DNS) to perform the DID operations.
-It is valued for its simplicity and ease of deployment compared to DID methods that are
+It is valued for its simplicity and ease of deployment compared to [[ref: DID methods]] that are
 based on distributed ledgers or blockchain technology, but also comes with increased
 challenges related to trust and security. `did:web` provides a starting point for `did:tdw`,
-which complements `did:web` with specific features to address the limitations
+which complements `did:web` with specific features to address the challenges
 while still providing ease of deployment.
+
+[[def: eddsa-jcs-2022]]
+
+~ A cryptosuite defined for producing a [[ref: Data Integrity]] proof for an
+unsecured input data document and verifying the [[ref: Data Integrity]] proof of
+the secured document. More information on further operations and applications of
+the cryptosuite can be found in the specification, here:
+[eddsa-jcs-2022](https://www.w3.org/TR/vc-di-eddsa/#eddsa-jcs-2022)
 
 [[def: Entry Hash, entryHash]]
 

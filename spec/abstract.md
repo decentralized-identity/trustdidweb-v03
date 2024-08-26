@@ -7,10 +7,10 @@ limitations. `did:tdw` features include:
 - Ongoing publishing of all DID Document ([[ref: DIDDoc]]) versions for a DID instead of,
   or alongside a current `did:web` DID/DIDDoc.
 - The same DID-to-HTTPS transformation as `did:web`.
-- Supports the same [High Assurance DID-to-DNS] mechanism.
+- Supports the same [High Assurance DIDs with DNS] mechanism.
 - The ability to resolve the full history of the DID using a verifiable chain of
   updates to the [[ref: DIDDoc]] from genesis to deactivation.
-- A [[ref: self-certifying identifier]] (SCID) for the DID. The SCID, globally unique and
+- A [[ref: self-certifying identifier]] (SCID) for the DID. The [[ref: SCID]], globally unique and
   embedded in the DID, is derived from the initial [[ref: DID log entry]]. It ensures the integrity
   of the DID's history mitigating the risk of attackers creating a new object with
   the same identifier.
@@ -31,7 +31,7 @@ limitations. `did:tdw` features include:
   [[ref: Verifiable Credentials]] with the DID as the `credentialSubject`,
   signed by the DID.
 
-[High Assurance DID-to-DNS]: https://datatracker.ietf.org/doc/draft-carter-high-assurance-dids-with-dns/
+[High Assurance DIDs with DNS]: https://datatracker.ietf.org/doc/draft-carter-high-assurance-dids-with-dns/
 
 Combined, the additional features enable greater trust and security without
 compromising the simplicity of `did:web`.

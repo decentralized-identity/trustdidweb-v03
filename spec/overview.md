@@ -115,12 +115,12 @@ proof of concept implementations. The specification/implementation interplay
 helped immensely in defining a practical, intuitive, straightforward, DID
 method. The existing proof of concept implementations of the `did:tdw` DID
 Method are listed in the [Implementors Guide](#Implementations). The current
-Typescript and Python implementations are each less than 1500 lines of code.
+Typescript and Python implementations are each around 1500 lines of code.
 
 ### The `/whois` Use Case
 
 This DID Method introduces what we hope will be a widely embraced convention for
-all DID Methods -- the `/whois` path. This feature harkens back to the `WHOIS`
+all [[ref: DID Methods]] -- the `/whois` path. This feature harkens back to the `WHOIS`
 protocol that was created in the 1970s to provide a directory about people and
 entities in the early days of ARPANET. In the 80's, `whois` evolved into
 [[spec-inform:rfc920]] that has expanded into the [global

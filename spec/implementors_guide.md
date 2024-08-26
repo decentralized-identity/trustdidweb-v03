@@ -11,7 +11,11 @@ Both currently (as of 2024.04.11) support all of the features of the core `did:t
 
 ### Using Pre-Rotation Keys
 
-In an effort to prevent the loss of control over a decentralized identifier (DID) due to a compromised private key, [[ref: pre-rotation]] keys are introduced. These commitments, made by the [[ref: DID Controller]], are declarations about the keys that will be published in future versions of the DID document, without revealing the keys themselves.
+In an effort to prevent the loss of control over a decentralized identifier
+(DID) due to a compromised private key, [[ref: pre-rotation]] keys are
+introduced. These commitments, made by the [[ref: DID Controller]], are
+declarations about the keys that will be published in future versions of the DID
+document, without revealing the keys themselves.
 
 The primary goal of [[ref: pre-rotation]] keys is to ensure that even if an attacker
 gains access to the current active key, they will not be able to take control of
@@ -39,7 +43,7 @@ private keys both DID control keys would be lost. Thus, we expect the feature to
   example, an entity might have the "active" DID/key hosted by one Cloud
   Provider, and the "next key" by another, on the theory that an attacker might
   get into one environment or another but not both.
-- When a key rotation is to be done, two entries are put in the log, using the following steps by the [[ref: DID Controller]]:
+- When a key rotation is to be done, two [[ref: entries]] are put in the log, using the following steps by the [[ref: DID Controller]]:
   1. Get the full key reference entry from the isolated service for the [[ref: pre-rotation]] "nextKey".
   2. Locally generate a [[ref: pre-rotation]] key hash for a new key that will soon become the "active" key.
   3. Add a [[ref: DID log]] entry that includes the items from the previous two steps, and signs the proof using an authorized key (that presumably it controls, though not required).
@@ -52,7 +56,7 @@ private keys both DID control keys would be lost. Thus, we expect the feature to
      the [[ref: Data Integrity]] proof over the entry using the key the isolated
      service controls.
      1. This step is not needed if the active service has a key authorized to sign the [[ref: DIDDoc]] update.
-  8. Publish the new [[ref: DID log]] containing the two new entries.
+  8. Publish the new [[ref: DID log]] containing the two new [[ref: entries]].
 
 #### Post Quantum Attacks
 
@@ -155,6 +159,89 @@ is going to return a [[ref: DIDDoc]] with the top-level `id` equal to the `<old-
 This is useful from a business perspective, but unexpected from a
 [[spec:DID-CORE]] perspective.
 
-### Witnesses and Watchers
+### Using High Assurance DIDs with DNS
 
-To be added.
+The [High Assurance DIDs with DNS] mechanism that can be used with `did:web`
+applies equally well with `did:tdw`.  A [[ref: DID Controller]] publishing a
+`did:tdw` could use the mechanisms defined in the [High Assurance DIDs with DNS]
+specification despite `did:tdw` DIDs not (yet) being explicitly called out in
+the [High Assurance DIDs with DNS] specification. In particular, as `did:tdw`
+uses the same DID-to-HTTP transformation, publishing the expected DNS Domain
+records, and adding the required verification method and [[ref: Data Integrity]]
+proof to their [[ref: DIDDoc]] is done as defined in the [High Assurance DIDs
+with DNS] specification. Likewise, a resolver can include code to check to see if
+the [[ref: DID Controller]] published the [High Assurance DIDs with DNS]
+specification DNS records and use those to further verify the DID.
+
+Alternatively, since `did:tdw` is not mentioned in the [High Assurance DIDs with
+DNS] specification, a `did:tdw` [[ref: DID Controller]] could use the "not `did:web`"
+technique described in that specification and include a `dnsValidationDomain`
+entry in the [[ref: DIDDoc]] to explicitly denote where to find the DNS records to use in
+binding the DID to the DNS domain. This technique could also be used with
+`did:tdw` (and `did:web` for that matter) if the DID is published on a platform
+(such as GitHub) and the controller wants to bind it to its DNS domain.
+
+#### Future Possibilities
+
+In the future, as `did:tdw` becomes more accepted, we would like to see
+`did:tdw` explicitly added to the [High Assurance DIDs with DNS] specification
+beside `did:web`.
+
+Since `did:tdw` and the [High Assurance DIDs with DNS] specification both have
+the goal of adding methods for additional verifications of the DID, the support
+for `did:tdw` in the [High Assurance DIDs with DNS] could be more specific to
+the DID Method. For example, the key in the DNS record could be a required
+`did:tdw` witness, with its [[ref: Data Integrity]] proof being a part of the
+[[ref: DID log entry]] rather than in the [[ref: DIDDoc]] itself.
+
+### Witnesses
+
+The term "witness" is often used in the decentralized trust space to refer to
+participants in an ecosystem that oversee the evolution of an identifier
+according to some ecosystem-specific governance framework. The goal is for a
+[[ref: witness]] to collect, verify and approve data about the identifier and
+share it with others that trust the [[ref: witness]] so they don't need to do
+that work themselves. The extra participants are intended to identify both
+malicious attackers of the identifier, and malicious use of the identifier by
+the [[ref: DID Controller]].
+
+Witnesses play an explicit function in `did:tdw`. When used by a [[ref: DID
+Controller]], [[ref: witnesses]] (themselves identified by DIDs) are sent
+pending [[ref: DID log entries]] prepared by the [[ref: DID Controller]]. The
+[[ref: witnesses]] verify the [[ref: log entry]] using their copy of the
+"current state" of the DID, and then "approve" the update, according to the
+governance they use to define what "approval" means. For example, a [[ref:
+witness]] might interact with another party (perhaps even a person) to confirm
+that the [[ref: DID Controller]] created the [[ref: log entry]]. Once the [[ref:
+witness]] has both verified and approved the change, they express that approval
+by creating a [[ref: Data Integrity]] proof that is chained to the [[ref: data
+integrity]] proof created by the [[ref: DID Controller]], and send the proof
+back to the [[ref: DID Controller]]. Once the number of [[ref: data integrity]]
+proofs received by the [[ref: DID Controller]] from the [[ref: witnesses]] has
+exceeded a threshold, the [[ref: DID Controller]] adds those proofs to their own
+[[ref: data integrity]] proof in the [[ref: log entry]]. Next, the [[ref: DID
+Controller]] adds the [[ref: log entry]] to the [[ref: DID log]] and publishes
+the updated DIDDoc. A [[ref: DID Controller]] relying on [[ref: witnesses]]
+cannot independently publish an update to their DID -- they must get and publish
+the [[ref: witness]] approval proofs.
+
+The application of [[ref: witnesses]] is very much dependent on the governance
+of the ecosystem. Such governance is outside the scope of the `did:tdw`
+specification, and up to those deploying `did:tdw` DIDs. Hence, a [[ref: DID
+Controller]] that controls a series of DIDs and uses those DIDs as [[ref:
+witnesses]] adds no additional trust or security to a DID if no properly defined
+governance is in place. In particular, in order for [[ref: witnesses]] to add
+security and trust to a DID requires the members of an ecosystem to agree to the
+defined governance. A [[ref: witness]] could be an "endorser" of a set of DIDs
+that are part of an ecosystem, with the act of witnessing the updates conveying
+through their approval that the DIDs are a legitimate participant in the
+ecosystem. [[ref: Witnesses]] can also be used as a form of "two-factor
+authentication" of a change, such as having a public key published as a DNS
+record used as a [[ref: witness]] for the DID. Such an addition means that an
+attacker would need to compromise both the web-publishing infrastructure of the
+DID Controller (where they publish the DID's `did.jsonl` file) as well as its
+DNS entry.
+
+`did:tdw` witnesses have been specified to be simple to implement and use. Their
+power and effectiveness will come in how they are deployed within specific,
+governed ecosystems.

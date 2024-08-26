@@ -67,8 +67,10 @@ while still providing ease of deployment.
 
 [[def: eddsa-jcs-2022]]
 
-~ A cryptosuite defined for [[ref: Data Integrity]] proofs. The specification
-for the cryptosuite can be found here:
+~ A cryptosuite defined for producing a [[ref: Data Integrity]] proof for an
+unsecured input data document and verifying the [[ref: Data Integrity]] proof of
+the secured document. More information on further operations and applications of
+the cryptosuite can be found in the specification, here:
 [eddsa-jcs-2022](https://www.w3.org/TR/vc-di-eddsa/#eddsa-jcs-2022)
 
 [[def: Entry Hash, entryHash]]

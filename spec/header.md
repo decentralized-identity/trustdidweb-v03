@@ -6,7 +6,7 @@ Trust DID Web - `did:tdw`
 **Specification Version:** 0.3 (see [Changelog](#did-tdw-version-changelog))
 
 **Latest Draft:**
-  [https://github.com/bcgov/trustdidweb](https://github.com/bcgov/trustdidweb)
+  [https://github.com/decentralized-identity/trustdidweb](https://github.com/decentralized-identity/trustdidweb)
 
 **Editors:**
 ~ [Stephen Curran](https://github.com/swcurran)
@@ -17,9 +17,9 @@ Trust DID Web - `did:tdw`
 ~ [Martina Kolpondinos](https://github.com/martipos)
 
 **Participate:**
-~ [GitHub repo](https://github.com/bcgov/trustdidweb)
-~ [File a bug](https://github.com/bcgov/trustdidweb/issues)
-~ [Commit history](https://github.com/bcgov/trustdidweb/commits/main)
+~ [GitHub repo](https://github.com/decentralized-identity/trustdidweb)
+~ [File a bug](https://github.com/decentralized-identity/trustdidweb/issues)
+~ [Commit history](https://github.com/decentralized-identity/trustdidweb/commits/main)
 
 **Implementations:**
 ~ [TypeScript](https://github.com/bcgov/trustdidweb-ts)

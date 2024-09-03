@@ -18,9 +18,9 @@
   "author": "Stephen Curran",
   "license": "Apache 2.0",
   "bugs": {
-    "url": "https://github.com/bcgov/trustdidweb/issues"
+    "url": "https://github.com/decentralized-identity/trustdidweb/issues"
   },
-  "homepage": "https://github.com/bcgov/trustdidweb#readme",
+  "homepage": "https://github.com/decentralized-identity/trustdidweb#readme",
   "dependencies": {
     "spec-up": "github:brianorwhatever/spec-up#master"
   }

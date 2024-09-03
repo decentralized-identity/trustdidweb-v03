@@ -17,12 +17,12 @@
       ],
       "source": {
         "host": "github",
-        "account": "bcgov",
+        "account": "decentralized-identity",
         "repo": "trustdidweb"
       },
       "output_path": "./",
       "logo": "tdw.jpg",
-      "logo_link": "https://github.com/bcgov/trustdidweb",
+      "logo_link": "https://github.com/decentralized-identity/trustdidweb",
       "katex": true,
       "external_specs": [
         {

@@ -10,10 +10,12 @@ Please note that we might not notice a pullrequest in time, but you are free to 
 <details>
 <summary> Meeting information </summary>
 
-- Before you contribute - [**join DIF**](https://identity.foundation/join) and [sign the WG charter](https://bit.ly/DIF-WG-select1) (both are required!)
-- Time: TODO
-- [Calendar entry](https://calendar.google.com/event?action=TEMPLATE&tmeid=NnBnMW43NmRib3YwNDI3dXA5ZW8xOHVlbjZfMjAyMDExMDNUMjAwMDAwWiBkZWNlbnRyYWxpemVkLmlkZW50aXR5QG0&tmsrc=decentralized.identity%40gmail.com&scp=ALL)
-- [Zoom room]()
+- Before you contribute
+	- [**Join DIF**](https://identity.foundation/join) and [sign the WG charter](https://bit.ly/DIF-WG-select1) (both are required!)
+	- [**Refer to DIF's code of conduct**](https://github.com/decentralized-identity/org/blob/master/code-of-conduct.md)
+- Time: 9am PT, Thursdays bi-weekly
+- [Calendar entry](https://calendar.google.com/event?action=TEMPLATE&tmeid=NG5jYWowbmZsdWNzM21tYjBsbDIzdG50ZzFfMjAyNDA5MTJUMTYwMDAwWiBkZWNlbnRyYWxpemVkLmlkZW50aXR5QG0&tmsrc=decentralized.identity%40gmail.com&scp=ALL)
+- [Zoom room](https://us02web.zoom.us/j/83119969275?pwd=IZTuXgGLtdLPjPLuB6q8zHXazxHSsU.1)
 </details>
 
 #### Future topics:

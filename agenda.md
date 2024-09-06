@@ -1,4 +1,4 @@
-# Trust DID Web Work Item Rolling Agenda
+# Trust DID Web Work Item Rolling Agenda<!-- omit in toc -->
 
 Zoom Link: https://us02web.zoom.us/j/83119969275?pwd=IZTuXgGLtdLPjPLuB6q8zHXazxHSsU.1
 
@@ -6,10 +6,11 @@ Zoom Link: https://us02web.zoom.us/j/83119969275?pwd=IZTuXgGLtdLPjPLuB6q8zHXazxH
 
 [**WG projects** ](https://github.com/decentralized-identity?q=wg-cc&type=&language=) | [ DIF page ](https://identity.foundation/working-groups/claims-credentials.html) | [Mailing list and Wiki ](https://lists.identity.foundation/g/cc-wg) | [Meeting recordings](https://docs.google.com/spreadsheets/d/1wgccmMvIImx30qVE9GhRKWWv3vmL2ZyUauuKx3IfRmA/edit?gid=111226877#gid=111226877)
 
+## Table of Contents<!-- omit in toc -->
 
-## Table of Contents
-
-> [TOC]
+- [Meeting Information](#meeting-information)
+- [Future Topics:](#future-topics)
+- [Meeting - 12 Sept 2024](#meeting---12-sept-2024)
 
 ## Meeting Information
 
@@ -22,7 +23,6 @@ Zoom Link: https://us02web.zoom.us/j/83119969275?pwd=IZTuXgGLtdLPjPLuB6q8zHXazxH
 _Participants are encouraged to turn your video on. This is a good way to build rapport across the contributor community._
 
 _This document is live-edited DURING each call, and stable/authoritative copies live on our github repo under `/agenda.md`, link: [Agenda]._
-
 
 [join DIF]: https://identity.foundation/join
 [sign the WG charter]: https://bit.ly/DIF-WG-select1
@@ -52,10 +52,11 @@ Attendees:
     2. Please make sure you: [join DIF], [sign the WG Charter], and follow the [DIF Code of Conduct]. Questions? Please contact [operations@identity.foundation]. 
     3. [did:tdw Specification license] -- W3C Mode
     4. Introductions and Agenda Topics
-3. Brief(!) Introduction to `did:tdw`
-4. Introduction to the `did:tdw` Work Item at DIF
-5. Discussion:
+2. Brief(!) Introduction to `did:tdw`
+3. Introduction to the `did:tdw` Work Item at DIF
+4. Discussion:
     1. What do you want this group to achieve?
     2. What would help you the most?
-6. Future Topics
+5. Future Topics
+6. [Spec. PRs and Issues](https://github.com/decentralized-identity/trustdidweb)
 7. Action items and next steps

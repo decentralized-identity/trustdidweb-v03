@@ -1,5 +1,8 @@
 # trustdidweb - rolling agenda & minutes
 
+[![hackmd-github-sync-badge](https://hackmd.io/3aEr9Zp_T8GziXQEpah4Gg/badge)](https://hackmd.io/3aEr9Zp_T8GziXQEpah4Gg)
+
+
 [**WG projects** ](https://github.com/decentralized-identity?q=wg-id&type=&language=) | [ DIF page ](https://identity.foundation/working-groups/identifiers-discovery.html) | [Mailing list and Wiki ](https://lists.identity.foundation/g/cc-id) | [Meeting recordings](https://docs.google.com/spreadsheets/d/1wgccmMvIImx30qVE9GhRKWWv3vmL2ZyUauuKx3IfRmA/edit?gid=111226877#gid=111226877)
 
 _For this call, you are encouraged to turn your video on. This is a good way to build rapport given we are a large, disparate group experiencing a lot of churn._

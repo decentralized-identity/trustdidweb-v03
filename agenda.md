@@ -1,15 +1,14 @@
 # Trust DID Web Work Item Rolling Agenda<!-- omit in toc -->
 
-Zoom Link: https://us02web.zoom.us/j/83119969275?pwd=IZTuXgGLtdLPjPLuB6q8zHXazxHSsU.1
+Zoom Link: [https://us02web.zoom.us/j/83119969275?pwd=IZTuXgGLtdLPjPLuB6q8zHXazxHSsU.1](https://us02web.zoom.us/j/83119969275?pwd=IZTuXgGLtdLPjPLuB6q8zHXazxHSsU.1)
+[HackMD Agenda](https://hackmd.io/k4cIK9vQSlaeg2pdHE51IQ)
 
-[![hackmd-github-sync-badge](https://hackmd.io/3aEr9Zp_T8GziXQEpah4Gg/badge)](https://hackmd.io/3aEr9Zp_T8GziXQEpah4Gg)
-
-[**WG projects** ](https://github.com/decentralized-identity?q=wg-cc&type=&language=) | [ DIF page ](https://identity.foundation/working-groups/claims-credentials.html) | [Mailing list and Wiki ](https://lists.identity.foundation/g/cc-wg) | [Meeting recordings](https://docs.google.com/spreadsheets/d/1wgccmMvIImx30qVE9GhRKWWv3vmL2ZyUauuKx3IfRmA/edit?gid=111226877#gid=111226877)
+[**WG projects**](https://github.com/decentralized-identity?q=wg-cc&type=&language=) | [DIF page](https://identity.foundation/working-groups/claims-credentials.html) | [Mailing list and Wiki](https://lists.identity.foundation/g/cc-wg) | [Meeting recordings](https://docs.google.com/spreadsheets/d/1wgccmMvIImx30qVE9GhRKWWv3vmL2ZyUauuKx3IfRmA/edit?gid=111226877#gid=111226877)
 
 ## Table of Contents<!-- omit in toc -->
 
 - [Meeting Information](#meeting-information)
-- [Future Topics:](#future-topics)
+- [Future Topics](#future-topics)
 - [Meeting - 12 Sept 2024](#meeting---12-sept-2024)
 
 ## Meeting Information
@@ -34,7 +33,7 @@ _This document is live-edited DURING each call, and stable/authoritative copies 
 [did:tdw Specification license]: https://github.com/decentralized-identity/trustdidweb/blob/main/LICENSE.md
 [Agenda]: https://github.com/decentralized-identity/trustdidweb/blob/main/agenda.md
 
-## Future Topics:
+## Future Topics
 
 - Using the `did:tdw` log format with other DID Methods
 - Merge `did:tdw` features into `did:web`?
@@ -45,11 +44,11 @@ _This document is live-edited DURING each call, and stable/authoritative copies 
 
 Time: 9:00 Pacific / 18:00 Central Europe
 
-Attendees: 
+Attendees:
 
 1. Welcome and Procedural Considerations
     1. Recording on?
-    2. Please make sure you: [join DIF], [sign the WG Charter], and follow the [DIF Code of Conduct]. Questions? Please contact [operations@identity.foundation]. 
+    2. Please make sure you: [join DIF], [sign the WG Charter], and follow the [DIF Code of Conduct]. Questions? Please contact [operations@identity.foundation].
     3. [did:tdw Specification license] -- W3C Mode
     4. Introductions and Agenda Topics
 2. Brief(!) Introduction to `did:tdw`

@@ -15,8 +15,8 @@ from trust layers inherited from the web and the absence of a verifiable
 history for the DID.
 
 Tackling these concerns, the proposed `did:tdw` (Trust DID Web)
-method aims to enhance `did:web` by introducing additional features such 
-as a [[ref: self-certifying identifier]] (SCID), update key(s)
+method aims to enhance `did:web` by introducing features such
+as a [[ref: self-certifying identifiers]] (SCIDs), update key(s)
 and a verifiable history, akin to what is available with ledger-based DIDs,
 without relying on a ledger.
 
@@ -61,31 +61,29 @@ The following is a `tl;dr` summary of how `did:tdw` works:
    whitespace removed (per [[ref: JSON Lines]]). Each entry contains the
    information needed to derive a version of the [[ref: DIDDoc]] from its preceding
    version. The `did.jsonl` is also referred to as the [[ref: DID Log]].
-3. Each [[ref: DID log entry]] includes a JSON array of five items:
-    1. The `versionId` of the entry, a value that combines the version number
-       (starting at `1` and incrementing by one per version), a literal dash
+3. Each [[ref: DID log entry]] is a JSON object containing the following items:
+    1. `versionId` -- a value that combines the version number
+       (starting at `1` and incremented by one per version), a literal dash
        `-`, and a hash of the entry. The [[ref: entry hash]] calculation links each entry
        to its predecessor in a ledger-like chain.
-    2. The `versionTime` (as stated by the [[ref: DID Controller]]) of the entry.
+    2. `versionTime` -- as asserted by the [[ref: DID Controller]].
     3. A set of `parameters` that impact the processing of the current and
       future [[ref: log entries]].
         - Example [[ref: parameters]] are the version of the `did:tdw` specification and
         hash algorithm being used as well as the [[ref: SCID]] and update key(s).
-    4. The new version of the [[ref: DIDDoc]] as either a `value` (the full document) or
-      a `patch` derived using [[ref: JSON Patch]] to update the new version from
-      the previous entry.
-    5. A [[ref: Data Integrity]] (DI) proof across the entry, signed by a [[ref: DID
-      Controller]] authorized to update the [[ref: DIDDoc]], using the `versionId` as the
-      challenge.
-4. In generating the first version of the [[ref: DIDDoc]], the [[ref: DID Controller]] calculates
-  the [[ref: SCID]] for the DID from the entire first [[ref: log entry]] (which
-  includes the [[ref: DIDDoc]]) by adding the string {SCID} everywhere the actual [[ref: SCID]]
-  is to be placed. The [[ref: DID Controller]] then replaces these placeholders
-  with the just calculated [[ref: SCID]], including it as a `parameter` in the first [[ref: log
-  entry]], and inserting it where needed in the initial (and all subsequent)
-  DIDDocs. The [[ref: SCID]] enables an optional [[ref: portability]] capability, allowing a DID's
-  web location to be moved to a new location while retaining the DID and version
-  history of the DID.
+    4. The `state`, the new version of the [[ref: DIDDoc]].
+    5. A [[ref: Data Integrity]] (DI) proof across the entry, signed by a [[ref:
+      DID Controller]] authorized key to update the [[ref: DIDDoc]], and optionally,
+      a set of witnesses that monitor the actions of the DID Controller.
+4. In generating the first version of the [[ref: DIDDoc]], the [[ref: DID
+  Controller]] calculates the [[ref: SCID]] for the DID from the first [[ref:
+  log entry]] (which includes the [[ref: DIDDoc]]) by using the string
+  `"{SCID}"` everywhere the actual [[ref: SCID]] is to be placed. The [[ref: DID
+  Controller]] then replaces the placeholders with the calculated [[ref: SCID]],
+  including it as a `parameter` in the first [[ref: log entry]], and inserting
+  it where needed in the initial (and all subsequent) DIDDocs. The [[ref: SCID]]
+  enables an optional [[ref: portability]] capability, allowing a DID's web
+  location to be moved, while retaining the DID and version history of the DID.
 5. A [[ref: DID Controller]] generates and publishes the new/updated [[ref: DID Log]] file by making it
   available at the appropriate location on the web, based on the identifier of the
   DID.

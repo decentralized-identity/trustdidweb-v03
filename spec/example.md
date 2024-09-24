@@ -1,5 +1,9 @@
 ## `did:tdw` Example
 
+**THE EXAMPLES IN THIS CHAPTER ARE OUT OF DATE, PENDING AN IMPLEMENTATION OF VER. O.4 OF THE SPECIFICATION.**
+
+**See the [Change Log](#didtdw-version-changelog) for what has changed between these ver. 0.3 examples, and the ver. 0.4 specification.**
+
 The following shows the evolution of a `did:tdw` from inception through several
 versions, showing the DID, [[ref: DIDDoc]], [[ref: DID Log]], and some of the
 intermediate data structures.

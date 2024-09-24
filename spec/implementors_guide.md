@@ -8,15 +8,15 @@ Proof of concept implementations of `did:tdw` software for [[ref: DID Controller
 - [Python]
 - [Go]
 
-Both currently (as of 2024.04.11) support all of the features of the core `did:tdw` including [[ref: Key Pre-Rotation]]. Not yet supported is the the concept of [[ref: witnesses]].
+The implementations support all of the features of the core `did:tdw` including [[ref: Key Pre-Rotation]], except support for [[ref: witnesses]].
 
 ### Using Pre-Rotation Keys
 
 In an effort to prevent the loss of control over a decentralized identifier
 (DID) due to a compromised private key, [[ref: pre-rotation]] keys are
 introduced. These commitments, made by the [[ref: DID Controller]], are
-declarations about the keys that will be published in future versions of the DID
-document, without revealing the keys themselves.
+declarations about the authorization keys that will be published in future
+versions of the DID log, without revealing the keys themselves.
 
 The primary goal of [[ref: pre-rotation]] keys is to ensure that even if an attacker
 gains access to the current active key, they will not be able to take control of
@@ -25,18 +25,18 @@ a key they generate and control. Rather, they would need to have also
 compromised the unpublished (and presumably securely stored) [[ref: pre-rotation]] key in
 order to rotate the DID keys.
 
-The cost of having [[ref: pre-rotation]] protection is a much more complicated process to update
+The cost of having [[ref: pre-rotation]] protection is a more complicated process to update
 the keys of a DID. The following are some considerations we have come across in
-considering how to use the [[ref: pre-rotation]] feature. The feature definitely adds a
+thinking about how to use the [[ref: pre-rotation]] feature. The feature adds a
 layer of key management complexity in return for the benefit.
 
 #### Key Rotation with Pre-Rotation
 
 In using [[ref: pre-rotation]], a [[ref: DID Controller]] should generate an "active" key
-for the [[ref: DIDDoc]] where it can be used for "production" purposes (signing,
+for the [[ref: DIDDoc]] that is accessible for "production" purposes (signing,
 decrypting), and generates the "next key" in an isolated location from
 production. This prevents both the "active" and "next key" from being compromised in the
-same attack. For example, an intruder gets into your infrastructure and is able to extract all of your
+same intrusion attack. For example, if an intruder gets into your infrastructure and is able to extract all of your
 private keys both DID control keys would be lost. Thus, we expect the feature to be used as follows:
 
 - The [[ref: DID Controller]] creating the DID would request from an isolated
@@ -73,11 +73,6 @@ pre-rotation hash added into the second [[ref: DID log]] entry would presumably
 both be for quantum-safe keys.
 
 #### Challenges in Using Pre-Rotation
-
-This draft specification states that once [[ref: pre-rotation]] is enabled (via [[ref:
-DID log entry]] [[ref: parameter]]), it **MUST** apply to all of the keys in the
-DIDDoc. However, we're not sure if that is needed, or if the [[ref: pre-rotation]] should
-only apply to keys that are authorized to update the DID.
 
 Key management is hard enough without having to maintain isolated key generation
 environments for creating keys for different purposes. Enabling connectivity between

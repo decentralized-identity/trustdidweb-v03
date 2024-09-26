@@ -723,17 +723,11 @@ The following is an example of a preliminary [[ref: log entry]] that is processe
 produce an [[ref: entry hash]]. As this is a first entry in a [[ref: DID Log]], the input
 `entryHash` (first item) is the [[ref: SCID]] of the DID.
 
-::: todo
-
-To Do: Replace this example with one from a ver. 0.4 specification implementation.
-
-:::
-
 ```json
-{"versionId": "Qma6mc1qZw3NqxwX6SB5GPQYzP4pGN2nXD15Jwi4bcDBKu", "versionTime": "2024-07-29T17:00:27Z", "parameters": { "prerotation": true, "updateKeys": ["z82LkvR3CBNkb9tUVps4GhGpNvEVP6vWzdwgGwQbA1iYoZwd7m1F1hSvkJFSe6sWci7JiXc"], "nextKeyHashes": ["QmcbM5bppyT4yyaL35TQQJ2XdSrSNAhH5t6f4ZcuyR4VSv"], "method": "did:tdw:0.4", "scid": "Qma6mc1qZw3NqxwX6SB5GPQYzP4pGN2nXD15Jwi4bcDBKu" }, "state": { "@context": ["https://www.w3.org/ns/did/v1", "https://w3id.org/security/multikey/v1"], "id": "did:tdw:Qma6mc1qZw3NqxwX6SB5GPQYzP4pGN2nXD15Jwi4bcDBKu:domain.example"}}
+{"versionId": "QmfGEUAcMpzo25kF2Rhn8L5FAXysfGnkzjwdKoNPi615XQ", "versionTime": "2024-09-26T23:22:26Z", "parameters": {"prerotation": true, "updateKeys": ["z6MkhbNRN2Q9BaY9TvTc2K3izkhfVwgHiXL7VWZnTqxEvc3R"], "nextKeyHashes": ["QmXC3vvStVVzCBHRHGUsksGxn6BNmkdETXJGDBXwNSTL33"], "method": "did:tdw:0.4", "scid": "QmfGEUAcMpzo25kF2Rhn8L5FAXysfGnkzjwdKoNPi615XQ"}, "state": {"@context": ["https://www.w3.org/ns/did/v1"], "id": "did:tdw:QmfGEUAcMpzo25kF2Rhn8L5FAXysfGnkzjwdKoNPi615XQ:domain.example"}}
 ```
 
-Resulting [[ref: entryHash]]: `QmdwvukAYUU6VYwqM4jQbSiKk1ctg12j5hMTY6EfbbkyEJ`
+Resulting [[ref: entryHash]]: `QmQq6Kg4ZZ1p49znzxnWmes4LkkWgMWLrnrfPre8UD56bz`
 
 ##### Verify The Entry Hash
 

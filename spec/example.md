@@ -1,18 +1,15 @@
 ## `did:tdw` Example
 
-**THE EXAMPLES IN THIS CHAPTER ARE OUT OF DATE, PENDING AN IMPLEMENTATION OF VER. O.4 OF THE SPECIFICATION.**
-
-**See the [Change Log](#didtdw-version-changelog) for what has changed between these ver. 0.3 examples, and the ver. 0.4 specification.**
-
 The following shows the evolution of a `did:tdw` from inception through several
 versions, showing the DID, [[ref: DIDDoc]], [[ref: DID Log]], and some of the
 intermediate data structures.
 
-**The examples are aligned with version 0.3 of the `did:tdw` specification.**
+**The examples are aligned with version 0.4 of the `did:tdw` specification.**
 
-In some of the following examples the data for the [[ref: DID log entries]] is displayed
-as prettified JSON for readability. In the log itself, the JSON has all
-whitespace removed, and each line ends with a `CR`, per the [[ref: JSON Lines]] convention.
+In some of the following examples the data for the [[ref: DID log entries]] is
+displayed as prettified JSON for readability. In the log itself, the JSON has
+all whitespace removed, and each line ends with a `CR`, per the [[ref: JSON
+Lines]] convention.
 
 ### DID Creation Data
 
@@ -30,125 +27,115 @@ This example includes both the initial "authorized keys" to sign the [[ref: Data
 are in the `parameters` item in the [[ref: log entry]].
 
 ```json
-[
-  "{SCID}",
-  "2024-07-29T17:00:27Z",
-  {
+{
+  "versionId": "{SCID}",
+  "versionTime": "2024-09-26T23:22:26Z",
+  "parameters": {
     "prerotation": true,
     "updateKeys": [
-      "z82LkvR3CBNkb9tUVps4GhGpNvEVP6vWzdwgGwQbA1iYoZwd7m1F1hSvkJFSe6sWci7JiXc"
+      "z6MkhbNRN2Q9BaY9TvTc2K3izkhfVwgHiXL7VWZnTqxEvc3R"
     ],
     "nextKeyHashes": [
-      "QmcbM5bppyT4yyaL35TQQJ2XdSrSNAhH5t6f4ZcuyR4VSv"
+      "QmXC3vvStVVzCBHRHGUsksGxn6BNmkdETXJGDBXwNSTL33"
     ],
-    "method": "did:tdw:0.3",
+    "method": "did:tdw:0.4",
     "scid": "{SCID}"
   },
-  {
-    "value": {
-      "@context": [
-        "https://www.w3.org/ns/did/v1",
-        "https://w3id.org/security/multikey/v1"
-      ],
-      "id": "did:tdw:{SCID}:domain.example"
-    }
+  "state": {
+    "@context": [
+      "https://www.w3.org/ns/did/v1"
+    ],
+    "id": "did:tdw:{SCID}:domain.example"
   }
-]
+}
 ```
 
 #### Output of the SCID Generation Process
 
 After the [[ref: SCID]] is generated, the literal `{SCID}` placeholders are
-replaced by the generated [[ref: SCID]] value (below). This JSON is the input to
-the [`entryHash` generation process](#entry-hash-generation-and-verification) --
-with the [[ref: SCID]] as the first item of the array. Once the process has run,
-the version number of this first version of the DID (`1`), a dash `-` and the
-resulting output hash replace the [[ref: SCID]] as the first item in the array
--- the `versionId`.
+replaced by the generated [[ref: SCID]] value (see below). This JSON is the
+input to the [`entryHash` generation
+process](#entry-hash-generation-and-verification) -- with the [[ref: SCID]]
+`versionId``. Once the process has run, the version number of this first version
+of the DID (`1`), a dash `-` and the resulting output hash replace the [[ref:
+SCID]] as the `versionId` value.
 
 ```json
-[
-  "Qma6mc1qZw3NqxwX6SB5GPQYzP4pGN2nXD15Jwi4bcDBKu",
-  "2024-07-29T17:00:27Z",
-  {
+{
+  "versionId": "QmfGEUAcMpzo25kF2Rhn8L5FAXysfGnkzjwdKoNPi615XQ",
+  "versionTime": "2024-09-26T23:22:26Z",
+  "parameters": {
     "prerotation": true,
     "updateKeys": [
-      "z82LkvR3CBNkb9tUVps4GhGpNvEVP6vWzdwgGwQbA1iYoZwd7m1F1hSvkJFSe6sWci7JiXc"
+      "z6MkhbNRN2Q9BaY9TvTc2K3izkhfVwgHiXL7VWZnTqxEvc3R"
     ],
     "nextKeyHashes": [
-      "QmcbM5bppyT4yyaL35TQQJ2XdSrSNAhH5t6f4ZcuyR4VSv"
+      "QmXC3vvStVVzCBHRHGUsksGxn6BNmkdETXJGDBXwNSTL33"
     ],
-    "method": "did:tdw:0.3",
-    "scid": "Qma6mc1qZw3NqxwX6SB5GPQYzP4pGN2nXD15Jwi4bcDBKu"
+    "method": "did:tdw:0.4",
+    "scid": "QmfGEUAcMpzo25kF2Rhn8L5FAXysfGnkzjwdKoNPi615XQ"
   },
-  {
-    "value": {
-      "@context": [
-        "https://www.w3.org/ns/did/v1",
-        "https://w3id.org/security/multikey/v1"
-      ],
-      "id": "did:tdw:Qma6mc1qZw3NqxwX6SB5GPQYzP4pGN2nXD15Jwi4bcDBKu:domain.example"
-    }
+  "state": {
+    "@context": [
+      "https://www.w3.org/ns/did/v1"
+    ],
+    "id": "did:tdw:QmfGEUAcMpzo25kF2Rhn8L5FAXysfGnkzjwdKoNPi615XQ:domain.example"
   }
-]
+}
 ```
 
 #### Data Integrity Proof Generation and First Log Entry
 
 The last step in the creation of the first [[ref: log entry]] is the generation
 of the [[ref: data integrity]] proof. One of the keys in the `updateKeys` [[ref:
-parameter]] **MUST** be used (in the form of a `did:key`) to generate the
-signature in the proof, with the `versionId` value (item 1 of the [[ref: did log
-entry]]) used as the `challenge` item. The generated proof is added to the [[ref: JSON
-Line]] as the fifth item, and the entire array becomes the first entry in the
-[[ref: DID Log]].
+parameter]] **MUST** be the `verificationMethod` in the proof (in `did:key`
+form) to generate the signature across the post-[[ref: entryHash]] processed
+[[ref: DID log entry]]. The generated proof is added to the [[ref: JSON Line]]
+and the [[ref: log entry]] JSON object becomes the first entry in the [[ref:
+DID Log]].
 
-The following is the JSON prettified version of the entry log file that is published
-as the `did.jsonl` file. When published, all extraneous whitespace is removed, as
-shown in the block below the pretty-printed version.
+The following is the JSON prettified version of the entry log file that is
+published as the initial `did.jsonl` file. When published, all extraneous
+whitespace is removed, as shown in the block below the pretty-printed version.
 
 ```json
-[
-  "1-QmdwvukAYUU6VYwqM4jQbSiKk1ctg12j5hMTY6EfbbkyEJ",
-  "2024-07-29T17:00:27Z",
-  {
+{
+  "versionId": "1-QmQq6Kg4ZZ1p49znzxnWmes4LkkWgMWLrnrfPre8UD56bz",
+  "versionTime": "2024-09-26T23:22:26Z",
+  "parameters": {
     "prerotation": true,
     "updateKeys": [
-      "z82LkvR3CBNkb9tUVps4GhGpNvEVP6vWzdwgGwQbA1iYoZwd7m1F1hSvkJFSe6sWci7JiXc"
+      "z6MkhbNRN2Q9BaY9TvTc2K3izkhfVwgHiXL7VWZnTqxEvc3R"
     ],
     "nextKeyHashes": [
-      "QmcbM5bppyT4yyaL35TQQJ2XdSrSNAhH5t6f4ZcuyR4VSv"
+      "QmXC3vvStVVzCBHRHGUsksGxn6BNmkdETXJGDBXwNSTL33"
     ],
-    "method": "did:tdw:0.3",
-    "scid": "Qma6mc1qZw3NqxwX6SB5GPQYzP4pGN2nXD15Jwi4bcDBKu"
+    "method": "did:tdw:0.4",
+    "scid": "QmfGEUAcMpzo25kF2Rhn8L5FAXysfGnkzjwdKoNPi615XQ"
   },
-  {
-    "value": {
-      "@context": [
-        "https://www.w3.org/ns/did/v1",
-        "https://w3id.org/security/multikey/v1"
-      ],
-      "id": "did:tdw:Qma6mc1qZw3NqxwX6SB5GPQYzP4pGN2nXD15Jwi4bcDBKu:domain.example"
-    }
+  "state": {
+    "@context": [
+      "https://www.w3.org/ns/did/v1"
+    ],
+    "id": "did:tdw:QmfGEUAcMpzo25kF2Rhn8L5FAXysfGnkzjwdKoNPi615XQ:domain.example"
   },
-  [
+  "proof": [
     {
       "type": "DataIntegrityProof",
       "cryptosuite": "eddsa-jcs-2022",
-      "verificationMethod": "did:key:z82LkvR3CBNkb9tUVps4GhGpNvEVP6vWzdwgGwQbA1iYoZwd7m1F1hSvkJFSe6sWci7JiXc#z82LkvR3CBNkb9tUVps4GhGpNvEVP6vWzdwgGwQbA1iYoZwd7m1F1hSvkJFSe6sWci7JiXc",
-      "created": "2024-07-29T17:00:27Z",
+      "verificationMethod": "did:key:z6MkhbNRN2Q9BaY9TvTc2K3izkhfVwgHiXL7VWZnTqxEvc3R#z6MkhbNRN2Q9BaY9TvTc2K3izkhfVwgHiXL7VWZnTqxEvc3R",
+      "created": "2024-09-26T23:22:26Z",
       "proofPurpose": "authentication",
-      "challenge": "1-QmdwvukAYUU6VYwqM4jQbSiKk1ctg12j5hMTY6EfbbkyEJ",
-      "proofValue": "zDk24L4vbVrFm5CPQjRD9KoGFNcV6C3ub1ducPQEvDQ39U68GiofAndGbdG9azV6r78gHr1wKnKNPbMz87xtjZtcq9iwN5hjLptM9Lax4UeMWm9Xz7PP4crToj7sZnvyb3x4"
+      "proofValue": "z2fPF6fMewtV15kji2N432R7RjmmFs8p7MiSHSTM9FoVmJPtc3JUuZ472pZKoWgZDuT75EDwkGmZbK8ZKVF55pXvx"
     }
   ]
-]
+}
 ```
 
 The same content "un-prettified", as it is found in the `did.jsonl` file:
 
 ```json
-["1-QmdwvukAYUU6VYwqM4jQbSiKk1ctg12j5hMTY6EfbbkyEJ", "2024-07-29T17:00:27Z", {"prerotation": true, "updateKeys": ["z82LkvR3CBNkb9tUVps4GhGpNvEVP6vWzdwgGwQbA1iYoZwd7m1F1hSvkJFSe6sWci7JiXc"], "nextKeyHashes": ["QmcbM5bppyT4yyaL35TQQJ2XdSrSNAhH5t6f4ZcuyR4VSv"], "method": "did:tdw:0.3", "scid": "Qma6mc1qZw3NqxwX6SB5GPQYzP4pGN2nXD15Jwi4bcDBKu"}, {"value": {"@context": ["https://www.w3.org/ns/did/v1", "https://w3id.org/security/multikey/v1"], "id": "did:tdw:Qma6mc1qZw3NqxwX6SB5GPQYzP4pGN2nXD15Jwi4bcDBKu:domain.example"}}, [{"type": "DataIntegrityProof", "cryptosuite": "eddsa-jcs-2022", "verificationMethod": "did:key:z82LkvR3CBNkb9tUVps4GhGpNvEVP6vWzdwgGwQbA1iYoZwd7m1F1hSvkJFSe6sWci7JiXc#z82LkvR3CBNkb9tUVps4GhGpNvEVP6vWzdwgGwQbA1iYoZwd7m1F1hSvkJFSe6sWci7JiXc", "created": "2024-07-29T17:00:27Z", "proofPurpose": "authentication", "challenge": "1-QmdwvukAYUU6VYwqM4jQbSiKk1ctg12j5hMTY6EfbbkyEJ", "proofValue": "zDk24L4vbVrFm5CPQjRD9KoGFNcV6C3ub1ducPQEvDQ39U68GiofAndGbdG9azV6r78gHr1wKnKNPbMz87xtjZtcq9iwN5hjLptM9Lax4UeMWm9Xz7PP4crToj7sZnvyb3x4"}]]
+{"versionId": "1-QmQq6Kg4ZZ1p49znzxnWmes4LkkWgMWLrnrfPre8UD56bz", "versionTime": "2024-09-26T23:22:26Z", "parameters": {"prerotation": true, "updateKeys": ["z6MkhbNRN2Q9BaY9TvTc2K3izkhfVwgHiXL7VWZnTqxEvc3R"], "nextKeyHashes": ["QmXC3vvStVVzCBHRHGUsksGxn6BNmkdETXJGDBXwNSTL33"], "method": "did:tdw:0.4", "scid": "QmfGEUAcMpzo25kF2Rhn8L5FAXysfGnkzjwdKoNPi615XQ"}, "state": {"@context": ["https://www.w3.org/ns/did/v1"], "id": "did:tdw:QmfGEUAcMpzo25kF2Rhn8L5FAXysfGnkzjwdKoNPi615XQ:domain.example"}, "proof": [{"type": "DataIntegrityProof", "cryptosuite": "eddsa-jcs-2022", "verificationMethod": "did:key:z6MkhbNRN2Q9BaY9TvTc2K3izkhfVwgHiXL7VWZnTqxEvc3R#z6MkhbNRN2Q9BaY9TvTc2K3izkhfVwgHiXL7VWZnTqxEvc3R", "created": "2024-09-26T23:22:26Z", "proofPurpose": "authentication", "proofValue": "z2fPF6fMewtV15kji2N432R7RjmmFs8p7MiSHSTM9FoVmJPtc3JUuZ472pZKoWgZDuT75EDwkGmZbK8ZKVF55pXvx"}]}
 ```
 
 #### `did:web` Version of DIDDoc
@@ -162,12 +149,11 @@ Here is what the `did:web` [[ref: DIDDoc]] looks like for the `did:tdw` above.
 
 ```json
 {
-  "@context": [
-    "https://www.w3.org/ns/did/v1",
-    "https://w3id.org/security/multikey/v1"
-  ],
-  "id": "did:web:domain.example",
-  "alsoKnownAs": ["did:tdw:Qma6mc1qZw3NqxwX6SB5GPQYzP4pGN2nXD15Jwi4bcDBKu:domain.example"]
+    "@context": [
+      "https://www.w3.org/ns/did/v1"
+    ],
+    "id": "did:web:domain.example",
+    "alsoKnownAs": ["did:tdw:QmfGEUAcMpzo25kF2Rhn8L5FAXysfGnkzjwdKoNPi615XQ:domain.example"]
 }
 ```
 
@@ -181,84 +167,85 @@ the [[ref: pre-rotation]] key.
 #### Version 2 Entry Hashing Input
 
 To generate a new version of the DID, the [[ref: DID Controller]] needs to
-provide the existing [[ref: DID log]] file, the updated `parameters`, and the new [[ref: DIDDoc]].
-The following processing is done to create the new [[ref: DID log entry]]:
+provide the updated `parameters`, and the new [[ref: DIDDoc]]. The following
+processing is done to create the new [[ref: DID log entry]]:
 
-- The `versionId` from the previous (first) [[ref: log entry]] is made the first item in the new [[ref: log entry]].
-- The `versionTime` is generated as the current time, and made the new `versionTime` (second) item.
+- The `versionId` from the previous (first) [[ref: log entry]] is made the value
+  of the `versionId` in the new [[ref: log entry]].
+- The `versionTime` in the new [[ref: log entry]] is set to the current time.
 - The `parameters` entry passed in is processed. In this case, since the
 `updateKeys` array is updated, and [[ref: pre-rotation]] is active, the a
-verification is done to ensure that the hash of the `updateKeys` are found in
-the `nextKeyHashes` item from version 1 of the DID. As required by the `did:tdw`
-specification, a new `nextKeyHashes` is included in the `parameters`.
-- The new (but unchanged) [[ref: DIDDoc]] is included in its entirety, as the value of `value`, set as the third item in the array.
-  - The implementation could have used [[ref: JSON Patch]] to generate value of the `patch` item.
-- The resulting array is passed into the [`entryHash` generation
+verification is done to ensure that the hash of the `updateKeys` entries are
+found in the `nextKeyHashes` item from version 1 of the DID. As required by the
+`did:tdw` specification, a new `nextKeyHashes` is included in the new `parameters`.
+- The new (but unchanged) [[ref: DIDDoc]] is included in its entirety, as the value of the `state` item.
+- The resultant JSON object is passed into the [`entryHash` generation
   process](#entry-hash-generation-and-verification) which outputs the
-  `entryHash` for this [[ref: log entry]]. Once again, the first item
-  (`versionId`) in the [[ref: log entry]] is replaced by the version number (the
-  previous version number plus `1`), a dash (`-`), and the new `entryHash`.
-- The [[ref: data integrity]] proof is generated added to the [[ref: log entry]]
-  as the sixth item, and the entire entry is added to the existing [[ref: DID
-  log]].
+  `entryHash` for this [[ref: log entry]]. Once again, the `versionId` value is
+  replaced by the version number (the previous version number plus `1`, so `2`
+  in this case), a dash (`-`), and the new `entryHash`.
+- The [[ref: data integrity]] proof is generated added to the [[ref: log
+  entry]], spaces are removed, a `CR` character added (per [[ref: JSON Lines]])
+  and the entire entry is appended to the existing [[ref: DID log]] file.
 
 The [[ref: DID log]] file can now be published, optionally with an updated version of the corresponding `did:web` DID.
 
 The following is the JSON pretty-print [[ref: log entry]] for the second version of an example `did:tdw`. Things to note in this example:
 
-- The [[ref: data integrity]] proof `verificationMethod` is the `did:key` from the first [[ref: log entry]], and the `challenge` is the `versionId` from this [[ref: log entry]].
-- A new `updateKeys` item in the `parameters` has been added, a commit to a future key that will control updates to the DID.
+- The [[ref: data integrity]] proof `verificationMethod` is the `did:key` from
+  the first [[ref: log entry]], since the `updateKeys` change in the second
+  [[ref: log entry]] does not take affect until _after_ the version update is
+  complete.
+- A new `updateKeys` item in the `parameters` has been added, along with
+  commitment to a future key (`nextKeyHashes`) that will control future updates
+  to the DID.
 
 ```json
-[
-  "2-QmY2v1VzkeMxF7MSfrLfZswQ74Y6FfrMR1LmuvPJQJwhi6",
-  "2024-07-29T17:00:28Z",
-  {
+{
+  "versionId": "2-QmXL6CLK1BMHAd3zQMqkY49VSc9T3zhUcPxu6zEW176PfN",
+  "versionTime": "2024-09-26T23:22:26Z",
+  "parameters": {
     "updateKeys": [
-      "z82Lkvgj5NKYhoFh4hWzax9WicQaVDphN8MMzR3JZhontVfHaoGd9JbC4QRpDvmjQH3BLeQ"
+      "z6MkvQnUuQn3s52dw4FF3T87sfaTvXRW7owE1QMvFwpag2Bf"
     ],
     "nextKeyHashes": [
-      "QmcCbGzGNr2EFduauzCoh3Hwt1GkRW4Gnkk5nxbr3625de"
+      "QmdA9fxQSLLwCQo6TkovcoaLgGYWq6Ttqx6A5D1RY13iFG"
     ]
   },
-  {
-    "value": {
-      "@context": [
-        "https://www.w3.org/ns/did/v1",
-        "https://w3id.org/security/multikey/v1"
-      ],
-      "id": "did:tdw:Qma6mc1qZw3NqxwX6SB5GPQYzP4pGN2nXD15Jwi4bcDBKu:domain.example"
-    }
+  "state": {
+    "@context": [
+      "https://www.w3.org/ns/did/v1"
+    ],
+    "id": "did:tdw:QmfGEUAcMpzo25kF2Rhn8L5FAXysfGnkzjwdKoNPi615XQ:domain.example"
   },
-  [
+  "proof": [
     {
       "type": "DataIntegrityProof",
       "cryptosuite": "eddsa-jcs-2022",
-      "verificationMethod": "did:key:z82LkvR3CBNkb9tUVps4GhGpNvEVP6vWzdwgGwQbA1iYoZwd7m1F1hSvkJFSe6sWci7JiXc#z82LkvR3CBNkb9tUVps4GhGpNvEVP6vWzdwgGwQbA1iYoZwd7m1F1hSvkJFSe6sWci7JiXc",
-      "created": "2024-07-29T17:00:28Z",
+      "verificationMethod": "did:key:z6MkhbNRN2Q9BaY9TvTc2K3izkhfVwgHiXL7VWZnTqxEvc3R#z6MkhbNRN2Q9BaY9TvTc2K3izkhfVwgHiXL7VWZnTqxEvc3R",
+      "created": "2024-09-26T23:22:26Z",
       "proofPurpose": "authentication",
-      "challenge": "2-QmY2v1VzkeMxF7MSfrLfZswQ74Y6FfrMR1LmuvPJQJwhi6",
-      "proofValue": "z2VDUyVapPpb6rC4YbLZRLcWS2zg9o53JU97QjNQYH7JvGs5Ccnf2b647Gw96G5N8rvEKc77uQTGqYvLJ6zrqNwGnqNLraTPD2AL2rR2eUiRKnM5KhbwWumDy5eqmTumm1FWp"
+      "proofValue": "z2nkLj9rYAMG7TStpvihuo4HTovpC7uvWcDoYiGhoN8cqQuiwW2EnPZdWtid2FZAQDQPoaNkTooKVftGKDTh9p3Fy"
     }
   ]
-]
+}
 ```
 
 #### Log File For Version 2
 
 The new version 2 `did.jsonl` file contains two [[ref: entries]], one for each version
-of the [[ref: DIDDoc]].
+of the [[ref: DIDDoc]] -- as per the use of [[ref: JSON Lines]].
 
 ```json
-["1-QmdwvukAYUU6VYwqM4jQbSiKk1ctg12j5hMTY6EfbbkyEJ", "2024-07-29T17:00:27Z", {"prerotation": true, "updateKeys": ["z82LkvR3CBNkb9tUVps4GhGpNvEVP6vWzdwgGwQbA1iYoZwd7m1F1hSvkJFSe6sWci7JiXc"], "nextKeyHashes": ["QmcbM5bppyT4yyaL35TQQJ2XdSrSNAhH5t6f4ZcuyR4VSv"], "method": "did:tdw:0.3", "scid": "Qma6mc1qZw3NqxwX6SB5GPQYzP4pGN2nXD15Jwi4bcDBKu"}, {"value": {"@context": ["https://www.w3.org/ns/did/v1", "https://w3id.org/security/multikey/v1"], "id": "did:tdw:Qma6mc1qZw3NqxwX6SB5GPQYzP4pGN2nXD15Jwi4bcDBKu:domain.example"}}, [{"type": "DataIntegrityProof", "cryptosuite": "eddsa-jcs-2022", "verificationMethod": "did:key:z82LkvR3CBNkb9tUVps4GhGpNvEVP6vWzdwgGwQbA1iYoZwd7m1F1hSvkJFSe6sWci7JiXc#z82LkvR3CBNkb9tUVps4GhGpNvEVP6vWzdwgGwQbA1iYoZwd7m1F1hSvkJFSe6sWci7JiXc", "created": "2024-07-29T17:00:27Z", "proofPurpose": "authentication", "challenge": "1-QmdwvukAYUU6VYwqM4jQbSiKk1ctg12j5hMTY6EfbbkyEJ", "proofValue": "zDk24L4vbVrFm5CPQjRD9KoGFNcV6C3ub1ducPQEvDQ39U68GiofAndGbdG9azV6r78gHr1wKnKNPbMz87xtjZtcq9iwN5hjLptM9Lax4UeMWm9Xz7PP4crToj7sZnvyb3x4"}]]
-["2-QmY2v1VzkeMxF7MSfrLfZswQ74Y6FfrMR1LmuvPJQJwhi6", "2024-07-29T17:00:28Z", {"updateKeys": ["z82Lkvgj5NKYhoFh4hWzax9WicQaVDphN8MMzR3JZhontVfHaoGd9JbC4QRpDvmjQH3BLeQ"], "nextKeyHashes": ["QmcCbGzGNr2EFduauzCoh3Hwt1GkRW4Gnkk5nxbr3625de"]}, {"value": {"@context": ["https://www.w3.org/ns/did/v1", "https://w3id.org/security/multikey/v1"], "id": "did:tdw:Qma6mc1qZw3NqxwX6SB5GPQYzP4pGN2nXD15Jwi4bcDBKu:domain.example"}}, [{"type": "DataIntegrityProof", "cryptosuite": "eddsa-jcs-2022", "verificationMethod": "did:key:z82LkvR3CBNkb9tUVps4GhGpNvEVP6vWzdwgGwQbA1iYoZwd7m1F1hSvkJFSe6sWci7JiXc#z82LkvR3CBNkb9tUVps4GhGpNvEVP6vWzdwgGwQbA1iYoZwd7m1F1hSvkJFSe6sWci7JiXc", "created": "2024-07-29T17:00:28Z", "proofPurpose": "authentication", "challenge": "2-QmY2v1VzkeMxF7MSfrLfZswQ74Y6FfrMR1LmuvPJQJwhi6", "proofValue": "z2VDUyVapPpb6rC4YbLZRLcWS2zg9o53JU97QjNQYH7JvGs5Ccnf2b647Gw96G5N8rvEKc77uQTGqYvLJ6zrqNwGnqNLraTPD2AL2rR2eUiRKnM5KhbwWumDy5eqmTumm1FWp"}]]
+{"versionId": "1-QmQq6Kg4ZZ1p49znzxnWmes4LkkWgMWLrnrfPre8UD56bz", "versionTime": "2024-09-26T23:22:26Z", "parameters": {"prerotation": true, "updateKeys": ["z6MkhbNRN2Q9BaY9TvTc2K3izkhfVwgHiXL7VWZnTqxEvc3R"], "nextKeyHashes": ["QmXC3vvStVVzCBHRHGUsksGxn6BNmkdETXJGDBXwNSTL33"], "method": "did:tdw:0.4", "scid": "QmfGEUAcMpzo25kF2Rhn8L5FAXysfGnkzjwdKoNPi615XQ"}, "state": {"@context": ["https://www.w3.org/ns/did/v1"], "id": "did:tdw:QmfGEUAcMpzo25kF2Rhn8L5FAXysfGnkzjwdKoNPi615XQ:domain.example"}, "proof": [{"type": "DataIntegrityProof", "cryptosuite": "eddsa-jcs-2022", "verificationMethod": "did:key:z6MkhbNRN2Q9BaY9TvTc2K3izkhfVwgHiXL7VWZnTqxEvc3R#z6MkhbNRN2Q9BaY9TvTc2K3izkhfVwgHiXL7VWZnTqxEvc3R", "created": "2024-09-26T23:22:26Z", "proofPurpose": "authentication", "proofValue": "z2fPF6fMewtV15kji2N432R7RjmmFs8p7MiSHSTM9FoVmJPtc3JUuZ472pZKoWgZDuT75EDwkGmZbK8ZKVF55pXvx"}]}
+{"versionId": "2-QmXL6CLK1BMHAd3zQMqkY49VSc9T3zhUcPxu6zEW176PfN", "versionTime": "2024-09-26T23:22:26Z", "parameters": {"updateKeys": ["z6MkvQnUuQn3s52dw4FF3T87sfaTvXRW7owE1QMvFwpag2Bf"], "nextKeyHashes": ["QmdA9fxQSLLwCQo6TkovcoaLgGYWq6Ttqx6A5D1RY13iFG"]}, "state": {"@context": ["https://www.w3.org/ns/did/v1"], "id": "did:tdw:QmfGEUAcMpzo25kF2Rhn8L5FAXysfGnkzjwdKoNPi615XQ:domain.example"}, "proof": [{"type": "DataIntegrityProof", "cryptosuite": "eddsa-jcs-2022", "verificationMethod": "did:key:z6MkhbNRN2Q9BaY9TvTc2K3izkhfVwgHiXL7VWZnTqxEvc3R#z6MkhbNRN2Q9BaY9TvTc2K3izkhfVwgHiXL7VWZnTqxEvc3R", "created": "2024-09-26T23:22:26Z", "proofPurpose": "authentication", "proofValue": "z2nkLj9rYAMG7TStpvihuo4HTovpC7uvWcDoYiGhoN8cqQuiwW2EnPZdWtid2FZAQDQPoaNkTooKVftGKDTh9p3Fy"}]}
 ```
 
 #### Log File For Version 3
 
 The same process is repeated for version 3 of the DID. In this case:
 
-- The [[ref: DIDDoc]] is changed, and a patch generated.
+- The [[ref: DIDDoc]] is changed.
   - an `authentication` method is added.
   - two services are added.
 - No changes are made to the authorized keys to update the DID. As a result, the `parameters` entry is empty (`{}`), and the [[ref: parameters]] in effect from previous versions of the DID remain in effect.
@@ -266,72 +253,62 @@ The same process is repeated for version 3 of the DID. In this case:
 Here is the pretty-printed [[ref: log entry]]:
 
 ```json
-[
-  "3-QmNwk72WkEjUMQxqkxYoKWNx8Y1pDiGUZCn9PpeLtfPtyk",
-  "2024-07-29T17:00:28Z",
-  {},
-  {
-    "patch": [
+{
+  "versionId": "3-QmaSKJRACGefmi19LkS6TFj5FeMEfr98GpBWk7vEmbhT92",
+  "versionTime": "2024-09-26T23:22:26Z",
+  "parameters": {},
+  "state": {
+    "@context": [
+      "https://www.w3.org/ns/did/v1",
+      "https://w3id.org/security/multikey/v1",
+      "https://identity.foundation/.well-known/did-configuration/v1",
+      "https://identity.foundation/linked-vp/contexts/v1"
+    ],
+    "id": "did:tdw:QmfGEUAcMpzo25kF2Rhn8L5FAXysfGnkzjwdKoNPi615XQ:domain.example",
+    "authentication": [
+      "did:tdw:QmfGEUAcMpzo25kF2Rhn8L5FAXysfGnkzjwdKoNPi615XQ:domain.example#z6MkrgET7ZLV32qNrr6vUd2kVXGw63vbPvqxDqqhRQpvngBX"
+    ],
+    "assertionMethod": [
+      "did:tdw:QmfGEUAcMpzo25kF2Rhn8L5FAXysfGnkzjwdKoNPi615XQ:domain.example#z6MkrgET7ZLV32qNrr6vUd2kVXGw63vbPvqxDqqhRQpvngBX"
+    ],
+    "verificationMethod": [
       {
-        "op": "add",
-        "path": "/authentication",
-        "value": [
-          "did:tdw:Qma6mc1qZw3NqxwX6SB5GPQYzP4pGN2nXD15Jwi4bcDBKu:domain.example#z6Mkq57k27wL26zrxpvGVdEsCKe5kfpJhzy7GciVUfmosTdv"
-        ]
+        "id": "did:tdw:QmfGEUAcMpzo25kF2Rhn8L5FAXysfGnkzjwdKoNPi615XQ:domain.example#z6MkrgET7ZLV32qNrr6vUd2kVXGw63vbPvqxDqqhRQpvngBX",
+        "controller": "did:tdw:QmfGEUAcMpzo25kF2Rhn8L5FAXysfGnkzjwdKoNPi615XQ:domain.example",
+        "type": "Multikey",
+        "publicKeyMultibase": "z6MkrgET7ZLV32qNrr6vUd2kVXGw63vbPvqxDqqhRQpvngBX"
+      }
+    ],
+    "service": [
+      {
+        "id": "did:tdw:QmfGEUAcMpzo25kF2Rhn8L5FAXysfGnkzjwdKoNPi615XQ:domain.example#domain",
+        "type": "LinkedDomains",
+        "serviceEndpoint": "https://domain.example"
       },
       {
-        "op": "add",
-        "path": "/assertionMethod",
-        "value": [
-          "did:tdw:Qma6mc1qZw3NqxwX6SB5GPQYzP4pGN2nXD15Jwi4bcDBKu:domain.example#z6Mkq57k27wL26zrxpvGVdEsCKe5kfpJhzy7GciVUfmosTdv"
-        ]
-      },
-      {
-        "op": "add",
-        "path": "/service",
-        "value": [
-          {
-            "id": "did:tdw:Qma6mc1qZw3NqxwX6SB5GPQYzP4pGN2nXD15Jwi4bcDBKu:domain.example#domain",
-            "type": "LinkedDomains",
-            "serviceEndpoint": "https://domain.example"
-          },
-          {
-            "id": "did:tdw:Qma6mc1qZw3NqxwX6SB5GPQYzP4pGN2nXD15Jwi4bcDBKu:domain.example#whois",
-            "type": "LinkedVerifiablePresentation",
-            "serviceEndpoint": "https://domain.example/.well-known/whois.vc"
-          }
-        ]
-      },
-      {
-        "op": "add",
-        "path": "/@context/2",
-        "value": "https://identity.foundation/.well-known/did-configuration/v1"
-      },
-      {
-        "op": "add",
-        "path": "/@context/3",
-        "value": "https://identity.foundation/linked-vp/contexts/v1"
+        "id": "did:tdw:QmfGEUAcMpzo25kF2Rhn8L5FAXysfGnkzjwdKoNPi615XQ:domain.example#whois",
+        "type": "LinkedVerifiablePresentation",
+        "serviceEndpoint": "https://domain.example/.well-known/whois.vc"
       }
     ]
   },
-  [
+  "proof": [
     {
       "type": "DataIntegrityProof",
       "cryptosuite": "eddsa-jcs-2022",
-      "verificationMethod": "did:key:z82Lkvgj5NKYhoFh4hWzax9WicQaVDphN8MMzR3JZhontVfHaoGd9JbC4QRpDvmjQH3BLeQ#z82Lkvgj5NKYhoFh4hWzax9WicQaVDphN8MMzR3JZhontVfHaoGd9JbC4QRpDvmjQH3BLeQ",
-      "created": "2024-07-29T17:00:28Z",
+      "verificationMethod": "did:key:z6MkvQnUuQn3s52dw4FF3T87sfaTvXRW7owE1QMvFwpag2Bf#z6MkvQnUuQn3s52dw4FF3T87sfaTvXRW7owE1QMvFwpag2Bf",
+      "created": "2024-09-26T23:22:26Z",
       "proofPurpose": "authentication",
-      "challenge": "3-QmNwk72WkEjUMQxqkxYoKWNx8Y1pDiGUZCn9PpeLtfPtyk",
-      "proofValue": "z2TBssHyJj7dB4LDGjHWm3EfHhBiu534w4ucRF95XG3KzLg4m5kjtYbupGmf4txjqQRPko8Qd8PGeHgykWdutHXxJUmvvpGuiJxNBRpfwfKxnsbrT7jWeT6GqaFYqqkDcCG35"
+      "proofValue": "z2V72e7bRFpjvphDcWfYeSDTLsbkoVU5SfWAKMwpxYAL74D8GugTuoB2vH93cJqb8XXz8tN4es9AM787CogcbmXKa"
     }
   ]
-]
+}
 ```
 
 Here is the [[ref: log entry]] for just version 3 of the DID.
 
 ```json
-["3-QmNwk72WkEjUMQxqkxYoKWNx8Y1pDiGUZCn9PpeLtfPtyk", "2024-07-29T17:00:28Z", {}, {"patch": [{"op": "add", "path": "/authentication", "value": ["did:tdw:Qma6mc1qZw3NqxwX6SB5GPQYzP4pGN2nXD15Jwi4bcDBKu:domain.example#z6Mkq57k27wL26zrxpvGVdEsCKe5kfpJhzy7GciVUfmosTdv"]}, {"op": "add", "path": "/assertionMethod", "value": ["did:tdw:Qma6mc1qZw3NqxwX6SB5GPQYzP4pGN2nXD15Jwi4bcDBKu:domain.example#z6Mkq57k27wL26zrxpvGVdEsCKe5kfpJhzy7GciVUfmosTdv"]}, {"op": "add", "path": "/service", "value": [{"id": "did:tdw:Qma6mc1qZw3NqxwX6SB5GPQYzP4pGN2nXD15Jwi4bcDBKu:domain.example#domain", "type": "LinkedDomains", "serviceEndpoint": "https://domain.example"}, {"id": "did:tdw:Qma6mc1qZw3NqxwX6SB5GPQYzP4pGN2nXD15Jwi4bcDBKu:domain.example#whois", "type": "LinkedVerifiablePresentation", "serviceEndpoint": "https://domain.example/.well-known/whois.vc"}]}, {"op": "add", "path": "/@context/2", "value": "https://identity.foundation/.well-known/did-configuration/v1"}, {"op": "add", "path": "/@context/3", "value": "https://identity.foundation/linked-vp/contexts/v1"}]}, [{"type": "DataIntegrityProof", "cryptosuite": "eddsa-jcs-2022", "verificationMethod": "did:key:z82Lkvgj5NKYhoFh4hWzax9WicQaVDphN8MMzR3JZhontVfHaoGd9JbC4QRpDvmjQH3BLeQ#z82Lkvgj5NKYhoFh4hWzax9WicQaVDphN8MMzR3JZhontVfHaoGd9JbC4QRpDvmjQH3BLeQ", "created": "2024-07-29T17:00:28Z", "proofPurpose": "authentication", "challenge": "3-QmNwk72WkEjUMQxqkxYoKWNx8Y1pDiGUZCn9PpeLtfPtyk", "proofValue": "z2TBssHyJj7dB4LDGjHWm3EfHhBiu534w4ucRF95XG3KzLg4m5kjtYbupGmf4txjqQRPko8Qd8PGeHgykWdutHXxJUmvvpGuiJxNBRpfwfKxnsbrT7jWeT6GqaFYqqkDcCG35"}]]
+{"versionId": "3-QmaSKJRACGefmi19LkS6TFj5FeMEfr98GpBWk7vEmbhT92", "versionTime": "2024-09-26T23:22:26Z", "parameters": {}, "state": {"@context": ["https://www.w3.org/ns/did/v1", "https://w3id.org/security/multikey/v1", "https://identity.foundation/.well-known/did-configuration/v1", "https://identity.foundation/linked-vp/contexts/v1"], "id": "did:tdw:QmfGEUAcMpzo25kF2Rhn8L5FAXysfGnkzjwdKoNPi615XQ:domain.example", "authentication": ["did:tdw:QmfGEUAcMpzo25kF2Rhn8L5FAXysfGnkzjwdKoNPi615XQ:domain.example#z6MkrgET7ZLV32qNrr6vUd2kVXGw63vbPvqxDqqhRQpvngBX"], "assertionMethod": ["did:tdw:QmfGEUAcMpzo25kF2Rhn8L5FAXysfGnkzjwdKoNPi615XQ:domain.example#z6MkrgET7ZLV32qNrr6vUd2kVXGw63vbPvqxDqqhRQpvngBX"], "verificationMethod": [{"id": "did:tdw:QmfGEUAcMpzo25kF2Rhn8L5FAXysfGnkzjwdKoNPi615XQ:domain.example#z6MkrgET7ZLV32qNrr6vUd2kVXGw63vbPvqxDqqhRQpvngBX", "controller": "did:tdw:QmfGEUAcMpzo25kF2Rhn8L5FAXysfGnkzjwdKoNPi615XQ:domain.example", "type": "Multikey", "publicKeyMultibase": "z6MkrgET7ZLV32qNrr6vUd2kVXGw63vbPvqxDqqhRQpvngBX"}], "service": [{"id": "did:tdw:QmfGEUAcMpzo25kF2Rhn8L5FAXysfGnkzjwdKoNPi615XQ:domain.example#domain", "type": "LinkedDomains", "serviceEndpoint": "https://domain.example"}, {"id": "did:tdw:QmfGEUAcMpzo25kF2Rhn8L5FAXysfGnkzjwdKoNPi615XQ:domain.example#whois", "type": "LinkedVerifiablePresentation", "serviceEndpoint": "https://domain.example/.well-known/whois.vc"}]}, "proof": [{"type": "DataIntegrityProof", "cryptosuite": "eddsa-jcs-2022", "verificationMethod": "did:key:z6MkvQnUuQn3s52dw4FF3T87sfaTvXRW7owE1QMvFwpag2Bf#z6MkvQnUuQn3s52dw4FF3T87sfaTvXRW7owE1QMvFwpag2Bf", "created": "2024-09-26T23:22:26Z", "proofPurpose": "authentication", "proofValue": "z2V72e7bRFpjvphDcWfYeSDTLsbkoVU5SfWAKMwpxYAL74D8GugTuoB2vH93cJqb8XXz8tN4es9AM787CogcbmXKa"}]}
 ```
 
 And so on...

@@ -54,6 +54,8 @@ _This document is live-edited DURING each call, and stable/authoritative copies 
 
 Time: 9:00 Pacific / 18:00 Central Europe
 
+Recording: To Be Added
+
 Attendees:
 
 - Stephen Curran
@@ -75,6 +77,8 @@ Attendees:
 ## Meeting - 26 Sept 2024
 
 Time: 9:00 Pacific / 18:00 Central Europe
+
+Recording: [Zoom Recording Link](https://us02web.zoom.us/rec/share/VQ1FPX8yumZWnt7WVUYzvPgxcWA2WZZajGDbdDurqfc4T9V4VEEYrbmRiQoHcHc.DBkCFEu9ObvfsWg0)
 
 Attendees:
 
@@ -111,6 +115,8 @@ Attendees:
 ## Meeting - 12 Sept 2024
 
 Time: 9:00 Pacific / 18:00 Central Europe
+
+Recording: [Zoom Recording Link](https://us02web.zoom.us/rec/share/-tz_UHUxqNxkGntAcYZEaYD1_EDX4RBVmtwd7JbGKFglgwTYzJUzkC2ZuFRFZftt.-wWj9ZMqS70V8Cwg)
 
 Attendees:
 

@@ -5,7 +5,7 @@ The following lists the substantive changes in each version of the specification
 - Version 0.4
   - Removes the use of JSON Patch from the specification. The full DIDDoc is included in each [[ref: DID log entry]].
   - Changes the data format of the [[ref: DID log entries]] from an array to an object. The [[ref: DID Log]] remains in the [[ref: JSON Lines]] format.
-  - Changes the array items to be named JSON objects or properties.
+  - Changes the [[ref: DID log entry]] array to be named JSON objects or properties.
   - Makes each DID version's [[ref: Data Integrity]] proof apply across the JSON
     [[ref: DID log entry]] object, as is typical with [[ref: DID Integrity
     Proofs]]. Previously, the [[ref: Data Integrity]] proof was generated across

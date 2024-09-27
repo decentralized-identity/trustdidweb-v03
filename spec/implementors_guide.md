@@ -47,11 +47,11 @@ private keys both DID control keys would be lost. Thus, we expect the feature to
 - When a key rotation is to be done, two [[ref: entries]] are put in the log, using the following steps by the [[ref: DID Controller]]:
   1. Get the full key reference entry from the isolated service for the [[ref: pre-rotation]] "nextKey".
   2. Locally generate a [[ref: pre-rotation]] key hash for a new key that will soon become the "active" key.
-  3. Add a [[ref: DID log]] entry that includes the items from the previous two steps, and signs the proof using an authorized key (that presumably it controls, though not required).
+  3. Add a [[ref: DID log]] entry that includes the properties from the previous two steps, and signs the proof using an authorized key (that presumably it controls, though not required).
     1. Although the [[ref: DID log]] could be published now, it is probably best to hold off and publish it after adding a second, as described by the rest of the steps.
   4. Get a new [[ref: pre-rotation]] hash from the isolated service.
   5. Get the full key-rotation key reference for the [[ref: pre-rotation]] hash created for the last [[ref: DID log entry]].
-  6. Add a [[ref: DID Log]] entry that includes the items from the previous two step
+  6. Add a [[ref: DID Log]] entry that includes the properties from the previous two step
   7. If the key rotated in the previous [[ref: DID log entry]] was a/the
      authorized key to make updates to the DID, call the isolated service to produce
      the [[ref: Data Integrity]] proof over the entry using the key the isolated

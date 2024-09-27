@@ -24,7 +24,7 @@ particularly boring, containing the absolute minimum for a valid [[ref: DIDDoc]]
 
 This example includes both the initial "authorized keys" to sign the [[ref: Data Integrity]] proof
 (`updateKeys`) and the [[ref: pre-rotation]] commitment to the next authorization keys (`nextKeyHashes`). Both
-are in the `parameters` item in the [[ref: log entry]].
+are in the `parameters` property in the [[ref: log entry]].
 
 ```json
 {
@@ -176,9 +176,9 @@ processing is done to create the new [[ref: DID log entry]]:
 - The `parameters` entry passed in is processed. In this case, since the
 `updateKeys` array is updated, and [[ref: pre-rotation]] is active, the a
 verification is done to ensure that the hash of the `updateKeys` entries are
-found in the `nextKeyHashes` item from version 1 of the DID. As required by the
+found in the `nextKeyHashes` property from version 1 of the DID. As required by the
 `did:tdw` specification, a new `nextKeyHashes` is included in the new `parameters`.
-- The new (but unchanged) [[ref: DIDDoc]] is included in its entirety, as the value of the `state` item.
+- The new (but unchanged) [[ref: DIDDoc]] is included in its entirety, as the value of the `state` property.
 - The resultant JSON object is passed into the [`entryHash` generation
   process](#entry-hash-generation-and-verification) which outputs the
   `entryHash` for this [[ref: log entry]]. Once again, the `versionId` value is
@@ -196,7 +196,7 @@ The following is the JSON pretty-print [[ref: log entry]] for the second version
   the first [[ref: log entry]], since the `updateKeys` change in the second
   [[ref: log entry]] does not take affect until _after_ the version update is
   complete.
-- A new `updateKeys` item in the `parameters` has been added, along with
+- A new `updateKeys` property in the `parameters` has been added, along with
   commitment to a future key (`nextKeyHashes`) that will control future updates
   to the DID.
 

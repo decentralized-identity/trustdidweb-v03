@@ -61,7 +61,7 @@ The following is a `tl;dr` summary of how `did:tdw` works:
    whitespace removed (per [[ref: JSON Lines]]). Each entry contains the
    information needed to derive a version of the [[ref: DIDDoc]] from its preceding
    version. The `did.jsonl` is also referred to as the [[ref: DID Log]].
-3. Each [[ref: DID log entry]] is a JSON object containing the following items:
+3. Each [[ref: DID log entry]] is a JSON object containing the following properties:
     1. `versionId` -- a value that combines the version number
        (starting at `1` and incremented by one per version), a literal dash
        `-`, and a hash of the entry. The [[ref: entry hash]] calculation links each entry

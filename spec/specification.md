@@ -141,9 +141,9 @@ version of the DID is an update to the contents of the resolved [[ref: DIDDoc]] 
 DID, and/or a change to the [[ref: parameters]] that control the generation and
 verification of the DID.
 
-Each entry is a JSON object consisting of the following items.
+Each entry is a JSON object consisting of the following properties.
 
-`{ "versionId": "", "versionTime": "", "parameters": {}, "state": {}, "proof" : {} }`
+`{ "versionId": "", "versionTime": "", "parameters": {}, "state": {}, "proof" : [] }`
 
 1. The value of `versionId` **MUST** be a string consisting of the DID version number
    (starting at `1` and incrementing by one per DID version), a literal dash
@@ -164,7 +164,7 @@ Each entry is a JSON object consisting of the following items.
    specification.
 4. The JSON object `state` contains the [[ref: DIDDoc]] for this version of the
    DID.
-5. The JSON object `proof` is a [[ref: Data Integrity]] proof calculated across
+5. The JSON array `proof` contains a [[ref: Data Integrity]] proof calculated across
    the entry and signed by key authorized to update the [[ref: DIDDoc]].
 
 After creation, each entry has (per the [[ref JSON Lines]] specification) all
@@ -211,12 +211,12 @@ Creating a `did:tdw` DID is done by carrying out the following steps.
       corresponding [[ref: pre-rotation]] hashes.
    2. For each authorization key pair, generate a [[ref: multikey]] based on the
       key pair's public key. The [[ref: multikey]] representations of the public
-      keys are placed in the `updateKeys` item in [[ref: parameters]].
+      keys are placed in the `updateKeys` property in [[ref: parameters]].
    3. The public key(s) of the authorization key pair(s) **MAY** be used in the
       [[ref: DIDDoc]] as well, but that is not required.
 
 3. **Create the initial [[ref: DIDDoc]] for the DID**
-   The [[ref: DIDDoc]] **MUST** contain the top level `id` item which **MUST** be the DID string from
+   The [[ref: DIDDoc]] **MUST** contain the top level `id` property which **MUST** be the DID string from
    step 1, including the placement of the `{SICD}` placeholder for the [[ref: SCID]]. Other
    [[ref: DIDDoc]] verifications **SHOULD** be performed.
 
@@ -230,22 +230,22 @@ Creating a `did:tdw` DID is done by carrying out the following steps.
    the [[ref: SCID]] is to be placed.
 
 4. **Generate a preliminary DID Log Entry** JSON object containing the same JSON
-   items that will be in the published [[ref: DID log entry]], but with some
+   properties that will be in the published [[ref: DID log entry]], but with some
    values preset, pending calculation of the [[ref: SCID]] and [[ref entryHash]] and
-   without the `proof` item.
+   without the `proof`.
 
    1. The value of `versionId` string **MUST** be the placeholder literal `"{SCID}"`.
    2. The value of `versionTime` string **MUST** be a valid [[ref: ISO8601]] date/time string,
    and the represented time **MUST** be before or equal to the current time.
-   3. The value of the `parameters` item must be a JSON object defined at the
-      discretion of the [[ref: DID Controller]]. The items in the object
+   3. The value of the `parameters` property **MUST** be a JSON object defined at the
+      discretion of the [[ref: DID Controller]]. The properties in this nested JSON object
       **MUST** be as permitted in the [DID Generation and Verification
       Parameters](#didtdw-did-method-parameters) section of this specification,
       and all required values in the first version of the DID **MUST** be
       present. In addition, where the [[ref: SCID]] of the DID is referenced in
       the parameters, the placeholder literal string `{SCID}` **MUST** be used
       in place of the to-be-calculated [[ref: SCID]].
-   4. The value of the `state` item **MUST** be the initial [[ref: DIDDoc]] as
+   4. The value of the `state` property **MUST** be the initial [[ref: DIDDoc]] as
       defined in the previous step 3 of this process.
 
 5. **Update the preliminary DID Log Entry to the initial DID Log Entry**
@@ -264,17 +264,17 @@ Creating a `did:tdw` DID is done by carrying out the following steps.
    [Entry Hash Generation and Verification](#entry-hash-generation-and-verification) section of
    this specification.
    4. **Replace the preliminary `versionId` value** The value of the `versionId`
-   item **MUST** be updated with the literal string `1` (for version number 1),
+   property **MUST** be updated with the literal string `1` (for version number 1),
    a literal `-`, followed by the `entryHash` value calculated in the previous
    step.
    5. **Generate the [[ref: Data Integrity]] proof** A [[ref: Data Integrity]]
    proof on the preliminary JSON object as updated in the previous step **MUST**
-   be generated using an authorized key in the required `updateKeys` item in the
+   be generated using an authorized key in the required `updateKeys` property in the
    [[ref: parameters]] object.
 
    If the [[ref: DID Controller]] has opted to use [[ref: witnesses]] for the
    DID, the required approvals from the DID's [[ref: witnesses]] **MUST** be
-   collected and added to the [[ref: Data Integrity]] proof item. See the [DID
+   collected and added to the [[ref: Data Integrity]] proof property. See the [DID
    Witnesses](#did-witnesses) section of this specification.
 
    6. **Add the [[ref: Data Integrity]] proof** The [[ref Data Integrity]] proof
@@ -323,7 +323,7 @@ To process the retrieved [[ref: DID Log]] file, the resolver **MUST** carry out
 the following steps on each of the [[ref: log entries]] in the order they appear in the
 file, applying the [[ref: parameters]] set from the current and previous
 entries. As noted in the [DID Log File](#the-did-log-file) section, [[ref: log entries]]
-are each a JSON object with the following items:
+are each a JSON object with the following properties:
 
    1. `versionId`
    2. `versionTime`
@@ -372,10 +372,10 @@ For each entry:
    (defined in the [[ref: parameters]]) according to the
    [SCID Generation and Verification](#scid-generation-and-verification) section
    of this specification.
-7. Get the value of the [[ref: log entry]] item `state`, which is the [[ref:
+7. Get the value of the [[ref: log entry]] property `state`, which is the [[ref:
    DIDDoc]] for the version.
 8. If [[ref: Key Pre-Rotation]] is being used, the hash of all `updateKeys` entries
-   in the `parameters` item **MUST** match a hash in
+   in the `parameters` property **MUST** match a hash in
    the active array of `nextKeyHashes` [[ref: parameter]], as defined in the
    [Key [[ref: Pre-Rotation]] Hash Generation and Verification](#pre-rotation-key-hash-generation-and-verification)
    section of this specification.
@@ -433,11 +433,11 @@ verifiable [[ref: DID Log Entry]] follows a similar process to the
 1. Make the desired changes to the [[ref: DIDDoc]]. While the contents of a new DIDDoc
    version are (mostly) up to the [[ref: DID controller]], there are some limitations:
    1. If the DID is configured to support [[ref: portability]], the root `id`
-      item in the [[ref: DIDDoc]] **MAY** be changed when the [[ref: DID Controller]] wants to (or
+      property in the [[ref: DIDDoc]] **MAY** be changed when the [[ref: DID Controller]] wants to (or
       is forced to) publish the DID at a different Internet location and wants
       to retain the [[ref: SCID]] and history of the DID. For details, see the
       [DID Portability](#did-portability) section of this specification.
-2. Define the [[ref: parameters]] JSON object to include the items that affect the evolution of the
+2. Define the [[ref: parameters]] JSON object to include the properties that affect the evolution of the
    DID. The `parameters` **MUST** be from those listed in the [`did:tdw` DID
    Method Parameters](#didtdw-did-method-parameters) section of this
    specification. Any [[ref: parameters]] defined in the JSON object override the
@@ -449,7 +449,7 @@ verifiable [[ref: DID Log Entry]] follows a similar process to the
      effect after the entry has been published. For example, rotating the keys
      authorized to update a DID or changing the [[ref: witnesses]] for a DID take effect
      only *after* the entry in which they are defined has been published.
-3. Generate a preliminary [[ref: DID log entry]] JSON object containing the following JSON items:
+3. Generate a preliminary [[ref: DID log entry]] JSON object containing the following properties:
    1. The value of `versionId` **MUST** be the value of `versionId` from the *previous* [[ref: DID log entry]].
    2. The `versionTime` value **MUST** be a string that is an [[ref: ISO8601]]
       format timestamp. The time **MUST** be greater than the time of the
@@ -461,7 +461,7 @@ verifiable [[ref: DID Log Entry]] follows a similar process to the
    incrementing the version number integer and using the process described in
    the [Entry Hash Generation and Verification](#entry-hash-generation-and-verification)
    section of this specification.
-5. Replace the value of the `versionId` item in the preliminary [[ref: DID Log
+5. Replace the value of the `versionId` property in the preliminary [[ref: DID Log
    Entry]] with the value produced in the previous step.
 6. Generate a [[ref: Data Integrity]] proof on the [[ref: DID log entry]] using
    an authorized key, as defined in the [Authorized Keys](#authorized-keys)
@@ -470,7 +470,7 @@ verifiable [[ref: DID Log Entry]] follows a similar process to the
    DID, collect the required approvals from the DID's [[ref: witnesses]], adding
    their proofs to the [[ref: data integrity]] proof. See the [DID
    Witnesses](#did-witnesses) section of this specification.
-8. The proof JSON object **MUST** be added as the value of the `proof` item in the [[ref: log entry]].
+8. The proof JSON object **MUST** be added as the value of the `proof` property in the [[ref: log entry]].
 9. The entry **MUST** be made a [[ref JSON Line]] by removing extra whitespace, adding a `\n`
    to the entry. 
 10. The new [[ref: log entry]] **MUST** be appended to the existing contents of
@@ -488,14 +488,14 @@ section of this specification.
 #### Deactivate (Revoke)
 
 To deactivate the DID, the [[ref: DID Controller]] **MUST** add to the [[ref:
-DID log entry]] [[ref: parameters]] the item `"deactivated": true`. A [[ref: DID
+DID log entry]] [[ref: parameters]] the property name and value `"deactivated": true`. A [[ref: DID
 Controller]] **SHOULD** update the [[ref: DIDDoc]] and `parameters` object to
 further indicate the deactivation of the DID, such as including an empty
 `updateKeys` list (`"updateKeys": []`) in the [[ref: parameters]], preventing
 further versions of the DID.
 
 A resolver encountering in the [[ref: DID log entry]] [[ref: parameters]] the
-item `"deactivated": true` **MUST** return in the [[ref: DIDDoc]] Metadata the JSON item
+property key:value pair `"deactivated": true` **MUST** return in the [[ref: DIDDoc]] Metadata the property key:value 
 `"deactivated": true`, as per the [[spec:DID-RESOLUTION]] specification.
 
 ### DID Method Processes
@@ -511,11 +511,11 @@ that define the DID processing [[ref: parameters]] being used by the [[ref: DID
 Controller]] when publishing the current and subsequent [[ref: DID log
 entries]]. A DID Resolver **MUST** use the same [[ref: parameters]] when
 processing the [[ref: DID Log]] to resolve the DID. The `parameters` object
-**MUST** only include items defined in this specification.
+**MUST** only include properties defined in this specification.
 
 ::: example
 
-An example of the JSON prettified [[ref: parameters]] item in the first [[ref: DID Log]] entry for a DID:
+An example of the JSON prettified `parameters` property in the first [[ref: DID Log]] entry for a DID:
 
 ``` json
 {
@@ -534,8 +534,8 @@ An example of the JSON prettified [[ref: parameters]] item in the first [[ref: D
 
 :::
 
-The allowed [[ref: parameter]] items and (where applicable) enumerated values for those
-items are defined below.
+The allowed [[ref: parameter]] properties and (where applicable) enumerated values for those
+properties are defined below.
 
 - `method`: Defines the `did:tdw` specification version to use when processing a
   given DID's log file. As new versions of this specifications are defined,
@@ -543,8 +543,8 @@ items are defined below.
   the `method` values. This allows a long lasting DID to evolve the settings
   being used by the DID over time, such as changing the hash algorithms
   permitted, or allowing other [[ref: Data Integrity]] cryptosuites.
-  - This item **MUST** appear in the first [[ref: DID log entry]].
-  - This item **MAY** appear in later [[ref: DID log entries]] to indicate that
+  - This property **MUST** appear in the first [[ref: DID log entry]].
+  - This property **MAY** appear in later [[ref: DID log entries]] to indicate that
     the processing rules for that and later [[ref: log entries]] have been changed to a
     different specification version.
   - Acceptable values for this specification are:
@@ -553,20 +553,20 @@ items are defined below.
       - The permitted hash algorithms used by the [[ref: DID Controller]] **MUST** be `SHA-256` as defined in [[spec: rfc6234]].
       - The permitted [[ref: Data Integrity]] cryptosuites used by the [[ref: DID Controller]] **MUST** be `eddsa-jcs-2022` as referenced in [[ref: eddsa-jcs-2022]].
 - `scid`: The value of the [[ref: SCID]] for this DID.
-  - This item **MUST** appear in the first [[ref: DID log entry]].
-- `updateKeys`: A list of one or more [[ref: multikey]] formatted public keys
+  - This property **MUST** appear in the first [[ref: DID log entry]].
+- `updateKeys`: An array of [[ref: multikey]] formatted public keys
   associated with the private keys that are authorized to sign the log entries
   that update the DID from one version to the next. An instance of the list in
   an entry replaces the previously active list. If an entry does not have the
-  `updateKeys` item, the currently active list continues to apply. See the
+  `updateKeys` property, the currently active list continues to apply. See the
   [Authorized Keys](#authorized-keys) section of this specification for
   additional details.
-  - This item **MUST** appear in the first [[ref: DID log entry]] and **MAY**
+  - This property **MUST** appear in the first [[ref: DID log entry]] and **MAY**
     appear in subsequent entries, at the discretion of the
     [[ref: DID Controller]].
-  - A key from the `updateKeys` item in the first [[ref: DID log entry]]
+  - A key from the `updateKeys` array in the first [[ref: DID log entry]]
     **MUST** be used to authorize the initial [[ref: log entry]]. In all other
-    [[ref: DID log entries]], an `updateKeys` item becomes active *after* the
+    [[ref: DID log entries]], an `updateKeys` property becomes active *after* the
     publication of its entry -- meaning its [[ref: log entry]] **MUST** be
     signed by a key the most recent `updateKeys` list from a **prior** [[ref:
     DID log]] entry.
@@ -579,8 +579,8 @@ items are defined below.
     for more details about renaming a `did:tdw` DID.
 - `prerotation`: A boolean value indicating that subsequent authentication keys
   added to the [[ref: DIDDoc]] (after this version) **MUST** have their hash included in
-  a `nextKeyHashes` [[ref: parameter]] item.
-  - The value is initialized to `false` until the item is included in a
+  a `nextKeyHashes` [[ref: parameter]] property.
+  - The value is initialized to `false` until the property is included in a
     [[ref: DID log entry]].
   - Once the value is set to `true` in a [[ref: DID log entry]] it **MUST NOT**
     be set to `false` in a subsequent entry.
@@ -594,19 +594,19 @@ items are defined below.
     formatted public keys added in a new `updateKeys` list **MUST** have their
     hashes listed in the currently active `nextKeyHashes` list.
   - A [[ref: DID Controller]] **MAY** put extra strings in the `nextKeyHashes`
-    item that are not subsequently used in an `updateKeys` entry.
+    array that are not subsequently used in an `updateKeys` entry.
   - When `prerotation` is active and the `updateKeys` [[ref: parameter]] is included in a
-    [[ref: parameters]] item, a `nextKeyHashes` item with a new set of hashes
-    **MUST** be included in the same [[ref: parameters]] item. Any unused
+    `parameters` property, a `nextKeyHashes` property with a new set of hashes
+    **MUST** be included in the same [[ref: parameters]] property. Any unused
     hashes in the prior `nextKeyHashes` are ignored.
 - `witness`: A JSON object containing the [[ref: parameters]] for declaring the witnesses
   for the DID, and the [[ref: parameters]] for the process of updating a DID via a
   collaboration with [[ref: witnesses]] prior to publication. For details of
-  this item data and its usage in the approvals process, see the
+  this data and its usage in the approvals process, see the
   [DID Witnesses](#did-witnesses) section of this specification.
-  - A `witness` item in the first [[ref: DID log entry]] is used to define the
+  - A `witness` property in the first [[ref: DID log entry]] is used to define the
     [[ref: witnesses]] and necessary threshold for that initial [[ref: log entry]]. In all other
-    [[ref: DID log entries]], a `witness` item becomes active **after** the publication
+    [[ref: DID log entries]], a `witness` property becomes active **after** the publication
     of its entry -- meaning its [[ref: log entry]] **MUST** be witnessed by the most recent
     `witnesses` from a **prior** [[ref: DID log]] entry.
 - `deactivated`: A JSON boolean that **SHOULD** be set to `true` when the DID is to
@@ -674,14 +674,14 @@ To verify the [[ref: SCID]] of a `did:tdw` DID being resolved, the resolver
 
 1. Extract the first [[ref: DID log entry]] and use it for the rest of the steps
    in this process.
-2. Extract the `scid` item value from the [[ref: parameters]] in the [[ref: DID log entry]].
+2. Extract the `scid` property value from the [[ref: parameters]] in the [[ref: DID log entry]].
 3. Determine the hash algorithm used by the [[ref: DID Controller]] from the [[ref: multihash]] `scid` value.
    - The hash algorithm **MUST** be one listed in the
    [parameters](#didtdw-did-method-parameters) defined by the version of the
    `did:tdw` specification being used by the [[ref: DID Controller]] based on the
-   `method` [[ref: parameters]] item.
-4. Remove the [[ref: data integrity]] proof item from the [[ref: DID log entry]].
-5. Replace the `versionId` item's value with the literal `"{SCID}"`.
+   `method` [[ref: parameters]] property.
+4. Remove the [[ref: data integrity]] proof property from the [[ref: DID log entry]].
+5. Replace the `versionId` property value with the literal `"{SCID}"`.
 6. Treat the resulting [[ref: log entry]] as a string and do a text replacement of the `scid`
    value from Step 2 with the literal string `{SCID}`.
 7. Use the result and the hash algorithm (from Step 3) as input to the function
@@ -692,13 +692,13 @@ To verify the [[ref: SCID]] of a `did:tdw` DID being resolved, the resolver
 #### Entry Hash Generation and Verification
 
 The `entryHash` follows the version number and dash character `-` in the
-`versionId` item in each DID log entry. Each `entryHash` is calculated
+`versionId` property in each DID log entry. Each `entryHash` is calculated
 across its [[ref: log entry]], excluding the [[ref: Data Integrity]] proof. The
 `versionId` used in the input to the hash is a predecessor value to the current
 [[ref: log entry]], ensuring that the [[ref: entries]] are cryptographically "chained"
 together in a microledger. For the first [[ref: log entry]], the predecessor
 `versionId` is the SCID (itself a hash), while for all other entries it is the
-`versionId` item from the previous log entry.
+`versionId` property from the previous log entry.
 
 ##### Generate Entry Hash
 
@@ -721,7 +721,7 @@ preliminary [[ref: log entry]] as the string `entry`, where:
 
 The following is an example of a preliminary [[ref: log entry]] that is processed to
 produce an [[ref: entry hash]]. As this is a first entry in a [[ref: DID Log]], the input
-`entryHash` (first item) is the [[ref: SCID]] of the DID.
+`versionId` is the [[ref: SCID]] of the DID.
 
 ```json
 {"versionId": "QmfGEUAcMpzo25kF2Rhn8L5FAXysfGnkzjwdKoNPi615XQ", "versionTime": "2024-09-26T23:22:26Z", "parameters": {"prerotation": true, "updateKeys": ["z6MkhbNRN2Q9BaY9TvTc2K3izkhfVwgHiXL7VWZnTqxEvc3R"], "nextKeyHashes": ["QmXC3vvStVVzCBHRHGUsksGxn6BNmkdETXJGDBXwNSTL33"], "method": "did:tdw:0.4", "scid": "QmfGEUAcMpzo25kF2Rhn8L5FAXysfGnkzjwdKoNPi615XQ"}, "state": {"@context": ["https://www.w3.org/ns/did/v1"], "id": "did:tdw:QmfGEUAcMpzo25kF2Rhn8L5FAXysfGnkzjwdKoNPi615XQ:domain.example"}}
@@ -741,7 +741,7 @@ Resolver **MUST** execute the following process:
    - The hash algorithm **MUST** be one listed in the
    [parameters](#didtdw-did-method-parameters) defined by the version of the
    `did:tdw` specification being used by the [[ref: DID Controller]] based on the
-   `method` [[ref: parameters]] item set in the current or most recent prior [[ref: log entry]].
+   `method` [[ref: parameters]] property set in the current or most recent prior [[ref: log entry]].
 3. Remove the [[ref: Data Integrity]] `proof` from the [[ref: log entry]].
 4. Set the `versionId` in the entry object to be the `versionId` from the
    previous [[ref: log entry]]. If this is the first entry in the log, set the value to
@@ -763,9 +763,9 @@ Resolver **MUST** execute the following process:
 #### Authorized Keys
 
 Each entry in the [[ref: DID Log]] **MUST** include a [[ref: Data Integrity]]
-`proof` item signed by a key **authorized** to control (create, update, deactivate) the
+`proof` property signed by a key **authorized** to control (create, update, deactivate) the
 DID. The authorized verification keys for `did:tdw` are the [[ref: multikey]]-formatted
-public keys in the **active** `updateKeys` list from the `parameters` item of
+public keys in the **active** `updateKeys` list from the `parameters` property of
 the [[ref: log entries]]. Any of the authorized verification keys may be referenced
 in the [[ref: Data Integrity]] proof.
 
@@ -814,7 +814,7 @@ in the Implementer's Guide for additional guidance.
 As described in the [parameters](#didtdw-did-method-parameters)
 section of this specification, a [[ref: DID Controller]] **MAY** define that
 `prerotation` is active for the DID (value `true`). When [[ref: pre-rotation]] is active,
-all verification [[ref: multikeys]] in the `updateKeys` [[ref: parameters]] item in other
+all verification [[ref: multikeys]] in the `updateKeys` [[ref: parameters]] property in other
 than the initial version of the [[ref: DIDDoc]] **MUST** have their hash in the currently
 active nextKeyHashes` array from a previous [[ref: DID log entry]]. If
 not, terminate the resolution process with an error.
@@ -838,11 +838,11 @@ authorization key.
    4. `base58btc` is an implementation of the [[ref: base58btc]] function.
       Its output is the base58 encoded string of its input.
 4. Insert the calculated hash into the `nextKeyHashes` array being built up within
-   the [[ref: parameters]] item.
+   the [[ref: parameters]] property.
 5. The generated key pair **SHOULD** be safely stored so that it can be used in
    a later DID version to become a DID authorization key. At that time, the
    [[ref: multikey]] representation of the public key will be inserted into the
-   `updateKeys` item in the [[ref: parameters]]. After that [[ref: log entry]] is
+   `updateKeys` property in the [[ref: parameters]]. After that [[ref: log entry]] is
    published, the private key can be used to sign DID update authorizations
    proofs.
 
@@ -852,7 +852,7 @@ strings) in a `nextKeyHashes` array.
 When processing other than the first [[ref: DID log entry]] where the
 `prerotation` [[ref: parameter]] is active, a `did:tdw` resolver **MUST**:
 
-1. For each [[ref: multikey]] in the `updateKeys` item in the `parameters` of
+1. For each [[ref: multikey]] in the `updateKeys` property in the `parameters` of
    the [[ref: log entry]], calculate the hash and hash algorithm for the [[ref:
    mulithash]] [[ref: multikey]].
 2. The hash algorithm **MUST** be one listed in the
@@ -911,7 +911,7 @@ An overview of the [[ref: witness]] mechanism is as follows:
   witness]] sends a [[ref: Data Integrity]] proof across the [[ref: DID log entry]] to the [[ref: DID Controller]], similar
   to that generated by the [[ref: DID Controller]], but signed by the [[ref: witness]]'s key.
 - When a weighted threshold of proofs are received, the DID Controller
-  inserts the [[ref: witnesses]]'s proofs into the array of proofs that are the last item in
+  inserts the [[ref: witnesses]]'s proofs into the `proof` array in
   the [[ref: DID Log Entry]] and publishes the updated version of the [[ref: DID
   Log]].
   - In publishing a new version of the [[ref: DID Log]], the [[ref: DID
@@ -920,7 +920,7 @@ An overview of the [[ref: witness]] mechanism is as follows:
     proofs on the last [[ref: log entry]] are needed because of the chaining of the
     proofs via the use of the `entryHash` challenge.
   - Removing the prior entry [[ref: witness]] proofs does not affect the verifiability of
-    the DID because the `entryHash` calculation does not include the proofs item.
+    the DID because the `entryHash` calculation does not include the `proof` property.
   - The specification leaves to implementers how the proofs are conveyed to
     the [[ref: DID Controller]].
 
@@ -938,7 +938,7 @@ change must be approved by the *prior* [[ref: witnesses]]. For the first entry
 in the [[ref: DID Log]], the [[ref: witnesses]] listed in that entry must
 approve the version, since there are no "prior" [[ref: witnesses]].
 
-The data object for the `witness` [[ref: parameters]] item is as follows.
+The data model for the `witness` [[ref: parameter]] is as follows.
 The threshold design borrows from the [[ref: verifiable conditions]]
 specification.
 

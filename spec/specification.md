@@ -153,7 +153,7 @@ Each entry is a JSON object consisting of the following properties.
    [Entry Hash Generation and
    Verification](#entry-hash-generation-and-verification) section of this
    specification.
-2. The value of `versionTime` **MUST** be a timestamp of the entry in [[ref:
+2. The value of `versionTime` **MUST** be a timestamp in UTC of the entry in [[ref:
    ISO8601]] format, as asserted by the [[ref: DID Controller]]. The timestamp
    **MUST** be the time the DID will be retrieved by a [[ref: witness]] or resolver,
    or before.
@@ -235,7 +235,7 @@ Creating a `did:tdw` DID is done by carrying out the following steps.
    without the `proof`.
 
    1. The value of `versionId` string **MUST** be the placeholder literal `"{SCID}"`.
-   2. The value of `versionTime` string **MUST** be a valid [[ref: ISO8601]] date/time string,
+   2. The value of `versionTime` string **MUST** be a valid UTC [[ref: ISO8601]] date/time string,
    and the represented time **MUST** be before or equal to the current time.
    3. The value of the `parameters` property **MUST** be a JSON object defined at the
       discretion of the [[ref: DID Controller]]. The properties in this nested JSON object
@@ -358,7 +358,7 @@ For each entry:
       the process defined in the [Entry Hash Generation and
       Verification](#entry-hash-generation-and-verification) section of this
       specification.
-4. The `versionTime` **MUST** be a valid [[ref: ISO8601]] date/time string. The
+4. The `versionTime` **MUST** be a valid UTC [[ref: ISO8601]] date/time string. The
    `versionTime` for each [[ref: log entry]] **MUST** be greater than the
    previous entry's time. The `versionTime` of the last entry **MUST** be
    earlier than the current time.
@@ -384,7 +384,7 @@ For each entry:
    about each version:
       1. The [[ref: DIDDoc]].
       2. The `versionId` of the [[ref: DIDDoc]].
-      3. The `versionTime`of the [[ref: DIDDoc]].
+      3. The UTC `versionTime`of the [[ref: DIDDoc]].
       4. The latest list of active [[ref: multikey]] formatted public keys
          authorized to update the DID, from the `updateKeys` lists in the
          [[ref: parameters]].
@@ -452,7 +452,7 @@ verifiable [[ref: DID Log Entry]] follows a similar process to the
 3. Generate a preliminary [[ref: DID log entry]] JSON object containing the following properties:
    1. The value of `versionId` **MUST** be the value of `versionId` from the *previous* [[ref: DID log entry]].
    2. The `versionTime` value **MUST** be a string that is an [[ref: ISO8601]]
-      format timestamp. The time **MUST** be greater than the time of the
+      format UTC timestamp. The time **MUST** be greater than the time of the
       previous [[ref: log entry]], and **MUST** be the time the DID will be
       retrieved by a [[ref: witness]] or resolver, or before.
    3. The [[ref: parameters]] passed in as a JSON object.
@@ -646,7 +646,7 @@ Where:
 
    - The `versionId` entry, which **MUST** be `{SCID}`.
    - The `versionTime` entry, which **MUST** be a string that is the current time in
-         [[ref: ISO8601]] format, e.g., `"2024-04-05T07:32:58Z"`
+         UTC [[ref: ISO8601]] format, e.g., `"2024-04-05T07:32:58Z"`
    - The complete `parameters` for the initial [[ref: log entry]] as defined by the
      [[ref: DID Controller]], with the placeholder wherever the [[ref: SCID]] will
      eventually be placed.

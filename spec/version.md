@@ -10,6 +10,7 @@ The following lists the substantive changes in each version of the specification
     [[ref: DID log entry]] object, as is typical with [[ref: DID Integrity
     Proofs]]. Previously, the [[ref: Data Integrity]] proof was generated across
     the current DIDDoc version, with the `versionId` as the challenge.
+  - Specified that the `versionTime` must be recorded as a UTC time zone timestamp.
 - Version 0.3
   - Removes the `cryptosuite` [[ref: parameter]], moving it to implied based on the `method` [[ref: parameter]].
   - Change base32 encoding with [[ref: base58btc]], as it offers a better expansion rate.

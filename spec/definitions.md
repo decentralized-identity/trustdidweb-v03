@@ -30,12 +30,12 @@ by the controller of the DID.
 
 [[def: DID Log, DID Logs]]
 
-~ A DID Log is a list of [[ref: Entries]] one being added for each update of an entry item,
+~ A DID Log is a list of [[ref: Entries]], with an entry added for each update of the DID,
 including new versions of the [[ref: DIDDoc]] or changed information necessary to generate or validate the DID.
 
 [[def: DID Log Entry, DID Log Entries, Entries, Log Entries]]
 
-~ A DID Log Entry is a JSON array of five items which define the authorized
+~ A DID Log Entry is a JSON object that defines the authorized
 transformation of a [[ref: DIDDoc]] from one version to the next. The initial entry
 establishes the DID and version 1 of the [[ref: DIDDoc]]. All entries are stored
 in the [[ref: DID Log]].
@@ -49,7 +49,7 @@ the DID Method Specification for `DID:tdw`.
 
 [[def: DID Portability, DID:tdw portability, `DID:tdw` portability]]
 
-~ `did:tdw` [[ref: portability]] encompasses the ability to change the DID string for the
+~ `did:tdw` portability is the capability to change the DID string for the
 DID while retaining the [[ref: SCID]] and the history of the DID. This is useful
 when forced to change (such as when an organization is acquired by another,
 resulting in a change of domain names) and when changing DID hosting service
@@ -76,11 +76,12 @@ the cryptosuite can be found in the specification, here:
 [[def: Entry Hash, entryHash]]
 
 ~ A `DID:tdw` entry hash is a hash generated using a formally defined process
-over the input data to a [[ref: log entry]], excluding the [[ref: Data Integrity]] proof
-item. The input data includes content from the predecessor to the version of the
-DID, ensuring that all the versions are "chained" together in a microledger. The
-generated [[ref: entry hash]] is subsequently included in the `versionId` element of the [[ref: log entry]] and **MUST** be
-verified by a resolver.
+over the input data to a [[ref: log entry]], excluding the [[ref: Data Integrity]]
+proof. The input data includes content from the predecessor to the
+version of the DID, ensuring that all the versions are "chained" together in a
+sort of microledger. The generated [[ref: entry hash]] is subsequently included in the
+`versionId` of the [[ref: log entry]] and **MUST** be verified by a
+resolver.
 
 [[def: ISO8601, ISO8601 String]]
 
@@ -98,12 +99,6 @@ structure such that is suitable for verifiable hashing or signing.
 [https://jsonlines.org/](https://jsonlines.org/). In short, `JSONL` is lines of JSON with
 whitespace removed and separated by a newline that is convenient for handling
 streaming JSON data or log files.
-
-[[def: JSON Patch]]
-
-~ [[spec:rfc6902]] is a web standard format for describing how to change a JSON
-document from one state to another. A [[ref: DID Controller]] **MAY** use it in `DID:tdw`
-to define how a [[ref: DIDDoc]] is changed from one version to the next.
 
 [[def: Pre-Rotation]]
 
@@ -139,10 +134,11 @@ multi-signature is considered valid.
 
 [[def: parameters]]
 
-~ `DID:tdw` [[ref: parameters]] are a defined set of configurations that control how the
-issuer has generated the DID, and how the resolver should process the DID [[ref: Log
-entries]]. The use of [[ref: parameters]] allows for the controlled evolution of `DID:tdw`
-log handling, such as evolving the permitted hash algorithms.
+~ `did:tdw` parameters are a defined set of configurations that control how the
+issuer has generated the DID, and how the resolver must process the DID [[ref:
+Log entries]]. The use of parameters allows for the controlled evolution of
+`did:tdw` log handling, such as evolving the set of permitted hash algorithms or
+cryptosuites. This enables support for very long lasting identifiers -- decades.
 
 [[def: self-certifying identifier, SCID, SCIDs]]
 

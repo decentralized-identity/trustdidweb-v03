@@ -3,6 +3,7 @@
 The following lists the substantive changes in each version of the specification.
 
 - Version 0.4
+  - Removes large non-normative sections, such as the implementer's guide, as they are now published on the [https://didtdw.org/](https://didtdw.org/) information site.
   - Removes the use of JSON Patch from the specification. The full DIDDoc is included in each [[ref: DID log entry]].
   - Changes the data format of the [[ref: DID log entries]] from an array to an object. The [[ref: DID Log]] remains in the [[ref: JSON Lines]] format.
   - Changes the [[ref: DID log entry]] array to be named JSON objects or properties.

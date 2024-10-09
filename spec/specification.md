@@ -924,13 +924,6 @@ An overview of the [[ref: witness]] mechanism is as follows:
   - The specification leaves to implementers how the proofs are conveyed to
     the [[ref: DID Controller]].
 
-::: to do
-
-To Do: Update to use a [[ref: Data Integrity]] Proof Set, where the authorized key identifies
-the proof, and the [[ref: witnesses]] proofs reference the identifier.
-
-:::
-
 As with the handling of the `updateKeys`, [[ref: DID Log Entry]] changes require
 proofs from the the [[ref: witnesses]] active *prior* to the publication of a
 new version. If a new version changes the list of [[ref: witnesses]], that
@@ -976,8 +969,11 @@ the [[ref: DID Controller]] with a `selfWeight` of 2, and a `threshold` of 4, th
 threshold will be met by two [[ref: witnesses]] approving the change, plus the [[ref: DID
 Controller]].
 
-See the Implementer's Guide section on [Witnesses](#witnesses) for more
-discussion on the witness capability and using it in production scenarios.
+If you want to learn about the practical application of witnesses, see the
+Implementer's Guide section on
+[Witnesses](https://didtdw.org/latest/implementers_guide/#witnesses) on the
+`did:tdw` information site for more discussion on the witness capability and
+using it in production scenarios.
 
 #### Publishing a Parallel `did:web` DID
 

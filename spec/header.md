@@ -8,6 +8,9 @@ Trust DID Web - `did:tdw`
 **Latest Draft:**
   [https://github.com/decentralized-identity/trustdidweb](https://github.com/decentralized-identity/trustdidweb)
 
+**Information Site:**
+  [https://didtdw.org/](https://didtdw.org/) (Contains non-normative information previously in the specification)
+
 **Editors:**
 ~ [Stephen Curran](https://github.com/swcurran)
 ~ [John Jordan, BC Gov](https://github.com/jljordan42)
@@ -26,9 +29,11 @@ Trust DID Web - `did:tdw`
 ~ [TypeScript]
 ~ [Python]
 ~ [Go]
+~ [DIDTDW Server in Python]
 
 [TypeScript]: https://github.com/bcgov/trustdidweb-ts
 [Python]: https://github.com/bcgov/trustdidweb-py
 [Go]: https://github.com/nuts-foundation/trustdidweb-go
+[DIDTDW Server in Python]: https://github.com/decentralized-identity/trustdidweb-server-py
 
 ------------------------------------

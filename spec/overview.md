@@ -14,11 +14,11 @@ without its challenges--
 from trust layers inherited from the web and the absence of a verifiable
 history for the DID.
 
-Tackling these concerns, the proposed `did:tdw` (Trust DID Web)
+Tackling these concerns, the `did:tdw` (Trust DID Web) DID
 method aims to enhance `did:web` by introducing features such
 as a [[ref: self-certifying identifiers]] (SCIDs), update key(s)
 and a verifiable history, akin to what is available with ledger-based DIDs,
-without relying on a ledger.
+but without relying on a ledger.
 
 This approach not only maintains backward compatibility but also offers an
 additional layer of assurance for those requiring more robust verification
@@ -106,14 +106,8 @@ The following is a `tl;dr` summary of how `did:tdw` works:
   :::
 
 An example of a `did:tdw` evolving through a series of versions can be seen in
-the [did:tdw Examples](#didtdw-example) of this specification.
-
-This draft specification was developed in parallel with the development of two
-proof of concept implementations. The specification/implementation interplay
-helped immensely in defining a practical, intuitive, straightforward, DID
-method. The existing proof of concept implementations of the `did:tdw` DID
-Method are listed in the [Implementors Guide](#Implementations). The current
-implementations range from around 1500 to 2000 lines of code.
+the [did:tdw Examples](https://didtdw.org/latest/example/) on the `did:tdw`
+information site.
 
 ### The `/whois` Use Case
 

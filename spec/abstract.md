@@ -27,18 +27,17 @@ limitations. `did:tdw` features include:
   resolving `<did>/path/to/file` by using a comparable DID-to-HTTPS translation
   as for the [[ref: DIDDoc]].
 - A DID URL path `<did>/whois` that defaults to automatically returning (if
-  published by the [[ref: DID controller]]) a [[ref: Verifiable Presentation]] containing
-  [[ref: Verifiable Credentials]] with the DID as the `credentialSubject`,
-  signed by the DID.
+  published by the [[ref: DID controller]]) a [[ref: Verifiable Presentation]]
+  containing [[ref: Verifiable Credentials]] with the DID as the
+  `credentialSubject`, signed by the DID. It draws inspiration from the
+  traditional WHOIS protocol [[spec:rfc3912]], offering an easy-to-use,
+  decentralized, trust registry.
 
 [High Assurance DIDs with DNS]: https://datatracker.ietf.org/doc/draft-carter-high-assurance-dids-with-dns/
 
 Combined, the additional features enable greater trust and security without
 compromising the simplicity of `did:web`.
 
-The incorporation of the DID Core compatible "/whois" path, drawing inspiration
-from the traditional WHOIS protocol [[spec:rfc3912]], offers an easy-to-use,
-decentralized, trust registry. The `did:tdw` method aims to establish a more
-trusted and secure web environment by providing robust verification processes
-and enabling transparency and authenticity in the management of decentralized
-digital identities.
+For more information about the Trust DID Web (`did:tdw`) DID method and how (and
+where) it is used in practice, please visit
+[https://didtdw.org/](https://didtdw.org/)

@@ -13,18 +13,23 @@ is a specification of mechanisms for ensuring the authenticity and integrity of
 structured digital documents using cryptography, such as digital signatures and
 other digital mathematical proofs.
 
-[[def: Decentralized Identifier, Decentralized Identifiers]]
+[[def: Decentralized Identifier, Decentralized Identifiers, DID, DIDs]]
 
 ~ Decentralized Identifiers (DIDs) [[spec:did-core]] are a type of identifier that enable
 verifiable, decentralized digital identities. A DID refers to any subject (e.g.,
 a person, organization, thing, data model, abstract entity, etc.) as determined
 by the controller of the DID.
 
+[[def: DID Controller, DID Controllers]]
+
+~ The entity that controls (create, updates, deletes) a given DID, as defined
+in the [[spec:DID-CORE]].
+
 [[def: DIDDoc]]
 
 ~ A DID Document as defined by the [[spec: DID-Core]] -- the document returned when a DID is resolved.
 
-[[def: DID:key]]
+[[def: did:key]]
 
 ~ `DID:key`...
 
@@ -33,7 +38,7 @@ by the controller of the DID.
 ~ A DID Log is a list of [[ref: Entries]], with an entry added for each update of the DID,
 including new versions of the [[ref: DIDDoc]] or changed information necessary to generate or validate the DID.
 
-[[def: DID Log Entry, DID Log Entries, Entries, Log Entries]]
+[[def: DID Log Entry, DID Log Entries, Entries, Log Entries, Log Entry]]
 
 ~ A DID Log Entry is a JSON object that defines the authorized
 transformation of a [[ref: DIDDoc]] from one version to the next. The initial entry
@@ -47,7 +52,7 @@ associated DID document are created, resolved, updated, and deactivated. DID
 methods are defined using separate DID method specifications. This document is
 the DID Method Specification for `DID:tdw`.
 
-[[def: DID Portability, DID:tdw portability, `DID:tdw` portability]]
+[[def: DID Portability, DID:tdw portability, `DID:tdw` portability, portability]]
 
 ~ `did:tdw` portability is the capability to change the DID string for the
 DID while retaining the [[ref: SCID]] and the history of the DID. This is useful
@@ -73,7 +78,7 @@ the secured document. More information on further operations and applications of
 the cryptosuite can be found in the specification, here:
 [eddsa-jcs-2022](https://www.w3.org/TR/vc-di-eddsa/#eddsa-jcs-2022)
 
-[[def: Entry Hash, entryHash]]
+[[def: Entry Hash, entryHash, entry hashes]]
 
 ~ A `DID:tdw` entry hash is a hash generated using a formally defined process
 over the input data to a [[ref: log entry]], excluding the [[ref: Data Integrity]]
@@ -93,14 +98,14 @@ Standard](https://en.wikipedia.org/wiki/ISO_8601).
 ~ [[spec:rfc8785]] defines a method for canonicalizing a JSON
 structure such that is suitable for verifiable hashing or signing.
 
-[[def: JSON Lines]]
+[[def: JSON Lines, JSON Line]]
 
 ~ A file of JSON Lines, as described on the site
 [https://jsonlines.org/](https://jsonlines.org/). In short, `JSONL` is lines of JSON with
 whitespace removed and separated by a newline that is convenient for handling
 streaming JSON data or log files.
 
-[[def: Pre-Rotation]]
+[[def: Pre-Rotation, Key Pre-Rotation]]
 
 ~ A technique for a controller of a cryptographic key to commit to the public
 key it will rotate to next, without exposing that actual public key. It protects
@@ -132,7 +137,7 @@ multi-signature key reference points to a verification method that defines what
 keys may contribute to the signature, and under what conditions the
 multi-signature is considered valid.
 
-[[def: parameters]]
+[[def: parameters, parameter]]
 
 ~ `did:tdw` parameters are a defined set of configurations that control how the
 issuer has generated the DID, and how the resolver must process the DID [[ref:
@@ -140,7 +145,7 @@ Log entries]]. The use of parameters allows for the controlled evolution of
 `did:tdw` log handling, such as evolving the set of permitted hash algorithms or
 cryptosuites. This enables support for very long lasting identifiers -- decades.
 
-[[def: self-certifying identifier, SCID, SCIDs]]
+[[def: self-certifying identifier, self-certifying identifiers, SCID, SCIDs]]
 
 ~ An object identifier derived from initial data such that an attacker could not
 create a new object with the same identifier. The input for a `DID:tdw` SCID is

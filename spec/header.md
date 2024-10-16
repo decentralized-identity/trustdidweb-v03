@@ -3,7 +3,7 @@ Trust DID Web - `did:tdw`
 
 **Specification Status:** DRAFT
 
-**Specification Version:** 0.4 (see [Changelog](#did-tdw-version-changelog))
+**Specification Version:** 0.4 (see [Changelog](#didtdw-version-changelog))
 
 **Latest Draft:**
   [https://github.com/decentralized-identity/trustdidweb](https://github.com/decentralized-identity/trustdidweb)

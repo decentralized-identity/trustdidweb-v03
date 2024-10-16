@@ -5,8 +5,10 @@ Trust DID Web - `did:tdw`
 
 **Specification Version:** 0.3 (see [Changelog](#didtdw-version-changelog))
 
-**Latest Draft:**
-~ Specifcation: [https://identity.foundation/trustdidweb/](https://identity.foundation/trustdidweb/)
+**Latest Version:**
+
+~ Specification: [https://identity.foundation/trustdidweb/](https://identity.foundation/trustdidweb/)
+
 ~ Repository: [https://github.com/decentralized-identity/trustdidweb](https://github.com/decentralized-identity/trustdidweb)
 
 **Editors:**

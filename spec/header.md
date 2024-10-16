@@ -1,12 +1,13 @@
 Trust DID Web - `did:tdw`
 ==================
 
-**Specification Status:** DRAFT
+**Specification Status:** HISTORICAL -- **THIS IS AN EARLY VERSION OF THE SPECIFICATION**
 
-**Specification Version:** 0.3 (see [Changelog](#did-tdw-version-changelog))
+**Specification Version:** 0.3 (see [Changelog](#didtdw-version-changelog))
 
 **Latest Draft:**
-  [https://github.com/decentralized-identity/trustdidweb](https://github.com/decentralized-identity/trustdidweb)
+  Specifcation: [https://identity.foundation/trustdidweb/](https://identity.foundation/trustdidweb/)
+  Repository: [https://github.com/decentralized-identity/trustdidweb](https://github.com/decentralized-identity/trustdidweb)
 
 **Editors:**
 ~ [Stephen Curran](https://github.com/swcurran)

@@ -1,4 +1,4 @@
-Trust DID Web - `did:tdw`
+Trust DID Web - `did:tdw` - v0.3
 ==================
 
 **Specification Status:** HISTORICAL -- **THIS IS AN EARLY VERSION OF THE SPECIFICATION**
